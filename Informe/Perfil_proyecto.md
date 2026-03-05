@@ -1,298 +1,145 @@
-# Perfil del Proyecto
+# Constitución de la Empresa
 
-## Introducción
+## Tipo de Sociedad
+Se elige y justifica la constitución bajo la figura de **Sociedad de Responsabilidad Limitada (S.R.L.)**. 
 
-Las veterinarias que no cuentan con un sistema digital de gestión enfrentan limitaciones en el seguimiento de la salud de las mascotas. Actualmente, gran parte de la información —como historial veterinario, tratamientos o antecedentes veterinarios— se registra manualmente en documentos físicos. Este procedimiento genera riesgos de pérdida de datos, dificulta la búsqueda rápida de información y provoca desconexión entre las áreas de atención. Estas deficiencias afectan la agilidad del servicio y la confianza de los propietarios.
+De acuerdo con la normativa comercial boliviana, este tipo societario es el ideal para nuestra conformación de cuatro socios (profesionales en Ingeniería de Sistemas). Su principal ventaja es que la responsabilidad de los socios queda limitada al monto de sus cuotas de capital, protegiendo el patrimonio personal de cada integrante. Además, bajo el marco normativo del **SEPREC** (para el registro comercial), el **Servicio de Impuestos Nacionales (SIN)** (para obligaciones tributarias) y el **Ministerio de Trabajo, Empleo y Previsión Social** (para regulaciones laborales), la S.R.L. ofrece una estructura organizativa formal pero menos rígida y menos costosa de mantener que una Sociedad Anónima (S.A.), siendo perfecta para una consultora de software emergente, frente a la Empresa Unipersonal que no permite la asociación de múltiples fundadores.
 
-Este proyecto propone una solución digital parcial, centrada en los módulos de consultas veterinarias. El objetivo es facilitar el trabajo del personal veterinario, mejorar la trazabilidad del paciente y mejorar la atención mediante un sistema web que digitalice el flujo de trabajo en consultorios veterinarios.
+## Misión
+Desarrollamos soluciones de software a medida, sistemas web y plataformas de transformación digital para pequeñas y medianas empresas (PYMES) en el Estado Plurinacional de Bolivia. Nuestro trabajo está dirigido a negocios que buscan modernizar sus procesos operativos y administrativos. El valor diferencial que ofrecemos es la integración de arquitecturas tecnológicas modernas, metodologías ágiles y un enfoque profundo en la experiencia del usuario, garantizando productos de alta calidad y un soporte técnico cercano y transparente.
 
-## Identificación del problema
+## Visión
+En un plazo de 5 a 10 años, queremos posicionarnos como la empresa consultora de desarrollo de software y aseguramiento de calidad más confiable y referente en el occidente de Bolivia, con una presencia consolidada en el mercado nacional y habiendo iniciado la exportación de nuestros servicios tecnológicos y productos propios al mercado internacional sudamericano, impulsando la transformación digital a gran escala.
 
-![Diagrama de Ishikawa](assets/1_izhikawa.png){width=85%}
+## Valores Corporativos
+* **Innovación:** Adopción constante de nuevas tecnologías y frameworks modernos.
+* **Ética profesional:** Integridad, confidencialidad y honestidad en el manejo de datos de nuestros clientes.
+* **Calidad:** Rigurosidad técnica en el código y aseguramiento de calidad (QA) en cada entregable.
+* **Transparencia:** Comunicación clara sobre alcances, costos y tiempos de desarrollo.
+* **Responsabilidad social:** Fomento del talento tecnológico local y creación de soluciones que aporten al crecimiento económico de la región.
 
-El diagrama de Ishikawa expone las causas principales que generan baja trazabilidad, pérdida de información y lentitud en el registro de atenciones en las veterinarias. Estas causas se agrupan en categorías como materiales, datos, tecnología y personal. Se identifican factores como la dependencia de documentos físicos, errores de transcripción manual, ausencia de un sistema digital, falta de métricas y resistencia al uso de tecnología. Todo esto repercute negativamente en la fluidez del servicio y en la continuidad de los tratamientos.
+# Requisitos Legales para Funcionamiento en Bolivia
 
-El problema abarca tanto la falta de herramientas tecnológicas como aspectos organizativos. La sobrecarga de tareas manuales y la inexistencia de un historial veterinario digital impiden ofrecer una atención rápida. Por tanto, la solución propuesta busca centralizar la información veterinaria y mejorar la programación de consultas.
+Para operar formalmente en la ciudad de La Paz, la consultora seguirá el siguiente procedimiento legal de registro y formalización:
+
+1. **Reserva de nombre comercial ante SEPREC:** Verificación de disponibilidad y reserva del nombre "GRUPO 5 S.R.L." en el portal del Servicio Plurinacional de Registro de Comercio.
+2. **Elaboración de minuta de constitución:** Redacción del documento constitutivo y los estatutos sociales de la empresa con el apoyo de un abogado.
+3. **Protocolo ante notaría:** Presentación de la minuta ante un Notario de Fe Pública para su elevación a Escritura Pública y obtención del testimonio.
+4. **Obtención de Matrícula de Comercio:** Inscripción de la Escritura Pública en SEPREC para obtener la matrícula que habilita el ejercicio legal del comercio.
+5. **Registro en el Servicio de Impuestos Nacionales (NIT):** Inscripción en el Padrón Nacional de Contribuyentes del SIN bajo el Régimen General para la dosificación y emisión de facturas.
+6. **Registro municipal (Licencia de Funcionamiento):** Trámite ante el Gobierno Autónomo Municipal de La Paz (GAMLP) para autorizar la apertura física de la oficina.
+7. **Registro en el Ministerio de Trabajo:** Inscripción en el Registro Obligatorio de Empleadores (ROE) para dar cumplimiento a la normativa sociolaboral vigente.
+8. **Afiliación a Caja de Salud y AFP:** Registro patronal en la Caja Nacional de Salud (CNS) para el seguro médico a corto plazo, y en la Gestora Pública para la seguridad social a largo plazo de los empleados.
+
+# Estructura Organizacional
+
+![Organigrama de la Empresa](assets/organigrama_empresa.png){width=80%}
+
+**Descripción de cargos básica:**
+
+* **Gerente General:** (Torrez Calle Alvaro Ariel). Representante legal de la empresa. Encargado de la toma de decisiones estratégicas, gestión financiera, relaciones comerciales y la maximización del valor de los productos (Product Owner).
+* **Director Técnico / Líder de Proyecto:** (Maldonado Carvajal Alan Ariel). Responsable de la viabilidad técnica de los proyectos, diseño de arquitectura y de facilitar el marco de trabajo ágil eliminando impedimentos (Scrum Master).
+* **Desarrollador Backend / QA:** (Claros Suntura Juan Jose). Encargado del desarrollo de la lógica de negocio, APIs, gestión de base de datos y de la ejecución de pruebas de calidad (QA) para asegurar un software libre de errores.
+* **Desarrollador Frontend:** (Lecoña Condori Elias Milan). Responsable del diseño, maquetado y programación de las interfaces de usuario, asegurando una experiencia fluida, responsiva y conectada con los servicios del backend.
+
+# Hojas de Vida (Curriculum Vitae)
+
+*(Se adjuntan a continuación los perfiles profesionales de los integrantes del equipo en formato de consultoría, incluyendo datos generales, formación académica, experiencia, certificaciones, competencias técnicas y firma digital).*
+
+\includepdf[pages=-, pagecommand={\thispagestyle{plain}}, scale=0.85]{assets/cv_juan.pdf}
+\includepdf[pages=-, pagecommand={\thispagestyle{plain}}, scale=0.85]{assets/cv_elias.pdf}
+\includepdf[pages=-, pagecommand={\thispagestyle{plain}}, scale=0.85]{assets/cv_alan.pdf}
+\includepdf[pages=-, pagecommand={\thispagestyle{plain}}, scale=0.85]{assets/cv_alvaro.pdf}
+
+\newpage
+
+# Propuesta de Proyecto de Software
+
+## Nombre del Proyecto
+**Sistema Web POS (Punto de Venta) y Gestión para Cafeterías**
+
+## Descripción del Problema
+Las cafeterías y negocios gastronómicos medianos en La Paz enfrentan demoras y desorganización al gestionar pedidos de manera manual o con sistemas obsoletos. Esto genera errores en las comandas, pérdida de tiempo en la asignación de mesas, dificultades para unificar métodos de pago y una deficiente emisión de recibos. La falta de un flujo digital centralizado impacta negativamente en la experiencia del cliente y en el control administrativo del negocio.
 
 ## Objetivo General
-
-Desarrollar un sistema web que digitalice los procesos de atención de las consultas de las mascotas en una veterinaria.
+Desarrollar un sistema web de Punto de Venta (POS) para optimizar la gestión de pedidos, administración de mesas y facturación en cafeterías.
 
 ## Objetivos Específicos
+* **Desarrollar** un módulo de gestión de pedidos en tiempo real para agilizar la atención al cliente mediante interfaces táctiles dinámicas.
+* **Diseñar** un sistema de control de acceso y roles para garantizar la seguridad de la información mediante autenticación con JSON Web Tokens (JWT).
+* **Implementar** un módulo de gestión de mesas y reservas para mejorar la organización del flujo de clientes mediante un panel visual de estados.
+* **Integrar** un módulo de facturación básica para automatizar el cobro y la generación de recibos detallados utilizando herramientas de generación de reportes en PDF.
 
--   Diseñar una base de datos relacional para organizar la información de dueños, mascotas y consultas.
--   Diseñar un módulo para que el recepcionista gestione el registro de pacientes y la programación de consultas.
--   Diseñar un módulo para que el veterinario registre la información veterinaria de las consultas realizadas.
--   Diseñar un sistema de autenticación para diferenciar el acceso entre recepcionistas y veterinarios.
+## Alcance del Proyecto
+**Qué incluye el proyecto:**
 
-## Límites y Alcances
+* Módulo de Punto de Venta (POS) interactivo para la toma de pedidos.
+* Gestión de estados de órdenes (en preparación, servido, pagado).
+* Administración visual de mesas y reservas.
+* Autenticación segura con roles definidos (Administrador, Cajero, Mesero).
+* Generación de cuentas, facturación básica e integración de métodos de pago simulados (pasarela estándar).
+* Panel administrativo para el registro de productos del menú.
 
-### Límites: 
--   No se digitalizarán todas las áreas de la veterinaria 
--   No se tomara en cuenta el acceso del dueño mediante el sistema
--   No se desarrollarán aplicaciones móviles.
--   No se llevará el prototipo a producción.
--   El sistema funcionará para una sola sucursal veterinaria.
--   No se incluyen funciones avanzadas de gestión de cuenta.
--   No se realizarán pruebas de carga ni optimización avanzada de base de datos.
--   No se incluye el seguimiento detallado de tratamientos complejos.
--   No incluye notificacion o recordatorios de consultas.
--   No se contemplara la exportacion de datos
--   No se contemplara la impresion de fichas de consulta
+**Qué NO incluye el proyecto:**
 
+* Desarrollo de aplicaciones móviles nativas para iOS/Android.
+* Gestión avanzada de inventario (kardex) o proveedores.
+* Integración con plataformas de delivery de terceros (PedidosYa, Yango, etc.).
+* Impresión directa en controladores fiscales de hardware (requiere configuración manual del cliente).
 
-### Alcances: 
--   Registro digital de mascotas y dueños.
--   Gestión de historial veterinario básico con datos del veterinario que atendió.
--   Roles diferenciados para recepcionista y veterinario.
--   Visualización de reportes básicos del historial.
--   Trazabilidad de las mascotas mediante historiales centralizados.
--   Gestión y trazabilidad de las consultas programadas.
-  
+## Metodología de Desarrollo
 
-## Tecnologías a usar
+Se utilizará el marco de trabajo **Scrum** para garantizar entregas funcionales de manera iterativa e incremental.
 
-\begin{longtable}{|p{3cm}|p{3cm}|p{9cm}|}
+* **Product Owner:** (Torrez) Define y prioriza el Product Backlog según el valor para la cafetería.
+* **Scrum Master:** (Maldonado) Facilita las ceremonias (Sprint Planning, Daily, Review, Retrospective) y elimina obstáculos.
+* **Equipo de Desarrollo:** (Claros, Lecoña) Encargados de la codificación, diseño y pruebas.
+
+## Cronograma Tentativo (4 meses)
+
+\begin{longtable}{|p{2.5cm}|p{6cm}|p{2cm}|}
 \hline
-\rowcolor{headerblue} \bfseries \color{white} Capa & \bfseries \color{white} Tecnología & \bfseries \color{white} Justificación \\ \hline
+\rowcolor{headerblue} \bfseries \color{white} Fases & \bfseries \color{white} Entregables & \bfseries \color{white} Duración \\ \hline
 \endhead
-\textbf{Backend} & Python Django & Framework seguro y rápido para crear la lógica del servidor y APIs. \\ \hline
-\textbf{Frontend} & React & Librería para interfaces dinámicas y responsivas. \\ \hline
-\textbf{Base Datos} & PostgreSQL & Base de datos relacional robusta para mantener la integridad de la información. \\ \hline
-\textbf{Contenedor} & Docker & Empaquetado de la aplicación para que funcione igual en cualquier equipo. \\ \hline
-\textbf{Hosting} & AWS & Infraestructura en la nube para desplegar el prototipo. \\ \hline
+\textbf{Mes 1: Inicio y Diseño} & Levantamiento de requerimientos, diseño de UI/UX y arquitectura de base de datos. & 4 Semanas \\ \hline
+\textbf{Mes 2: Backend y Auth} & APIs RESTful construidas, roles configurados y autenticación JWT implementada. & 4 Semanas \\ \hline
+\textbf{Mes 3: Frontend y POS} & Interfaces de POS táctil, gestión de mesas e integración de pedidos en tiempo real. & 4 Semanas \\ \hline
+\textbf{Mes 4: Cierre} & Generación de facturas, pruebas de QA, despliegue en la nube y capacitación. & 4 Semanas \\ \hline
 \end{longtable}
 
----
+## Presupuesto Estimado
+Se ha estimado el esfuerzo aplicando la medición de **Puntos de Función COSMIC**, evaluando movimientos de datos (Entradas, Salidas, Lecturas y Escrituras) en los módulos principales, expresado en moneda nacional (Bs).
 
-# Diagrama de Contexto
-
-## Identificacion del proyecto
-
-### Nombre del proyecto TPS
-
-Sistema Veterinario
-
-### Breve descripcion del proposito del sistema
-
-Diseñar, modelar y prototipar un sistema web parcial para consultorios veterinarios. Enfocándose en las consultas veterinarias, busca mejorar la trazabilidad de los pacientes y agilizar la atención al eliminar el papel. El sistema incluye la gestión de consultas y autenticación para el personal.
-
-## Modelo de contexto del sistema
-
-A continuacion se muestra el diagrama de contexto del sistema:
-
-![Diagrama de Contexto](assets/2_contexto.png){width=85%}
-
-
-## Descripcion de actores y flujos
-\begin{longtable}{|p{3cm}|p{2cm}|p{5cm}|p{5cm}|}
+\begin{longtable}{|p{7cm}|p{4cm}|}
 \hline
-\rowcolor{headerblue} \bfseries \color{white} Actor & \bfseries \color{white} Tipo & \bfseries \color{white} Descripción Rol & \bfseries \color{white} Flujo Información \\ \hline
+\rowcolor{headerblue} \bfseries \color{white} Concepto & \bfseries \color{white} Costo Estimado (Bs) \\ \hline
 \endhead
-\textbf{Veterinario} & Persona & Personal veterinario encargado de la atención de las mascotas & \textbf{Entrada:} Datos de la consulta veterinaria. \newline \textbf{Salida:} Historial actualizado. \\ \hline
-\textbf{Recepcionista} & Persona & Personal encargado de la programación y registro & \textbf{Entrada:} Datos de consulta, dueño y mascota. \newline \textbf{Salida:} Horarios disponibles, Consultas agendadas. \\ \hline
+\textbf{Costos de desarrollo} (Aprox. 110 CFP x factor técnico) & 42,000.00 Bs \\ \hline
+\textbf{Infraestructura} (Servidor Cloud, Dominio - 1 año) & 2,500.00 Bs \\ \hline
+\textbf{Licencias} (Software, assets UI) & 1,200.00 Bs \\ \hline
+\textbf{Soporte y Mantenimiento} (3 meses post-despliegue) & 5,000.00 Bs \\ \hline
+\textbf{Costo Total Estimado} & \textbf{50,700.00 Bs} \\ \hline
 \end{longtable}
 
+## Arquitectura Tecnológica Propuesta
+Para este sistema se propone el uso del Stack MERN, garantizando un rendimiento óptimo y alta escalabilidad:
+* **Backend:** Node.js con el framework Express.js (manejo eficiente de peticiones asíncronas y APIs RESTful).
+* **Base de datos:** MongoDB (Base de datos NoSQL altamente flexible para catálogos de productos y órdenes).
+* **Frontend:** React.js con Tailwind CSS y Redux Toolkit (para un manejo de estado global eficiente e interfaces reactivas).
+* **Despliegue en la nube:** AWS (Amazon Web Services) o DigitalOcean, apoyado por contenedores Docker para facilitar la portabilidad.
 
+# Análisis FODA Empresarial
 
-# Diagrama BPMN
-
-\includepdf[pages=-, pagecommand={\thispagestyle{plain}}, scale=0.85]{assets/bpmn.pdf}
-
-# Requerimientos funcionales y no funcionales
-
-## Requerimientos Funcionales
-
-\begin{longtable}{|p{1.2cm}|p{3.8cm}|p{8.5cm}|p{2cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Nombre & \bfseries \color{white} Descripción & \bfseries \color{white} Prioridad \\ \hline
-\endhead
-RF1 & Registrar Mascota & Permitir ingresar y guardar datos de una mascota. & Must \\ \hline
-RF2 & Mostrar Mascotas & Ver lista y detalles de mascotas registradas. & Must \\ \hline
-RF3 & Actualizar Mascota & Editar información de una mascota. & Should \\ \hline
-RF4 & Eliminar Mascota & Borrar registros de mascotas. & Should \\ \hline
-RF5 & Registrar Dueño & Permitir ingresar y guardar datos de un dueño. & Must \\ \hline
-RF6 & Mostrar Dueños & Ver lista y detalles de dueños registrados. & Must \\ \hline
-RF7 & Actualizar Dueño & Editar información de un dueño. & Should \\ \hline
-RF8 & Eliminar Dueño & Borrar registros de dueño. & Should \\ \hline
-RF9 & Agendar Consulta & Programar una consulta para una mascota en una fecha específica. & Must \\ \hline
-RF10 & Mostrar Consultas & Listar todas las consultas registradas/programadas. & Must \\ \hline
-RF11 & Modificar Consulta & Permitir la edición de una consulta programada. & Should \\ \hline
-RF12 & Eliminar Consulta & Cancelar o eliminar una consulta. & Should \\ \hline
-RF13 & Consultar Historial & Ver todas las consultas pasadas de una mascota. & Must \\ \hline
-RF14 & Registrar Atención & Permite al veterinario guardar los datos veterinarios de la consulta (diagnóstico, etc.). & Must \\ \hline
-RF15 & Iniciar Sesión & Validar credenciales (recepcionista, veterinario). & Must \\ \hline
-RF16 & Cerrar Sesión & Salir del sistema de forma segura. & Must \\ \hline
-RF17 & Gestión de Roles & Controlar permisos según sea recepcionista o veterinario. & Must \\ \hline
-\end{longtable}
-
-## Requerimientos No Funcionales
-
-\begin{longtable}{|p{1.2cm}|p{3.8cm}|p{8.5cm}|p{2cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Nombre & \bfseries \color{white} Descripción & \bfseries \color{white} Prioridad \\ \hline
-\endhead
-RNF1 & Seguridad & Protección de datos y control de accesos. & Must \\ \hline
-RNF2 & Usabilidad & Interfaz fácil de usar para el personal. & Must \\ \hline
-RNF3 & Rendimiento & Operaciones básicas rápidas (menos de 5 seg). & Should \\ \hline
-RNF4 & Escalabilidad & Estructura preparada para crecimiento futuro. & Could \\ \hline
-RNF5 & Disponibilidad & El sistema debe estar disponible al menos el 95\% del tiempo. & Should \\ \hline
-RNF6 & Portabilidad & Compatible con navegadores modernos. & Should \\ \hline
-RNF7 & Mantenibilidad & Código ordenado para futuras actualizaciones. & Could \\ \hline
-RNF8 & Integridad de Datos & Evitar duplicidad o corrupción de información. & Must \\ \hline
-RNF9 & Respaldo & Copias de seguridad de la base de datos. & Should \\ \hline
-RNF10 & Compatibilidad & Adaptable a pantallas de PC y móviles. & Should \\ \hline
-\end{longtable}
-
-
-# UML
-
-## Diagrama de casos de uso
-
-![Diagrama de casos de uso](assets/3_casos_de_uso.png){width=85%}
-
-## Diagrama de actividades
-
-### Agendar Consulta 
-![Diagrama de Actividad (agendar consulta)](assets/4_1_actividad.png){width=85%}
-
-### Registrar Mascota 
-![Diagrama de Actividad (registrar mascota)](assets/4_2_actividad.png){width=85%}
-
-### Iniciar Sesion 
-![Diagrama de Actividad (iniciar sesion)](assets/4_3_actividad.png){width=85%}
-
-### Registrar Consulta (Atención veterinaria)
-![Diagrama de Actividad (registro de consulta)](assets/4_4_actividad.png){width=85%}
-
-### Consultar Historial 
-![Diagrama de Actividad (consultar historial)](assets/4_5_actividad.png){width=85%}
-
-### Registrar Dueño 
-![Diagrama de Actividad (registrar dueño)](assets/4_6_actividad.png){width=85%}
-
-## Diagrama de secuencia
-
-### Registrar Dueño
-![Diagrama de Secuencia (registrar dueño)](assets/5_2_secuencia.png){width=85%}
-
-### Agendar Consulta
-![Diagrama de Secuencia (agendar consulta)](assets/5_3_secuencia.png){width=85%}
-
-### Registrar Mascota
-![Diagrama de Secuencia (registrar mascota)](assets/5_4_secuencia.png){width=85%}
-
-### Iniciar Sesion
-![Diagrama de Secuencia (iniciar sesion)](assets/5_1_secuencia.png){width=85%}
-
-### Registrar Consulta (Atención veterinaria)
-![Diagrama de Secuencia (registrar consulta)](assets/5_5_secuencia.png){width=85%}
-
-### Consultar Historial
-![Diagrama de Secuencia (consultar historial)](assets/5_6_secuencia.png){width=85%}
-
-## Diagrama de clases
-
-![Diagrama de Clases](assets/6_clases.png){width=85%}
-
-## Maqueta 
-
-\includepdf[pages=-, pagecommand={\thispagestyle{plain}}, scale=0.85]{assets/maquetado.pdf}
-
-## Escenarios
-
-### Escenario: Registrar Dueño
-
-\begin{longtable}{|p{7.5cm}|p{7.5cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} Actor (Recepcionista) & \bfseries \color{white} Sistema \\ \hline
-\endhead
-1. Ingresa los datos del dueño. & \\ \hline
-& 2. Muestra mensaje de confirmación. \\ \hline
-3. Acepta la confirmación de los datos. & \\ \hline
-& 4. Registra los datos del dueño. \\ \hline
-\end{longtable}
-
-### Escenario: Registrar Mascota
-
-\begin{longtable}{|p{7.5cm}|p{7.5cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} Actor (Recepcionista) & \bfseries \color{white} Sistema \\ \hline
-\endhead
-& 1. Busca los dueños disponibles y los muestra. \\ \hline
-2. Selecciona un dueño e ingresa los datos de la mascota. & \\ \hline
-& 3. Muestra mensaje de confirmación. \\ \hline
-4. Acepta la confirmación de los datos. & \\ \hline
-& 5. Registra los datos de la mascota. \\ \hline
-\end{longtable}
-
-### Escenario: Registrar Atención de Consulta (Veterinario)
-
-\begin{longtable}{|p{7.5cm}|p{7.5cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} Actor (Veterinario) & \bfseries \color{white} Sistema \\ \hline
-\endhead
-& 1. Muestra las consultas existentes. \\ \hline
-2. Selecciona una consulta. & \\ \hline
-& 3. Muestra los detalles de dicha consulta. \\ \hline
-4. Registra el diagnóstico y el tratamiento si es que hay. & \\ \hline
-& 5. Muestra un mensaje de confirmación. \\ \hline
-6. Acepta la confirmación. & \\ \hline
-& 7. Registra la consulta y muestra mensaje de consulta registrada. \\ \hline
-\end{longtable}
-
-### Escenario: Agendar Consulta (Recepcionista)
-
-\begin{longtable}{|p{7.5cm}|p{7.5cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} Actor (Recepcionista) & \bfseries \color{white} Sistema \\ \hline
-\endhead
-& 1. Muestra los veterinarios disponibles y los dueños existentes. \\ \hline
-2. Selecciona un veterinario y selecciona a un dueño. & \\ \hline
-& 3. Muestra las mascotas de ese dueño y los horarios disponibles. \\ \hline
-4. Selecciona la mascota y el horario. & \\ \hline
-& 5. Muestra un mensaje de confirmación. \\ \hline
-6. Acepta la confirmación y reserva la consulta. & \\ \hline
-& 7. Registra la consulta y muestra mensaje de consulta creada. \\ \hline
-\end{longtable}
-
-### Escenario: Iniciar Sesión
-
-\begin{longtable}{|p{7.5cm}|p{7.5cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} Actor (Usuario) & \bfseries \color{white} Sistema \\ \hline
-\endhead
-1. Ingresa sus datos personales (correo y contraseña). & \\ \hline
-& 2. Valida los datos del usuario y muestra la pantalla principal según el perfil del usuario. \\ \hline
-\end{longtable}
-
-### Escenario: Consultar Historial
-
-\begin{longtable}{|p{7.5cm}|p{7.5cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} Actor (Recepcionista) & \bfseries \color{white} Sistema \\ \hline
-\endhead
-& 1. Busca los dueños disponibles y los muestra. \\ \hline
-2. Selecciona un dueño. & \\ \hline
-& 3. Muestra las mascotas de dicho dueño. \\ \hline
-4. Selecciona la mascota. & \\ \hline
-& 5. Muestra el historial veterinario de dicha mascota. \\ \hline
-\end{longtable}
-
-
-# Conclusiones
-
-En conclusión, se cumplió con el objetivo general mediante el diseño y construcción de un prototipo web funcional que simula la digitalización de los procesos básicos de una veterinaria.
-
-El prototipo desarrollado puede verse en el siguiente enlace: 
-
-\underline{\textbf{\href{https://proyecto-sis225.tumype.com}{Proyecto SIS 225}}}
-
-Aunque el sistema no se ha implementado en un entorno real, el desarrollo del prototipo permitió validar la propuesta técnica y funcional a través de los siguientes puntos:
-
-- **Estructura de Datos:** Se modeló una base de datos relacional que organiza la información de dueños, mascotas y consultas, demostrando teóricamente cómo se puede centralizar la información y evitar el uso de papel.
-- **Gestión Administrativa:** Se construyeron las interfaces y la lógica necesaria para simular cómo un recepcionista registra datos y programa consultas en un entorno digital.
-- **Atención Veterinaria:** Se desarrolló un módulo de prueba que permite al perfil de veterinario guardar diagnósticos, verificando la viabilidad de llevar un historial digital ordenado.
-- **Seguridad y Acceso:** Se programó un mecanismo de autenticación que distingue correctamente los roles de Recepcionista y Veterinario dentro del prototipo, restringiendo el acceso a las funciones según corresponda.
-
-En resumen, este proyecto demuestra a nivel de prototipo que es posible organizar la información y gestionar consultas digitalmente, sirviendo como base para un futuro desarrollo en una veterinaria real.
+* **Fortalezas:**
+  * Dominio experto de tecnologías modernas y altamente demandadas (Stack MERN).
+  * Enfoque ágil que permite la adaptabilidad frente a cambios de requerimientos del cliente.
+  * Especialización en interfaces modernas, fluidas y orientadas a la experiencia del usuario (UX).
+* **Oportunidades:**
+  * Alta necesidad de modernización y digitalización en el creciente sector gastronómico de La Paz.
+  * Oportunidad de escalar el software desarrollado a un modelo de negocio SaaS (Software as a Service) para múltiples clientes.
+* **Debilidades:**
+  * Al ser una empresa de reciente creación, carecemos de un portafolio extenso que certifique proyectos previos a gran escala.
+  * Recursos financieros limitados para competir en marketing contra consultoras consolidadas.
+* **Amenazas:**
+  * Presencia de software de punto de venta (POS) genérico internacional a precios muy bajos.
+  * Inestabilidad económica local que pueda frenar la inversión tecnológica por parte de las PYMES.

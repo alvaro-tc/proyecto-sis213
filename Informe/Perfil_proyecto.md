@@ -1,22 +1,23 @@
 # Constitución de la Empresa
 
 ## Tipo de Sociedad
-Se elige y justifica la constitución bajo la figura de **Sociedad de Responsabilidad Limitada (S.R.L.)**. 
+Se elige y justifica la constitución de la empresa “GRUPO 5 S.R.L.” bajo la figura de **Sociedad de Responsabilidad Limitada (S.R.L.)**. 
 
 De acuerdo con la normativa comercial boliviana, este tipo societario es el ideal para nuestra conformación de cuatro socios (profesionales en Ingeniería de Sistemas). Su principal ventaja es que la responsabilidad de los socios queda limitada al monto de sus cuotas de capital, protegiendo el patrimonio personal de cada integrante. Además, bajo el marco normativo del **SEPREC** (para el registro comercial), el **Servicio de Impuestos Nacionales (SIN)** (para obligaciones tributarias) y el **Ministerio de Trabajo, Empleo y Previsión Social** (para regulaciones laborales), la S.R.L. ofrece una estructura organizativa formal pero menos rígida y menos costosa de mantener que una Sociedad Anónima (S.A.), siendo perfecta para una consultora de software emergente, frente a la Empresa Unipersonal que no permite la asociación de múltiples fundadores.
 
 ## Misión
-Desarrollamos soluciones de software a medida, sistemas web y plataformas de transformación digital para pequeñas y medianas empresas (PYMES) en el Estado Plurinacional de Bolivia. Nuestro trabajo está dirigido a negocios que buscan modernizar sus procesos operativos y administrativos. El valor diferencial que ofrecemos es la integración de arquitecturas tecnológicas modernas, metodologías ágiles y un enfoque profundo en la experiencia del usuario, garantizando productos de alta calidad y un soporte técnico cercano y transparente.
+Desarrollamos soluciones de software innovadoras, confiables y a medida que impulsan la transformación digital de pequeñas y medianas empresas (PYMES) y organizaciones en el Estado Plurinacional de Bolivia. Nuestro trabajo está dirigido a negocios que buscan modernizar sus procesos operativos y administrativos para un crecimiento sostenible. El valor diferencial que ofrecemos es la entrega de valor real a través de un equipo comprometido, metodologías ágiles, tecnología de vanguardia y un enfoque profundo en la experiencia del usuario, garantizando productos de alta calidad y un soporte técnico cercano y transparente.
 
 ## Visión
-En un plazo de 5 a 10 años, queremos posicionarnos como la empresa consultora de desarrollo de software y aseguramiento de calidad más confiable y referente en el occidente de Bolivia, con una presencia consolidada en el mercado nacional y habiendo iniciado la exportación de nuestros servicios tecnológicos y productos propios al mercado internacional sudamericano, impulsando la transformación digital a gran escala.
+En un plazo de 5 a 10 años, queremos ser reconocidos como la empresa consultora líder y referente en desarrollo de software personalizado, aseguramiento de calidad y productos digitales de alto impacto. Buscamos consolidar nuestra presencia en el mercado nacional y expandir la exportación de nuestros servicios hacia mercados latinoamericanos y europeos, impulsando la transformación digital a gran escala y manteniendo siempre la excelencia técnica, la cercanía con el cliente y una cultura de equipo sólida y motivada.
 
 ## Valores Corporativos
-* **Innovación:** Adopción constante de nuevas tecnologías y frameworks modernos.
-* **Ética profesional:** Integridad, confidencialidad y honestidad en el manejo de datos de nuestros clientes.
-* **Calidad:** Rigurosidad técnica en el código y aseguramiento de calidad (QA) en cada entregable.
-* **Transparencia:** Comunicación clara sobre alcances, costos y tiempos de desarrollo.
-* **Responsabilidad social:** Fomento del talento tecnológico local y creación de soluciones que aporten al crecimiento económico de la región.
+* **Excelencia Técnica y Calidad:** Nos comprometemos a entregar software limpio, seguro y escalable. Cada línea de código refleja nuestra rigurosidad técnica y aseguramiento de calidad (QA) en cada entregable.
+* **Innovación con Propósito:** Adopción constante de tecnologías actuales orientadas a resolver problemas reales de los clientes y generar valor tangible, no solo innovación por moda.
+* **Transparencia Total y Ética:** Comunicamos avances, riesgos, alcances y costos de forma clara y honesta desde el primer día. Actuamos con integridad y confidencialidad en el manejo de datos.
+* **Orientación al Cliente como Socio:** Tratamos a cada cliente como un aliado estratégico. Escuchamos activamente y nos esforzamos por superar expectativas, brindando un soporte técnico cercano.
+* **Responsabilidad y Compromiso Social:** Cumplimos lo que prometemos, asumimos la propiedad de nuestros resultados, fomentamos el talento tecnológico local y creamos soluciones que aporten al crecimiento económico de la región.
+* **Crecimiento Continuo:** Valoramos el desarrollo profesional constante. Invertimos en formación, experimentación controlada y mejora de procesos para estar siempre un paso adelante.
 
 # Requisitos Legales para Funcionamiento en Bolivia
 
@@ -92,7 +93,9 @@ Desarrollar un sistema web de Punto de Venta (POS) para optimizar la gestión de
 Se utilizará el marco de trabajo **Scrum** para garantizar entregas funcionales de manera iterativa e incremental.
 
 * **Product Owner:** (Torrez) Define y prioriza el Product Backlog según el valor para la cafetería.
+
 * **Scrum Master:** (Maldonado) Facilita las ceremonias (Sprint Planning, Daily, Review, Retrospective) y elimina obstáculos.
+
 * **Equipo de Desarrollo:** (Claros, Lecoña) Encargados de la codificación, diseño y pruebas.
 
 ## Cronograma Tentativo (4 meses)
@@ -122,24 +125,41 @@ Se ha estimado el esfuerzo aplicando la medición de **Puntos de Función COSMIC
 \end{longtable}
 
 ## Arquitectura Tecnológica Propuesta
+
 Para este sistema se propone el uso del Stack MERN, garantizando un rendimiento óptimo y alta escalabilidad:
+
 * **Backend:** Node.js con el framework Express.js (manejo eficiente de peticiones asíncronas y APIs RESTful).
+
 * **Base de datos:** MongoDB (Base de datos NoSQL altamente flexible para catálogos de productos y órdenes).
+
 * **Frontend:** React.js con Tailwind CSS y Redux Toolkit (para un manejo de estado global eficiente e interfaces reactivas).
+
 * **Despliegue en la nube:** AWS (Amazon Web Services) o DigitalOcean, apoyado por contenedores Docker para facilitar la portabilidad.
 
 # Análisis FODA Empresarial
 
 * **Fortalezas:**
-  * Dominio experto de tecnologías modernas y altamente demandadas (Stack MERN).
-  * Enfoque ágil que permite la adaptabilidad frente a cambios de requerimientos del cliente.
-  * Especialización en interfaces modernas, fluidas y orientadas a la experiencia del usuario (UX).
+
+  * Dominio experto de tecnologías modernas y altamente demandadas (Stack MERN).
+
+  * Enfoque ágil que permite la adaptabilidad frente a cambios de requerimientos del cliente.
+
+  * Especialización en interfaces modernas, fluidas y orientadas a la experiencia del usuario (UX).
+
 * **Oportunidades:**
-  * Alta necesidad de modernización y digitalización en el creciente sector gastronómico de La Paz.
-  * Oportunidad de escalar el software desarrollado a un modelo de negocio SaaS (Software as a Service) para múltiples clientes.
+
+  * Alta necesidad de modernización y digitalización en el creciente sector gastronómico de La Paz.
+
+  * Oportunidad de escalar el software desarrollado a un modelo de negocio SaaS (Software as a Service) para múltiples clientes.
+
 * **Debilidades:**
-  * Al ser una empresa de reciente creación, carecemos de un portafolio extenso que certifique proyectos previos a gran escala.
-  * Recursos financieros limitados para competir en marketing contra consultoras consolidadas.
+
+  * Al ser una empresa de reciente creación, carecemos de un portafolio extenso que certifique proyectos previos a gran escala.
+
+  * Recursos financieros limitados para competir en marketing contra consultoras consolidadas.
+
 * **Amenazas:**
-  * Presencia de software de punto de venta (POS) genérico internacional a precios muy bajos.
-  * Inestabilidad económica local que pueda frenar la inversión tecnológica por parte de las PYMES.
+
+  * Presencia de software de punto de venta (POS) genérico internacional a precios muy bajos.
+
+  * Inestabilidad económica local que pueda frenar la inversión tecnológica por parte de las PYMES.

@@ -1,3 +1,46 @@
+<div align="center">
+
+# UNIVERSIDAD CATÓLICA BOLIVIANA "SAN PABLO"  
+## CARRERA DE INGENIERÍA DE SISTEMAS  
+
+<br>
+
+# SISTEMA DE INFORMACIÓN ORGANIZACIONAL  
+## BASADO EN TPS PARA UNA CAFETERÍA  
+
+<br>
+
+## PROYECTO DE DESARROLLO DE SOFTWARE  
+
+<br><br>
+
+### **INTEGRANTES**
+
+Torrez Calle Álvaro Ariel  
+Maldonado Carvajal Alan Ariel  
+Claros Suntura Juan José  
+Lecona Condori Elías Milán  
+
+<br>
+
+### **DOCENTE**
+
+ Ing. Miguel Ángel Pacheco Arteaga
+
+
+<br>
+
+### **MATERIA**
+
+Sistemas de Información I  
+
+<br><br><br>
+
+### LA PAZ – BOLIVIA  
+### 2026  
+
+</div>
+
 # MARCO REFERENCIAL DEL SISTEMA TPS
 
 ## Introducción
@@ -100,25 +143,81 @@ Actualmente, el uso exclusivo de comandas escritas a mano y la comunicación ver
 
 La dependencia del cálculo mental y de anotaciones manuales para cobrar a los clientes y realizar el arqueo de caja es altamente susceptible al error humano. Estas fallas diarias se traducen en cobros incompletos, descuadres de caja y una pérdida monetaria silenciosa y constante para la cafetería. Al transicionar a un motor transaccional de Punto de Venta (POS) centralizado —que calcula automáticamente los subtotales, impuestos y totales finales antes de generar la factura— se erradican las fugas de capital por malas sumas. Además, la centralización de los datos permitirá a la gerencia consultar reportes históricos exactos (como los productos más vendidos), facilitando una toma de decisiones inteligente y la optimización del presupuesto para la compra de insumos.
 
-## Límites y Alcances
+## Límites y Alcances del Sistema
 
-### Límites
+### Límites del Sistema
 
-El sistema:
+El sistema de Punto de Venta (POS) web propuesto ha sido diseñado bajo un conjunto de restricciones técnicas y funcionales que delimitan su alcance en esta primera versión (MVP — *Minimum Viable Product*). Estos límites permiten enfocar el desarrollo en los requerimientos críticos del negocio, garantizando estabilidad, simplicidad y viabilidad en su implementación inicial.
 
-- Será exclusivamente web (no incluirá aplicaciones móviles nativas).
-- Usará una base de datos NoSQL orientada a documentos enfocada en transacciones rápidas.
-- Tendrá un sistema cerrado de autenticación de usuarios locales (no integrará inicios de sesión sociales).
-- No incluirá integración directa a pasarelas de pago bancarias físicas en su primera versión (los pagos se registrarán de forma lógica).
+Los principales límites del sistema son:
 
-### Alcances
+- **Plataforma exclusivamente web:**  
+  El sistema será accesible únicamente a través de navegadores web modernos, descartando el desarrollo de aplicaciones móviles nativas (Android/iOS) en esta etapa.
 
-El sistema permitirá:
+- **Dependencia de conectividad local o a internet:**  
+  El sistema requiere conexión a red (LAN o Internet) para operar, ya que la lógica de negocio y la base de datos residen en el servidor. No se contempla un modo offline.
 
-- Gestionar el catálogo interactivo de la cafetería (categorías, productos, precios).
-- Gestionar usuarios, asignar roles y administrar permisos granulares mediante _middlewares_.
-- Registrar transacciones en el POS vinculando carritos de compra a mesas específicas.
-- Generar reportes tabulares y calcular cortes de caja.
+- **Base de datos NoSQL (MongoDB):**  
+  Se utilizará una base de datos documental orientada a rendimiento transaccional, sin implementación de motores relacionales tradicionales (SQL).
+
+- **Sistema cerrado de autenticación:**  
+  No se integrarán servicios externos de autenticación como Google, Facebook o proveedores OAuth. El acceso será exclusivamente mediante credenciales internas.
+
+- **Pagos simulados (sin integración bancaria real):**  
+  En esta versión, los métodos de pago (efectivo, tarjeta) serán registrados de forma lógica sin conexión a pasarelas de pago reales.
+
+- **Sin gestión avanzada de inventario:**  
+  El sistema no descontará automáticamente insumos (ej. gramos de café, leche), limitándose al control de productos finales.
+
+- **Monosucursal:**  
+  El sistema estará diseñado para una única cafetería, sin soporte inicial para múltiples sucursales.
+
+
+### Alcances del Sistema
+
+El sistema POS web permitirá digitalizar y optimizar los procesos clave del negocio, cubriendo completamente el flujo operativo de ventas y gestión básica del establecimiento.
+
+Entre los principales alcances se incluyen:
+
+- **Gestión del catálogo de productos:**
+  - Registro, edición y eliminación de productos.
+  - Clasificación por categorías.
+  - Control de precios en tiempo real.
+
+- **Gestión de usuarios y roles (RBAC):**
+  - Creación y administración de cuentas.
+  - Asignación de roles (Administrador, Cajero).
+  - Control de permisos mediante middleware.
+
+- **Sistema de autenticación segura:**
+  - Inicio de sesión mediante credenciales.
+  - Uso de JSON Web Tokens (JWT).
+  - Encriptación de contraseñas con bcrypt.
+
+- **Módulo de Punto de Venta (POS):**
+  - Selección interactiva de productos.
+  - Construcción de pedidos en tiempo real.
+  - Cálculo automático de totales.
+
+- **Gestión de mesas:**
+  - Visualización del estado (libre, ocupada).
+  - Asignación obligatoria de mesa a cada orden.
+
+- **Procesamiento de transacciones:**
+  - Registro de ventas con persistencia en base de datos.
+  - Asociación de usuario, mesa y productos.
+
+- **Facturación automatizada:**
+  - Generación de tickets en formato PDF.
+  - Registro histórico de ventas.
+
+- **Reportes básicos:**
+  - Consulta de ventas por fecha.
+  - Totales por usuario o turno.
+
+- **Arquitectura escalable:**
+  - Separación frontend/backend.
+  - Preparado para despliegue en la nube.
 
 ## Metodología del Proyecto
 
@@ -257,12 +356,67 @@ En el contexto específico del presente proyecto, el TPS ejecuta el siguiente ci
 
 Los TPS han recorrido un largo camino desde las terminales monolíticas de los años setenta. La adopción de arquitecturas web modernas —como la empleada en este proyecto— representa la fase más reciente de esta evolución, caracterizada por tres ventajas fundamentales: **ubicuidad** (el sistema es accesible desde cualquier dispositivo con navegador web en la red local del negocio), **centralización** (todos los datos residen en un único repositorio en la nube, eliminando la dispersión de información), y **escalabilidad** (la arquitectura basada en microservicios y contenedores Docker permite escalar el sistema horizontalmente para absorber incrementos en la carga de trabajo sin rediseñar la arquitectura base).
 
-## Arquitectura de sistemas web
+### Arquitectura de Sistemas Web
 
-- **Cliente (_Frontend_):** La interfaz que interactúa con el usuario final a través de un navegador web, responsable de la presentación de la información (Ej. Pantalla POS de React).
-- **Servidor (_Backend_):** La computadora central o contenedor de la nube que procesa la lógica de negocios, gestionando la concurrencia y los cálculos matemáticos.
-- **API (_Application Programming Interface_):** El puente de comunicación documentado entre el Cliente y el Servidor (vía JSON).
-- **Base de datos:** Repositorio central donde reposa la persistencia de las entidades.
+La arquitectura del sistema POS se basa en el modelo Cliente–Servidor, una de las estructuras más utilizadas en aplicaciones web modernas por su capacidad de separación de responsabilidades, escalabilidad y mantenimiento.
+
+### Cliente (Frontend)
+
+El cliente representa la capa de presentación del sistema, encargada de interactuar directamente con el usuario final mediante una interfaz gráfica accesible desde el navegador.
+En este proyecto, el cliente será desarrollado utilizando React.js, permitiendo:
+- Renderizado dinámico de componentes (Virtual DOM).
+- Interacciones en tiempo real en el POS.
+- Manejo del estado global mediante Redux Toolkit.
+- Navegación sin recarga de página (SPA).
+Funciones:
+- Capturar datos de entrada (pedidos, login).
+- Mostrar información procesada.
+- Enviar solicitudes HTTP al servidor.
+
+### Servidor (Backend)
+
+El servidor constituye la capa de lógica de negocio.
+Tecnologías: Node.js; Express.js
+Funciones:
+
+- Autenticación con JWT.
+- Procesamiento de órdenes.
+- Validaciones.
+- Persistencia en base de datos.
+
+### API
+
+La API permite la comunicación entre cliente y servidor mediante HTTP y JSON.
+Características:
+- Métodos: GET, POST, PUT, DELETE
+- Arquitectura RESTful
+- Seguridad con JWT
+
+### Flujo del Sistema
+1. Usuario interactúa con frontend  
+2. Cliente envía petición HTTP  
+3. Servidor procesa la solicitud  
+4. Se consulta la base de datos  
+5. Servidor responde en JSON  
+6. Frontend actualiza la interfaz  
+
+# SOPORTE TÉCNICO
+
+## Tecnologías y Versiones
+
+| Capa              | Tecnología            | Versión | Justificación |
+|-------------------|---------------------|--------|--------------|
+| Frontend          | React.js            | 18.x   | Interfaces dinámicas |
+| Estado Global     | Redux Toolkit       | 2.x    | Control del estado |
+| Estilos           | Tailwind CSS        | 3.x    | Diseño rápido |
+| Backend           | Node.js             | 20.x   | Alto rendimiento |
+| API Framework     | Express.js          | 4.x    | Ligero |
+| Base de Datos     | MongoDB             | 7.x    | Escalable |
+| ODM               | Mongoose            | 8.x    | Validación |
+| Autenticación     | JWT                 | 9.x    | Seguridad |
+| Encriptación      | bcrypt              | 5.x    | Protección |
+| Contenedores      | Docker              | 24.x   | Portabilidad |
+| Control de código | Git + GitHub        | Última | Versionamiento |
 
 ## Seguridad en sistemas de información
 

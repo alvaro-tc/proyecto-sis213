@@ -104,7 +104,7 @@ La dependencia del cálculo mental y de anotaciones manuales para cobrar a los c
 
 ### Límites del Sistema
 
-El sistema de Punto de Venta (POS) web propuesto ha sido diseñado bajo un conjunto de restricciones técnicas y funcionales que delimitan su alcance en esta primera versión (MVP — *Minimum Viable Product*). Estos límites permiten enfocar el desarrollo en los requerimientos críticos del negocio, garantizando estabilidad, simplicidad y viabilidad en su implementación inicial.
+El sistema de Punto de Venta (POS) web propuesto ha sido diseñado bajo un conjunto de restricciones técnicas y funcionales que delimitan su alcance en esta primera versión (MVP — _Minimum Viable Product_). Estos límites permiten enfocar el desarrollo en los requerimientos críticos del negocio, garantizando estabilidad, simplicidad y viabilidad en su implementación inicial.
 
 Los principales límites del sistema son:
 
@@ -220,7 +220,7 @@ A continuación se presenta el diagrama de la arquitectura propuesta:
 
 \begin{diagrama}[H]
 \centering
-\includegraphics[width=0.85\linewidth]{assets/diagrama/arquitectura_mern.png}
+\includegraphics[width=0.85\linewidth]{assets/diagrama/arquitectura_mern.jpg}
 \caption{Diagrama de Arquitectura MERN de tres capas del Sistema POS}
 \label{diag:arquitectura_mern}
 \end{diagrama}
@@ -310,12 +310,14 @@ La arquitectura del sistema POS se basa en el modelo Cliente–Servidor, una de 
 ### Cliente
 
 El cliente representa la capa de presentación del sistema, encargada de interactuar directamente con el usuario final mediante una interfaz gráfica accesible desde el navegador. En este proyecto, el cliente será desarrollado utilizando React.js, permitiendo:
+
 - Renderizado dinámico de componentes (Virtual DOM).
 - Interacciones en tiempo real en el POS.
 - Manejo del estado global mediante Redux Toolkit.
 - Navegación sin recarga de página (SPA).
 
 Funciones principales:
+
 - Capturar datos de entrada (pedidos, login).
 - Mostrar información procesada.
 - Enviar solicitudes HTTP al servidor.
@@ -325,6 +327,7 @@ Funciones principales:
 El servidor constituye la capa de lógica de negocio.
 Tecnologías: Node.js; Express.js.
 Funciones principales:
+
 - Procesamiento de órdenes.
 - Validaciones y cálculos.
 - Ejecución de la lógica transaccional.
@@ -333,6 +336,7 @@ Funciones principales:
 
 La API permite la comunicación entre cliente y servidor mediante HTTP y JSON. Actúa como el puente documentado que estructura y transmite la información bidireccionalmente.
 Características:
+
 - Métodos estándar: GET, POST, PUT, DELETE.
 - Arquitectura RESTful.
 
@@ -341,6 +345,7 @@ Características:
 Repositorio central donde reposa la persistencia de las entidades. Es el componente responsable de almacenar los datos operacionales a largo plazo para asegurar la durabilidad y disponibilidad de la información de las ventas y el menú.
 
 ### Flujo del Sistema
+
 1. Usuario interactúa con frontend.
 2. Cliente envía petición HTTP a la API.
 3. Servidor procesa la solicitud y valida.
@@ -482,10 +487,10 @@ Se diseña bajo el paradigma documental (NoSQL) garantizando el aislamiento fina
 \rowcolor{headerblue} \bfseries \color{white} Campo (Documento JSON) & \bfseries \color{white} Tipo & \bfseries \color{white} Validaciones / Vínculos & \bfseries \color{white} Descripción \\ \hline
 \endhead
 \_id & ObjectId & Único (PK lógica) & Identificador nativo de MongoDB para la factura. \\ \hline
-usuario\_id & ObjectId & Ref: 'Usuario' & ID del cajero responsable de cobrar la orden. \\ \hline
-mesa\_asignada & String/Int & Requerido & Mesa física vinculada al pedido. \\ \hline
+usuario_id & ObjectId & Ref: 'Usuario' & ID del cajero responsable de cobrar la orden. \\ \hline
+mesa_asignada & String/Int & Requerido & Mesa física vinculada al pedido. \\ \hline
 cartItems & Array & Contiene Objetos & Arreglo desnormalizado con los productos, cantidades y precios exactos en el momento de venta. \\ \hline
-total\_pagado & Number & Mínimo 0 & Monto económico final calculado y liquidado. \\ \hline
+total_pagado & Number & Mínimo 0 & Monto económico final calculado y liquidado. \\ \hline
 \caption{Diccionario para colección de Órdenes (Base de Datos)}
 \label{tab:diccionario_bd}
 \end{longtable}

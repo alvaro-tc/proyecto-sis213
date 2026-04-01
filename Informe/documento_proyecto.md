@@ -14,6 +14,8 @@ En este marco, el presente proyecto propone el desarrollo de un Sistema de Infor
 
 El objeto de estudio del presente proyecto es una cafetería de tamaño mediano en la ciudad de La Paz, Bolivia, que actualmente opera sus procesos de atención y venta de manera completamente manual. Este escenario, lejos de ser un caso aislado, refleja la realidad predominante en el sector gastronómico local, donde la adopción de tecnologías de gestión sigue siendo incipiente.
 
+![Ejemplo de problemas en las cafeterias](assets/images/cafeteria.png){#fig:ejemplo_cafeteria width=65%}
+
 En su estado actual, el flujo operativo de la cafetería depende íntegramente de la intervención humana no sistematizada: los pedidos de los clientes son anotados a mano por el personal en libretas o talonarios de papel, la comunicación entre el área de atención y la barra de preparación se realiza de forma verbal o mediante la entrega física de las comandas, y el proceso de cobro se ejecuta mediante cálculos mentales o con el apoyo de calculadoras de escritorio. Al cierre de cada jornada, el arqueo de caja se realiza de forma manual, contrastando el efectivo físico con las anotaciones del día, un proceso propenso a errores y discrepancias.
 
 Esta situación genera un conjunto de problemas operativos concretos y recurrentes que afectan tanto la eficiencia del servicio como la salud financiera del negocio:
@@ -22,8 +24,6 @@ Esta situación genera un conjunto de problemas operativos concretos y recurrent
 - **Ausencia de control y auditoría de usuarios:** Al no existir un sistema de registro, resulta imposible determinar qué miembro del personal procesó, modificó o anuló una orden, eliminando cualquier posibilidad de rendición de cuentas.
 - **Descuadres de caja recurrentes:** El cobro basado en cálculo mental o en calculadoras simples, sin un sistema que valide automáticamente los totales, genera discrepancias diarias entre los ingresos registrados y el efectivo real.
 - **Nula trazabilidad histórica:** La ausencia de una base de datos implica que no existe ningún registro histórico de ventas. La gerencia no puede conocer cuáles son los productos más vendidos, los picos de demanda por hora o los ingresos acumulados por período, privándose de información crítica para la toma de decisiones estratégicas.
-
-![Problemas en una cafeteria](assets/images/cafeteria.png){#fig:ejemplo_cafeteria width=65%}
 
 ### Referencias técnicas de otros sistemas TPS
 
@@ -106,7 +106,7 @@ La dependencia del cálculo mental y de anotaciones manuales para cobrar a los c
 
 ### Límites del Sistema
 
-El sistema de Punto de Venta (POS) web propuesto ha sido diseñado bajo un conjunto de restricciones técnicas y funcionales que delimitan su alcance en esta primera versión (MVP — _Minimum Viable Product_). Estos límites permiten enfocar el desarrollo en los requerimientos críticos del negocio, garantizando estabilidad, simplicidad y viabilidad en su implementación inicial.
+El sistema de Punto de Venta (POS) web propuesto ha sido diseñado bajo un conjunto de restricciones técnicas y funcionales que delimitan su alcance en esta primera versión (MVP — *Minimum Viable Product*). Estos límites permiten enfocar el desarrollo en los requerimientos críticos del negocio, garantizando estabilidad, simplicidad y viabilidad en su implementación inicial.
 
 Los principales límites del sistema son:
 
@@ -222,7 +222,7 @@ A continuación se presenta el diagrama de la arquitectura propuesta:
 
 \begin{diagrama}[H]
 \centering
-\includegraphics[width=0.85\linewidth]{assets/diagrama/arquitectura_mern.jpg}
+\includegraphics[width=0.85\linewidth]{assets/diagrama/arquitectura_mern.png}
 \caption{Diagrama de Arquitectura MERN de tres capas del Sistema POS}
 \label{diag:arquitectura_mern}
 \end{diagrama}
@@ -312,14 +312,12 @@ La arquitectura del sistema POS se basa en el modelo Cliente–Servidor, una de 
 ### Cliente
 
 El cliente representa la capa de presentación del sistema, encargada de interactuar directamente con el usuario final mediante una interfaz gráfica accesible desde el navegador. En este proyecto, el cliente será desarrollado utilizando React.js, permitiendo:
-
 - Renderizado dinámico de componentes (Virtual DOM).
 - Interacciones en tiempo real en el POS.
 - Manejo del estado global mediante Redux Toolkit.
 - Navegación sin recarga de página (SPA).
 
 Funciones principales:
-
 - Capturar datos de entrada (pedidos, login).
 - Mostrar información procesada.
 - Enviar solicitudes HTTP al servidor.
@@ -329,7 +327,6 @@ Funciones principales:
 El servidor constituye la capa de lógica de negocio.
 Tecnologías: Node.js; Express.js.
 Funciones principales:
-
 - Procesamiento de órdenes.
 - Validaciones y cálculos.
 - Ejecución de la lógica transaccional.
@@ -338,7 +335,6 @@ Funciones principales:
 
 La API permite la comunicación entre cliente y servidor mediante HTTP y JSON. Actúa como el puente documentado que estructura y transmite la información bidireccionalmente.
 Características:
-
 - Métodos estándar: GET, POST, PUT, DELETE.
 - Arquitectura RESTful.
 
@@ -347,7 +343,6 @@ Características:
 Repositorio central donde reposa la persistencia de las entidades. Es el componente responsable de almacenar los datos operacionales a largo plazo para asegurar la durabilidad y disponibilidad de la información de las ventas y el menú.
 
 ### Flujo del Sistema
-
 1. Usuario interactúa con frontend.
 2. Cliente envía petición HTTP a la API.
 3. Servidor procesa la solicitud y valida.
@@ -419,160 +414,3 @@ Es un marco de trabajo ágil para el desarrollo, entrega y mantenimiento de prod
 - **Daily Scrum (Reunión diaria):** Reunión breve de sincronización del equipo de desarrollo para evaluar el progreso y exponer bloqueos u obstáculos.
 - **Sprint Review (Revisión):** Demostración del _software_ funcional al _Product Owner_ y partes interesadas al finalizar el _Sprint_ para recoger impresiones.
 - **Sprint Retrospective (Retrospectiva):** Espacio de mejora continua donde el equipo reflexiona sobre sus propios procesos de trabajo de cara a la siguiente iteración.
-<<<<<<< HEAD
-
----
-
-# MARCO PRÁCTICO — DESARROLLO DEL SISTEMA TPS
-
-## Análisis del sistema
-
-En base a la recopilación de datos, la estructura organizacional del sistema de la cafetería identifica actores con responsabilidades asimétricas: Administradores, enfocados en la gobernanza del catálogo y métricas; y Cajeros, cuyo objetivo es el alto rendimiento en el registro y cobro de pedidos. El flujo exige digitalizar cada interacción, desde la selección del producto táctil hasta su asignación a la mesa y el cobro final.
-
-![Ejemplo de prueba en el análisis del sistema](assets/images/ejemplo.png){#fig:ejemplo_analisis width=65%}
-
-## Determinación de requerimientos
-
-### Requerimientos funcionales
-
-Los requerimientos funcionales expresan lo que el sistema **debe hacer** operativamente.
-
-- **RF01:** El sistema permitirá autenticar de forma segura a cajeros y administradores.
-- **RF02:** El sistema proporcionará una interfaz de POS para la selección ágil de productos del menú por categoría.
-- **RF03:** El sistema permitirá asignar obligatoriamente un número de "Mesa" a cada carrito de compra.
-- **RF04:** El sistema calculará automáticamente subtotales, impuestos y totales conforme se añaden o restan productos.
-- **RF05:** El sistema permitirá a los administradores gestionar colecciones maestras (Productos, Categorías, Usuarios).
-- **RF06:** El sistema generará e imprimirá comprobantes (tickets) al concretar el cobro.
-
-### Requerimientos no funcionales
-
-Establecen las restricciones y la forma en cómo debe operar y comportarse estructuralmente la aplicación.
-
-- **Seguridad:** Encriptación de contraseñas usando algoritmos seguros (_bcrypt_) y protección de rutas con JWT.
-- **Rendimiento:** Tiempos de procesamiento del carrito y confirmación de pago menores a 1 segundo para no detener la fila.
-- **Usabilidad:** Interfaz basada en principios POS: botones amplios e interacciones con mínimos clics.
-- **Escalabilidad:** Separación modular estricta entre _Frontend_ (React) y _Backend_ (Node.js).
-
-## Modelado del sistema
-
-### Historias de Usuario
-
-Se definen detallando la necesidad y la regla de aceptación comercial:
-
-- _Como_ administrador de la cafetería, _quiero_ gestionar los productos y sus precios _para_ mantener el menú actualizado.
-- _Como_ cajero en turno, _quiero_ agregar bebidas al ticket y asignarlo a una mesa mediante la pantalla _para_ atender ágilmente a los clientes y evitar confusiones en sala.
-
-### Diagramas UML
-
-A continuación se muestra un ejemplo genérico de la estructura de un diagrama, en este caso, se deben incrustar aquí los diagramas correspondientes: Diagramas de Casos de Uso, Clases/Esquemas NoSQL, y Actividades.
-
-\begin{diagrama}[H]
-\centering
-\includegraphics[width=0.65\linewidth]{assets/diagrama/diagrama.png}
-\caption{Ejemplo general de Diagrama Estructural UML}
-\label{diag:ejemplo_diagrama}
-\end{diagrama}
-
-## Diseño del sistema
-
-### Arquitectura del sistema
-
-**Modelo: Arquitectura Web Cliente-Servidor (Pila MERN)**
-El sistema se dividirá lógicamente en una aplicación cliente _Single Page Application_ (React) interactuando asíncronamente con un servidor _backend_ (Node.js/Express) que expondrá puntos de enlace (_endpoints_) REST y conectará con el motor de base de datos.
-
-## Diseño de la Base de Datos
-
-Se diseña bajo el paradigma documental (NoSQL) garantizando el aislamiento financiero. Las restricciones en el esquema aseguran que una "Orden" sea indivisible e incorpore el carrito completo para inmutabilidad histórica.
-
-\begingroup\small
-\begin{longtable}{|p{3.5cm}|p{1.5cm}|p{3.2cm}|p{5.5cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} Campo (Documento JSON) & \bfseries \color{white} Tipo & \bfseries \color{white} Validaciones / Vínculos & \bfseries \color{white} Descripción \\ \hline
-\endhead
-\_id & ObjectId & Único (PK lógica) & Identificador nativo de MongoDB para la factura. \\ \hline
-usuario_id & ObjectId & Ref: 'Usuario' & ID del cajero responsable de cobrar la orden. \\ \hline
-mesa_asignada & String/Int & Requerido & Mesa física vinculada al pedido. \\ \hline
-cartItems & Array & Contiene Objetos & Arreglo desnormalizado con los productos, cantidades y precios exactos en el momento de venta. \\ \hline
-total_pagado & Number & Mínimo 0 & Monto económico final calculado y liquidado. \\ \hline
-\caption{Diccionario para colección de Órdenes (Base de Datos)}
-\label{tab:diccionario_bd}
-\end{longtable}
-\endgroup
-
-## IMPLEMENTACIÓN DE LOS MÓDULOS DEL SISTEMA
-
-### Módulo de Catálogo, Menú y Mesas
-
-Módulo fundamental para configurar el entorno de la cafetería.
-
-- **Gestión de colecciones:** Interfaces CRUD para ingresar categorías, ítems del menú con sus precios, y la estructura de las mesas del local.
-- **Estados de visualización:** Activación y desactivación de productos agotados sin borrarlos de la base de datos.
-
-### Módulo de Usuarios y Roles
-
-La barrera de seguridad criptográfica del sistema TPS.
-
-- **Filtro Criptográfico:** Validaciones de contraseña cruzadas con _bcrypt_ en el inicio de sesión.
-- **Control de acceso (RBAC):** El _frontend_ renderizará la "Terminal POS" para los cajeros y bloqueará las pestañas de "Administración", regla que es respaldada por los _middlewares_ de validación de _tokens_ JWT en el servidor.
-
-### Módulo de Transacciones (El Punto de Venta)
-
-Núcleo central del objeto TPS, diseñado para alta velocidad operativa.
-
-- **Interfaz de Venta:** Pantalla con cuadrícula de productos a la izquierda y el carrito reactivo a la derecha.
-- **Motor Matemático:** Sumatorias dinámicas (Redux) inyectables a la API para certificar la venta atómica.
-- **Cobro y Cierre:** Ventana modal que captura el método de pago, asigna la mesa, y consolida irrevocablemente el documento JSON en MongoDB, disparando la generación del ticket.
-
-### Módulo de Reportes
-
-Módulo analítico que destila la información transaccional operativa del local.
-
-- Extracción de ingresos consolidados mediante consultas de agregación (_Aggregations_) en MongoDB.
-- Filtros por usuario y fechas para realizar el cierre y arqueo de caja exacto al final del turno.
-
-## Capa Backend Funcional
-
-El _backend_ es el cerebro transaccional aislado de la interfaz gráfica, diseñado bajo principios REST:
-
-- **Controladores (_Controllers_):** Capturan las peticiones HTTP (req, res).
-- **Modelos/Esquemas (_Mongoose Models_):** Representación estricta de la estructura de los documentos en la base de datos (Ej. `BillSchema`, `ItemSchema`).
-- **Capa de Seguridad (_Middlewares_):** Componentes (como `verifyToken`) que inspeccionan las cabeceras HTTP antes de conceder cualquier inserción a la base de datos.
-- **Lógica Transaccional:** Uso de sesiones para asegurar que el guardado de la factura y la limpieza de la mesa se ejecuten como una transacción ACID única.
-
-## Validación y pruebas del sistema
-
-El sistema asegura la calidad del producto final a través de distintas evaluaciones:
-
-- **Pruebas de Estrés Unitarias:** Validar que el servidor sume grandes carritos de compra sin errores de formato decimal.
-- **Pruebas funcionales de reversión:** Simular el error de la red justo en el momento de procesar un pago para verificar que la transacción se deshaga (_Rollback_) correctamente.
-- **Pruebas de aceptación:** Pruebas finales en la caja registradora física para certificar la fluidez del _software_.
-
-## Desarrollo del prototipo funcional
-
-A lo largo de los _sprints_ se generan prototipos incrementales exponiendo sus interfaces interactivas reflejando el caso de éxito: desde el _login_ del cajero, armado de la orden, selección de mesa, hasta el cobro. _(Incluir evidencias y capturas de pantalla reales aquí)_.
-
-## Documentación de Ingeniería Completa
-
-Se acompañan los anexos técnicos:
-
-- **Documentación funcional:** Relevamiento documentado de requerimientos e historias de usuario de la cafetería.
-- **Documentación técnica:** Modelo arquitectónico, diseño de esquemas BSON (Colecciones) y documentación de _endpoints_ (API REST).
-- **Documentación del sistema:** Manual de usuario, variables de entorno y directrices de despliegue.
-
----
-
-# CONCLUSIONES Y RECOMENDACIONES
-
-## Conclusiones
-
-- Tras el proceso de desarrollo, se implementó satisfactoriamente el Sistema de Punto de Venta (POS) Web basado en el enfoque TPS para la cafetería, abordando con éxito el reemplazo de comandas manuales por un entorno digital unificado.
-- La adopción de la pila MERN (MongoDB, Express, React, Node.js) y el diseño de persistencia orientada a documentos demostraron ser ideales para optimizar la velocidad de escritura del carrito de compras y garantizar la inmutabilidad de los reportes históricos.
-- La seguridad del sistema fue robustecida a través del esquema de autenticación JWT y encriptación de credenciales, consolidando un TPS que erradica los descuadres de caja y facilita la gestión de mesas y auditorías administrativas.
-
-## Recomendaciones
-
-- **Mejoras futuras y Escalabilidad:** Es recomendable planificar la ampliación del módulo transaccional para descontar automáticamente ingredientes de un inventario maestro (ej. gramos de café, litros de leche) cada vez que se cobre un producto.
-- **Seguridad y Mantenimiento:** Monitorear activamente los registros del servidor, rotar periódicamente la clave secreta de firmado de los _tokens_ JWT y actualizar las dependencias de Node.js para prevenir vulnerabilidades.
-- **Migración a la Nube:** Aprovechando la naturaleza NoSQL de MongoDB, se recomienda a futuro desplegar la base de datos en clústeres administrados (como MongoDB Atlas) para asegurar redundancia, _backups_ automáticos y la posibilidad de conectar múltiples sucursales de la cafetería.
-=======
->>>>>>> 815a7ee (Quitado secciones 3 y 4)

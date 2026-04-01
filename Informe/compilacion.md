@@ -51,6 +51,7 @@ header-includes: |
   \renewcommand*{\footrulewidth}{0pt}
   \fancypagestyle{plain}{
     \fancyhf{}
+    \fancyfoot[R]{\thepage}
   }
 ---
 

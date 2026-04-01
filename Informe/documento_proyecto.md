@@ -1,46 +1,3 @@
-<div align="center">
-
-# UNIVERSIDAD CATÓLICA BOLIVIANA "SAN PABLO"  
-## CARRERA DE INGENIERÍA DE SISTEMAS  
-
-<br>
-
-# SISTEMA DE INFORMACIÓN ORGANIZACIONAL  
-## BASADO EN TPS PARA UNA CAFETERÍA  
-
-<br>
-
-## PROYECTO DE DESARROLLO DE SOFTWARE  
-
-<br><br>
-
-### **INTEGRANTES**
-
-Torrez Calle Álvaro Ariel  
-Maldonado Carvajal Alan Ariel  
-Claros Suntura Juan José  
-Lecona Condori Elías Milán  
-
-<br>
-
-### **DOCENTE**
-
- Ing. Miguel Ángel Pacheco Arteaga
-
-
-<br>
-
-### **MATERIA**
-
-Sistemas de Información I  
-
-<br><br><br>
-
-### LA PAZ – BOLIVIA  
-### 2026  
-
-</div>
-
 # MARCO REFERENCIAL DEL SISTEMA TPS
 
 ## Introducción
@@ -151,27 +108,26 @@ El sistema de Punto de Venta (POS) web propuesto ha sido diseñado bajo un conju
 
 Los principales límites del sistema son:
 
-- **Plataforma exclusivamente web:**  
+- **Plataforma exclusivamente web:**  
   El sistema será accesible únicamente a través de navegadores web modernos, descartando el desarrollo de aplicaciones móviles nativas (Android/iOS) en esta etapa.
 
-- **Dependencia de conectividad local o a internet:**  
+- **Dependencia de conectividad local o a internet:**  
   El sistema requiere conexión a red (LAN o Internet) para operar, ya que la lógica de negocio y la base de datos residen en el servidor. No se contempla un modo offline.
 
-- **Base de datos NoSQL (MongoDB):**  
+- **Base de datos NoSQL (MongoDB):**  
   Se utilizará una base de datos documental orientada a rendimiento transaccional, sin implementación de motores relacionales tradicionales (SQL).
 
-- **Sistema cerrado de autenticación:**  
+- **Sistema cerrado de autenticación:**  
   No se integrarán servicios externos de autenticación como Google, Facebook o proveedores OAuth. El acceso será exclusivamente mediante credenciales internas.
 
-- **Pagos simulados (sin integración bancaria real):**  
+- **Pagos simulados (sin integración bancaria real):**  
   En esta versión, los métodos de pago (efectivo, tarjeta) serán registrados de forma lógica sin conexión a pasarelas de pago reales.
 
-- **Sin gestión avanzada de inventario:**  
+- **Sin gestión avanzada de inventario:**  
   El sistema no descontará automáticamente insumos (ej. gramos de café, leche), limitándose al control de productos finales.
 
-- **Monosucursal:**  
+- **Monosucursal:**  
   El sistema estará diseñado para una única cafetería, sin soporte inicial para múltiples sucursales.
-
 
 ### Alcances del Sistema
 
@@ -260,28 +216,6 @@ Como Ingeniero de Requerimientos y Datos, el análisis preliminar dictamina que 
 - **Sistema:** Sistema de Punto de Venta (POS) Web enfocado en TPS.
 - **Arquitectura:** Patrón Cliente — Servidor con separación de responsabilidades API REST y arquitectura de tres capas (presentación, lógica de negocio y datos) siguiendo el patrón MVC (Modelo-Vista-Controlador).
 
-**Tecnologías seleccionadas (Pila MERN):**
-
-\begingroup\small
-\begin{longtable}{|p{2.2cm}|p{3.2cm}|p{8.5cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} Capa & \bfseries \color{white} Tecnología & \bfseries \color{white} Justificación \\ \hline
-\endhead
-\textbf{Frontend} & React.js 18 & Biblioteca declarativa con re-renderizado eficiente (Virtual DOM), ideal para interfaces POS reactivas en tiempo real. \\ \hline
-\textbf{Estilos} & Tailwind CSS & Framework \emph{utility-first} que agiliza el diseño de interfaces responsivas y táctiles. \\ \hline
-\textbf{Estado global} & Redux Toolkit & Manejo centralizado del estado (carrito de pedidos, sesión de usuario, estado de mesas). \\ \hline
-\textbf{\emph{Backend}} & Node.js + Express.js & Entorno no bloqueante basado en eventos, eficiente para múltiples peticiones concurrentes. \\ \hline
-\textbf{Base de datos} & MongoDB + Mongoose & Base de datos NoSQL documental, flexible para catálogos dinámicos y estructuras de órdenes variables. \\ \hline
-\textbf{Autenticación} & JWT & Autenticación \emph{stateless} y segura, compatible con arquitecturas RESTful y control de roles por \emph{middleware}. \\ \hline
-\textbf{Facturación} & PDFKit / jsPDF & Generación programática de recibos y facturas en PDF desde el servidor Node.js. \\ \hline
-\textbf{Contenedores} & Docker + Docker Compose & Estandarización del entorno de ejecución entre máquinas del equipo. \\ \hline
-\textbf{Despliegue} & AWS EC2 / DigitalOcean & Infraestructura \emph{cloud} confiable con alta disponibilidad y escalado bajo demanda. \\ \hline
-\textbf{Control de versiones} & Git + GitHub & Gestión del código fuente con ramas por \emph{feature}, facilitando el trabajo paralelo del equipo. \\ \hline
-\caption{Tecnologías seleccionadas (Pila MERN)}
-\label{tab:tecnologias_mern}
-\end{longtable}
-\endgroup
-
 A continuación se presenta el diagrama de la arquitectura propuesta:
 
 \begin{diagrama}[H]
@@ -325,7 +259,7 @@ Un Sistema de Información Organizacional (SIO) es un conjunto integrado de comp
 
 En términos más precisos, un SIO transforma datos crudos (ej. el registro de una venta) en información significativa y estructurada (ej. un reporte de ingresos diarios), que a su vez se convierte en conocimiento útil para la gestión (ej. la identificación del turno de mayor rentabilidad). Este proceso de transformación es el núcleo del valor que aportan los SIO a las organizaciones modernas.
 
-### Componentes y Tipos
+### Componentes
 
 Todo Sistema de Información Organizacional se articula en torno a seis componentes fundamentales que trabajan de forma interdependiente:
 
@@ -336,17 +270,17 @@ Todo Sistema de Información Organizacional se articula en torno a seis componen
 - **Procedimientos:** Los protocolos y flujos de trabajo que definen cómo deben interactuar los usuarios con el sistema (ej. el proceso de apertura de turno, la toma de una orden, el cierre de caja).
 - **Recursos humanos:** Los actores que operan el sistema. En el proyecto, esto comprende al Administrador y al Cajero, cada uno con roles y permisos claramente delimitados.
 
+### Tipos de sistemas
+
 Desde una perspectiva funcional, los SIO se clasifican en distintos tipos según el nivel organizacional al que sirven. Los **Sistemas de Procesamiento de Transacciones (TPS)** operan en el nivel operativo, capturando y procesando las transacciones cotidianas del negocio. Los **Sistemas de Información Gerencial (MIS)** consolidan la información del TPS para generar reportes estructurados destinados a la gerencia media. Los **Sistemas de Soporte a Decisiones (DSS)** asisten en la toma de decisiones complejas mediante análisis de datos y modelos. Los **Sistemas de Información Ejecutiva (EIS)** proveen información estratégica de alto nivel a los directivos. El presente proyecto se enfoca en la implementación de un TPS, que actúa como la base de toda esta pirámide informacional.
-
-### Importancia en organizaciones del sector gastronómico
-
-En establecimientos de servicio de alimentos y bebidas, los SIO basados en TPS son particularmente críticos debido al alto volumen de transacciones de bajo valor unitario que se procesan en intervalos de tiempo muy cortos. La velocidad, exactitud y trazabilidad de cada transacción impactan directamente en la experiencia del cliente, en el control de ingresos y en la capacidad de la gerencia para gestionar el negocio de manera sostenible. La implementación de un TPS en este contexto no es un lujo tecnológico, sino una condición de competitividad operativa.
 
 ## Sistema de Procesamiento de Transacciones (TPS)
 
+### Definición
+
 Un Sistema de Procesamiento de Transacciones es un tipo especializado de SIO diseñado para capturar, procesar, validar y almacenar las transacciones operativas de una organización de forma inmediata, confiable y a gran escala (O'Brien & Marakas, 2011). En el contexto del negocio, una **transacción** se define como cualquier evento discreto que modifica el estado de los datos del sistema y que debe quedar registrado de forma permanente e inalterable: el registro de una venta, la creación de una orden, el cobro de una cuenta o la modificación del catálogo de productos.
 
-### Características principales
+### Características
 
 Los TPS se distinguen de otros tipos de sistemas de información por un conjunto de atributos técnicos y funcionales que los hacen aptos para el procesamiento operativo de alto volumen:
 
@@ -354,14 +288,13 @@ Los TPS se distinguen de otros tipos de sistemas de información por un conjunto
 - **Alta confiabilidad y disponibilidad:** Un TPS para un punto de venta debe estar disponible durante todo el horario operativo del negocio. La indisponibilidad del sistema implica la parálisis del servicio al cliente.
 - **Integridad transaccional (propiedades ACID):** Toda transacción en un TPS debe cumplir las propiedades de Atomicidad (la transacción se ejecuta completa o no se ejecuta), Consistencia (el sistema pasa de un estado válido a otro estado válido), Aislamiento (las transacciones concurrentes no interfieren entre sí) y Durabilidad (una transacción confirmada persiste incluso ante fallos del sistema).
 - **Manejo de alto volumen de datos estandarizados:** Los TPS están optimizados para procesar grandes cantidades de transacciones simples y repetitivas de forma eficiente, a diferencia de los sistemas analíticos que trabajan con consultas complejas sobre datos históricos.
-- **Generación de documentos y comprobantes:** Una función esencial del TPS es la emisión automática de comprobantes (tickets, facturas, recibos) que documentan cada transacción para el cliente y para los registros contables del negocio.
 
-### Funciones del TPS en el sistema POS de la cafetería
+### Funciones
 
 En el contexto específico del presente proyecto, el TPS ejecuta el siguiente ciclo funcional para cada transacción de venta:
 
 1. **Captura de datos de origen:** El cajero construye la orden seleccionando productos del catálogo digital y asignándola a una mesa, introduciendo los datos de la transacción en el sistema mediante la interfaz POS de React.js.
-2. **Validación y verificación:** El _backend_ (Node.js/Express.js) verifica que el usuario tenga los permisos necesarios (validación JWT), que los productos existan en el catálogo activo y que la mesa esté disponible.
+2. **Validación y verificación:** El _backend_ (Node.js/Express.js) verifica que el usuario tenga los permisos necesarios (validación JWT), que losítulos existan en el catálogo activo y que la mesa esté disponible.
 3. **Procesamiento matemático:** El motor transaccional calcula automáticamente los subtotales por ítem, aplica los impuestos correspondientes y determina el total a cobrar, eliminando el margen de error del cálculo manual.
 4. **Actualización de la base de datos:** La transacción se escribe de forma atómica en MongoDB, vinculando el documento de la orden con el cajero responsable, la mesa asignada y los ítems del carrito con sus precios exactos en ese instante.
 5. **Emisión del comprobante:** El sistema genera el ticket o factura en formato PDF, disponible para impresión inmediata, y actualiza el estado de la mesa a "disponible".
@@ -370,136 +303,115 @@ En el contexto específico del presente proyecto, el TPS ejecuta el siguiente ci
 
 Los TPS han recorrido un largo camino desde las terminales monolíticas de los años setenta. La adopción de arquitecturas web modernas —como la empleada en este proyecto— representa la fase más reciente de esta evolución, caracterizada por tres ventajas fundamentales: **ubicuidad** (el sistema es accesible desde cualquier dispositivo con navegador web en la red local del negocio), **centralización** (todos los datos residen en un único repositorio en la nube, eliminando la dispersión de información), y **escalabilidad** (la arquitectura basada en microservicios y contenedores Docker permite escalar el sistema horizontalmente para absorber incrementos en la carga de trabajo sin rediseñar la arquitectura base).
 
-### Arquitectura de Sistemas Web
+## Arquitectura de sistemas web
 
 La arquitectura del sistema POS se basa en el modelo Cliente–Servidor, una de las estructuras más utilizadas en aplicaciones web modernas por su capacidad de separación de responsabilidades, escalabilidad y mantenimiento.
 
-### Cliente (Frontend)
+### Cliente
 
-El cliente representa la capa de presentación del sistema, encargada de interactuar directamente con el usuario final mediante una interfaz gráfica accesible desde el navegador.
-En este proyecto, el cliente será desarrollado utilizando React.js, permitiendo:
+El cliente representa la capa de presentación del sistema, encargada de interactuar directamente con el usuario final mediante una interfaz gráfica accesible desde el navegador. En este proyecto, el cliente será desarrollado utilizando React.js, permitiendo:
 - Renderizado dinámico de componentes (Virtual DOM).
 - Interacciones en tiempo real en el POS.
 - Manejo del estado global mediante Redux Toolkit.
 - Navegación sin recarga de página (SPA).
-Funciones:
+
+Funciones principales:
 - Capturar datos de entrada (pedidos, login).
 - Mostrar información procesada.
 - Enviar solicitudes HTTP al servidor.
 
-### Servidor (Backend)
+### Servidor
 
 El servidor constituye la capa de lógica de negocio.
-Tecnologías: Node.js; Express.js
-Funciones:
-
-- Autenticación con JWT.
+Tecnologías: Node.js; Express.js.
+Funciones principales:
 - Procesamiento de órdenes.
-- Validaciones.
-- Persistencia en base de datos.
+- Validaciones y cálculos.
+- Ejecución de la lógica transaccional.
 
 ### API
 
-La API permite la comunicación entre cliente y servidor mediante HTTP y JSON.
+La API permite la comunicación entre cliente y servidor mediante HTTP y JSON. Actúa como el puente documentado que estructura y transmite la información bidireccionalmente.
 Características:
-- Métodos: GET, POST, PUT, DELETE
-- Arquitectura RESTful
-- Seguridad con JWT
+- Métodos estándar: GET, POST, PUT, DELETE.
+- Arquitectura RESTful.
+
+### Base de datos
+
+Repositorio central donde reposa la persistencia de las entidades. Es el componente responsable de almacenar los datos operacionales a largo plazo para asegurar la durabilidad y disponibilidad de la información de las ventas y el menú.
 
 ### Flujo del Sistema
-1. Usuario interactúa con frontend  
-2. Cliente envía petición HTTP  
-3. Servidor procesa la solicitud  
-4. Se consulta la base de datos  
-5. Servidor responde en JSON  
-6. Frontend actualiza la interfaz  
-
-# SOPORTE TÉCNICO
-
-## Tecnologías y Versiones
-
-| Capa              | Tecnología            | Versión | Justificación |
-|-------------------|---------------------|--------|--------------|
-| Frontend          | React.js            | 18.x   | Interfaces dinámicas |
-| Estado Global     | Redux Toolkit       | 2.x    | Control del estado |
-| Estilos           | Tailwind CSS        | 3.x    | Diseño rápido |
-| Backend           | Node.js             | 20.x   | Alto rendimiento |
-| API Framework     | Express.js          | 4.x    | Ligero |
-| Base de Datos     | MongoDB             | 7.x    | Escalable |
-| ODM               | Mongoose            | 8.x    | Validación |
-| Autenticación     | JWT                 | 9.x    | Seguridad |
-| Encriptación      | bcrypt              | 5.x    | Protección |
-| Contenedores      | Docker              | 24.x   | Portabilidad |
-| Control de código | Git + GitHub        | Última | Versionamiento |
+1. Usuario interactúa con frontend.
+2. Cliente envía petición HTTP a la API.
+3. Servidor procesa la solicitud y valida.
+4. Se consulta o impacta la base de datos.
+5. Servidor responde en JSON.
+6. Frontend actualiza la interfaz.
 
 ## Seguridad en sistemas de información
 
 Como modelador y encargado de la seguridad arquitectónica, se establece que un sistema de ventas (POS) debe proteger de forma absoluta sus _endpoints_ (rutas de API) y la persistencia de datos.
 
-- **Autenticación mediante JWT:** Se descartan las sesiones tradicionales. El sistema implementa JSON Web Tokens (JWT). Tras validar credenciales (contraseñas previamente procesadas con funciones criptográficas unidireccionales de _hash_, como _bcrypt_), el _backend_ emite un token firmado. Este token viaja en las cabeceras HTTP de cada petición del cliente, garantizando que el usuario es quien dice ser sin consultar la base de datos reiteradamente.
-- **Roles y Autorización:** El modelo de datos incluye una propiedad rígida de "Rol" (ej. Administrador, Cajero). La autorización se ejecuta mediante _Middlewares_ (bloques de código intermedios en el _backend_) que desencriptan el _payload_ del token y rechazan con un error 403 (Prohibido) cualquier intento de un Cajero de acceder a las rutas de eliminación de usuarios o reportes gerenciales.
-- **Control de acceso:** Tanto a nivel de la interfaz (ocultando botones de configuración a cajeros) como a nivel de capa de datos, se aplican políticas estrictas para evitar inyecciones maliciosas o robo de sesiones, blindando el flujo desde que se presiona "Cobrar" hasta que la información reposa en el disco.
+### Autenticación
 
-## Base de datos
+Se descartan las sesiones tradicionales. El sistema implementa JSON Web Tokens (JWT). Tras validar credenciales (contraseñas previamente procesadas con funciones criptográficas unidireccionales de _hash_, como _bcrypt_), el _backend_ emite un token firmado. Este token viaja en las cabeceras HTTP de cada petición del cliente, garantizando que el usuario es quien dice ser sin consultar la base de datos reiteradamente.
 
-El diseño de la persistencia de datos constituye el corazón del sistema, siendo responsabilidad directa de la ingeniería de datos modelar la información de la cafetería para que sea escalable, rápida y matemáticamente exacta. Basado en la arquitectura MERN (MongoDB, Express, React, Node.js), se adopta un enfoque orientado a documentos que optimiza la velocidad transaccional en el Punto de Venta:
+### Autorización
 
-- **Modelo Documental (NoSQL) y Referencias Lógicas:** Al utilizar MongoDB, la base de datos abandona las tablas rígidas en favor de colecciones de documentos JSON (BSON). Sin embargo, los principios lógicos de integridad se mantienen ineludibles mediante el uso de esquemas de validación estrictos (como _Mongoose_). Las colecciones maestras se identifican y separan claramente: `Usuarios` (Personal operativo), `Categorías` (Clasificación del menú), `Productos` (Ítems de venta), `Mesas` (Gestión del espacio físico) y `Facturas/Órdenes` (_Bills_ - Registro de la transacción). Se definen referencias explícitas (a través de _ObjectIds_) entre ellas para establecer la cardinalidad (ej. una Orden está vinculada unívocamente a un Cajero y asignada a una Mesa específica).
-- **Desnormalización Controlada y Estructura del Carrito:** A diferencia de un modelo relacional tradicional, MongoDB aprovecha la desnormalización para mejorar el rendimiento de lectura. Por requerimientos de diseño de un POS, se realiza una desnormalización controlada en las `Órdenes`: al registrar una venta, no solo se guarda la referencia del producto, sino que se incrusta el arreglo completo del carrito (`cartItems`). El nombre de la bebida, sus modificadores (ej. tamaño, adiciones) y su **precio exacto en ese instante** se copian dentro del documento de la orden. Esto garantiza que la información histórica sea inmutable frente a futuros cambios de costos en el catálogo.
-- **Transacciones Multi-documento y Aislamiento (ACID):** En el entorno TPS, una transacción es indivisible. Registrar una venta en la cafetería implica una cadena de eventos: calcular totales, insertar el documento de la factura, asociar el método de pago y actualizar el estado de disponibilidad de la `Mesa`. El motor de MongoDB se configura utilizando _Sesiones de Transacción_ para garantizar las propiedades ACID (Atomicidad, Consistencia, Aislamiento, Durabilidad) a través de múltiples colecciones. Esto asegura que si ocurre un fallo de red o desconexión a la mitad del proceso de cobro, la base de datos ejecute un _Rollback_ (reversión completa), previniendo que existan "ventas a medias" o corrupciones en los arqueos de caja.
-
-## Metodología de desarrollo
-
-**_Scrum_**
-Es un marco de trabajo ágil para el desarrollo, entrega y mantenimiento de productos complejos, definido en la **_Scrum Guide_** (Schwaber & Sutherland). Se fundamenta en tres pilares empíricos: **transparencia** (todos los aspectos del proceso son visibles para los responsables), **inspección** (los artefactos y el progreso son revisados frecuentemente) y **adaptación** (el proceso se ajusta cuando se detectan desviaciones). Para el Sistema POS de Cafetería, Scrum es la elección metodológica óptima porque el cliente puede proporcionar retroalimentación rápida sobre cada incremento funcional, y los requerimientos pueden evolucionar durante el desarrollo.
+La autorización asegura que un usuario autenticado solo pueda realizar las acciones para las que está facultado. Se ejecuta verificando los niveles de privilegio incrustados y firmados criptográficamente en el token antes de responder a una petición.
 
 ### Roles
 
-**Product Owner — Torrez Calle Álvaro Ariel**
+El modelo de datos incluye una propiedad rígida de "Rol" (ej. Administrador, Cajero). Este mecanismo se implementa mediante _Middlewares_ (bloques de código intermedios en el _backend_) que desencriptan el _payload_ del token y rechazan con un error 403 (Prohibido) cualquier intento de un Cajero de acceder a las rutas de eliminación de usuarios o reportes gerenciales.
 
-El _Product Owner_ es el responsable de maximizar el valor del producto. Sus funciones concretas en este proyecto son: definir, ordenar y mantener el _Product Backlog_ (lista priorizada de funcionalidades); ser el punto de contacto único con el cliente (la cafetería); aceptar o rechazar los incrementos al final de cada _Sprint_; y garantizar que el equipo de desarrollo comprenda los ítems del _backlog_ al nivel necesario.
+### Control de acceso
 
-**Scrum Master — Maldonado Carvajal Alan Ariel**
+Tanto a nivel de la interfaz (ocultando botones de configuración a cajeros) como a nivel de capa de datos, se aplican políticas estrictas para evitar inyecciones maliciosas o robo de sesiones, blindando el flujo desde que se presiona "Cobrar" hasta que la información reposa en el disco.
 
-El _Scrum Master_ es el responsable de que el equipo comprenda y aplique correctamente Scrum. Sus funciones son: facilitar las ceremonias (_Planning_, _Daily_, _Review_, _Retrospective_); eliminar impedimentos que bloqueen al equipo de desarrollo; proteger al equipo de interrupciones externas durante el _Sprint_; y ayudar al _Product Owner_ a mantener un _backlog_ ordenado y comprensible.
+## Base de datos
 
-**Equipo de Desarrollo — Claros Suntura Juan José y Lecoña Condori Elías Milán**
+El diseño de la persistencia de datos constituye el corazón del sistema, siendo responsabilidad directa de la ingeniería de datos modelar la información de la cafetería para que sea escalable, rápida y matemáticamente exacta.
 
-El Equipo de Desarrollo es autoorganizado y multifuncional. Es responsable de convertir los ítems del _Product Backlog_ seleccionados en un incremento potencialmente entregable al final de cada _Sprint_. Sus funciones incluyen estimar el esfuerzo de las historias de usuario, codificar el _frontend_ y _backend_, y ejecutar pruebas de integración.
+### Modelo relacional
 
-### Artefactos
+Aunque tecnologías modernas como la pila MERN utilicen modelos NoSQL orientados a documentos para optimizar la velocidad transaccional, los principios lógicos relacionales son ineludibles en un TPS. Las entidades maestras se identifican y separan claramente: `Usuarios` (Personal), `Categorías` (Clasificación del menú), `Productos` (Ítems de venta) y `Facturas/Órdenes` (Registro de la transacción). Se definen llaves referenciales explícitas entre ellas para establecer cardinalidad (ej. un cajero realiza muchas ventas, una orden contiene múltiples productos).
 
-**_Product Backlog_** (Pila de producto): Lista única, ordenada y emergente de todo lo que se necesita en el producto, gestionada exclusivamente por el _Product Owner_. A continuación se presentan los ítems iniciales:
+### Integridad
 
-\begingroup\small
-\begin{longtable}{|p{1.2cm}|p{8cm}|p{1.8cm}|p{1.5cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Historia de Usuario & \bfseries \color{white} Prioridad & \bfseries \color{white} Puntos \\ \hline
-\endhead
-US-01 & \emph{Como} mesero, \emph{quiero} iniciar sesión con mis credenciales \emph{para} acceder solo a las funciones de mi rol. & Alta & 3 \\ \hline
-US-02 & \emph{Como} cajero, \emph{quiero} ver el panel de mesas y su estado actual \emph{para} saber cuáles están ocupadas. & Alta & 5 \\ \hline
-US-03 & \emph{Como} mesero, \emph{quiero} agregar productos al pedido de una mesa desde la interfaz POS táctil. & Alta & 8 \\ \hline
-US-04 & \emph{Como} administrador, \emph{quiero} registrar y editar los productos del menú con sus precios. & Alta & 5 \\ \hline
-US-05 & \emph{Como} cajero, \emph{quiero} generar e imprimir la factura de una orden cerrada en PDF. & Media & 8 \\ \hline
-US-06 & \emph{Como} administrador, \emph{quiero} ver el historial de ventas del día con totales por método de pago. & Media & 5 \\ \hline
-\caption{Product Backlog Inicial}
-\label{tab:product_backlog}
-\end{longtable}
-\endgroup
+Los principios lógicos de integridad se mantienen ineludibles mediante el uso de esquemas de validación estrictos (como _Mongoose_ en el caso de la pila seleccionada). Estos esquemas garantizan la exactitud de los tipos de datos ingresados y previenen la inserción de documentos huérfanos o con información financiera incompleta.
 
-**_Sprint Backlog_** (Pila del ciclo): Conjunto de ítems del _Product Backlog_ seleccionados para el _Sprint_ actual, más el plan del equipo para entregar el Incremento y lograr el _Sprint Goal_. Es propiedad del Equipo de Desarrollo y se actualiza diariamente mediante un tablero Kanban con columnas: **Por hacer → En progreso → En revisión → Hecho**.
+### Normalización
 
-**Incremento del Producto:** Suma de todos los ítems completados durante el _Sprint_ más el valor de los _Sprints_ anteriores. Debe cumplir la **Definición de Hecho (DoD)** acordada por el equipo, la cual establece que un ítem está "hecho" cuando el código está _commiteado_ en la rama correspondiente de GitHub, las pruebas funcionales han pasado, el código ha sido revisado por al menos otro miembro del equipo (_code review_) y la funcionalidad ha sido demostrada al _Product Owner_.
+Se aplican reglas de normalización para evitar anomalías; por ejemplo, la información del perfil del usuario o la descripción detallada de un producto no se repiten innecesariamente. Sin embargo, por requerimientos de diseño de un POS y para proteger la contabilidad, se realiza una desnormalización controlada en las `Órdenes`: al registrar una venta, el precio exacto actual del producto se copia de forma fija dentro de la orden. Esto garantiza que la información histórica sea inmutable frente a futuros cambios de precios en el catálogo.
 
-### Eventos
+### Transacciones
 
-**_Sprint Planning_ (Planificación del _Sprint_):** Se realiza al inicio de cada _Sprint_ (duración máxima: 4 horas). El equipo completo responde dos preguntas: ¿qué se puede entregar en este _Sprint_? (selección del _Sprint Backlog_) y ¿cómo se logrará ese trabajo? (descomposición en tareas técnicas). Al final se define el **_Sprint Goal_**: el objetivo en una frase que da coherencia a los ítems seleccionados.
+En el entorno TPS, una transacción es indivisible. Registrar una venta implica: calcular totales, insertar la orden, asociar el método de pago y actualizar la disponibilidad de la mesa. El motor de la base de datos se configura para garantizar atomicidad (Principios ACID), asegurando que si ocurre un fallo de red a la mitad del proceso, la base de datos ejecute un _Rollback_ (reversión completa de los pasos previos), previniendo que existan "ventas a medias" o corrupciones en los arqueos de caja.
 
-**_Daily Scrum_ (Scrum Diario):** Reunión de 15 minutos, todos los días, para el Equipo de Desarrollo. Cada integrante responde: ¿qué hice ayer que ayudó al _Sprint Goal_? ¿Qué haré hoy? ¿Hay algún impedimento? El _Scrum Master_ facilita y anota los impedimentos para resolverlos de inmediato.
+## Metodología de desarrollo
 
-**_Sprint Review_ (Revisión del _Sprint_):** Se realiza al final del _Sprint_ (duración máxima: 2 horas). El Equipo de Desarrollo demuestra el Incremento funcionando al _Product Owner_ y _stakeholders_. Se actualiza el _Product Backlog_ en función de la retroalimentación recibida.
+### Scrum
 
-**_Sprint Retrospective_ (Retrospectiva del _Sprint_):** Se realiza después de la _Sprint Review_ (duración máxima: 1.5 horas). El equipo reflexiona sobre el proceso: ¿qué salió bien? ¿qué se puede mejorar? ¿qué acciones concretas tomamos en el próximo _Sprint_? El resultado es un plan de mejora que se incorpora al siguiente _Sprint Backlog_.
+Es un marco de trabajo ágil para el desarrollo, entrega y mantenimiento de productos complejos, definido en la _Scrum Guide_. Se fundamenta en tres pilares empíricos: transparencia, inspección y adaptación. Para el Sistema POS de Cafetería, Scrum es la elección metodológica óptima porque permite iterar rápidamente y ajustar requerimientos de acuerdo a la retroalimentación del cliente.
+
+#### Roles
+
+- **Product Owner:** Es el responsable de maximizar el valor del producto. Sus funciones son definir y mantener el _Product Backlog_; ser el punto de contacto único con el cliente; y aceptar o rechazar los incrementos funcionales.
+- **Scrum Master:** Responsable de que el equipo aplique correctamente Scrum. Facilita las ceremonias, elimina impedimentos y protege al equipo de interrupciones externas.
+- **Equipo de Desarrollo:** Equipo autoorganizado responsable de convertir los ítems del _Product Backlog_ en un incremento potencialmente entregable (programación, diseño y pruebas).
+
+#### Artefactos
+
+- **Product Backlog:** Lista única y priorizada de todos los requerimientos funcionales y técnicos necesarios para el sistema.
+- **Sprint Backlog:** Conjunto de requerimientos seleccionados para el _Sprint_ actual, divididos en tareas concretas a desarrollar por el equipo.
+- **Incremento:** La suma de todas las funcionalidades completadas durante el _Sprint_, las cuales deben cumplir con la Definición de Hecho (código probado y validado).
+
+#### Eventos
+
+- **Sprint Planning (Planificación):** Reunión de inicio donde el equipo define qué se va a entregar y cómo se va a construir el incremento durante el ciclo de trabajo.
+- **Daily Scrum (Reunión diaria):** Reunión breve de sincronización del equipo de desarrollo para evaluar el progreso y exponer bloqueos u obstáculos.
+- **Sprint Review (Revisión):** Demostración del _software_ funcional al _Product Owner_ y partes interesadas al finalizar el _Sprint_ para recoger impresiones.
+- **Sprint Retrospective (Retrospectiva):** Espacio de mejora continua donde el equipo reflexiona sobre sus propios procesos de trabajo de cara a la siguiente iteración.
 
 ---
 

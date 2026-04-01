@@ -23,6 +23,8 @@ Esta situación genera un conjunto de problemas operativos concretos y recurrent
 - **Descuadres de caja recurrentes:** El cobro basado en cálculo mental o en calculadoras simples, sin un sistema que valide automáticamente los totales, genera discrepancias diarias entre los ingresos registrados y el efectivo real.
 - **Nula trazabilidad histórica:** La ausencia de una base de datos implica que no existe ningún registro histórico de ventas. La gerencia no puede conocer cuáles son los productos más vendidos, los picos de demanda por hora o los ingresos acumulados por período, privándose de información crítica para la toma de decisiones estratégicas.
 
+![Problemas en una cafeteria](assets/images/cafeteria.png){#fig:ejemplo_cafeteria width=65%}
+
 ### Referencias técnicas de otros sistemas TPS
 
 En el contexto local de La Paz, Bolivia, existe una notable carencia de sistemas TPS especializados y accesibles para el rubro de las cafeterías, o en su defecto, hay un desconocimiento generalizado sobre soluciones de _software_ a medida. Por lo tanto, como Ingeniero de Requerimientos y Datos, el análisis de referencia se basa en el modelo transaccional "tradicional" o empírico que emplean actualmente la mayoría de las cafeterías en la ciudad sin un sistema digital centralizado:
@@ -417,6 +419,7 @@ Es un marco de trabajo ágil para el desarrollo, entrega y mantenimiento de prod
 - **Daily Scrum (Reunión diaria):** Reunión breve de sincronización del equipo de desarrollo para evaluar el progreso y exponer bloqueos u obstáculos.
 - **Sprint Review (Revisión):** Demostración del _software_ funcional al _Product Owner_ y partes interesadas al finalizar el _Sprint_ para recoger impresiones.
 - **Sprint Retrospective (Retrospectiva):** Espacio de mejora continua donde el equipo reflexiona sobre sus propios procesos de trabajo de cara a la siguiente iteración.
+<<<<<<< HEAD
 
 ---
 
@@ -571,3 +574,5 @@ Se acompañan los anexos técnicos:
 - **Mejoras futuras y Escalabilidad:** Es recomendable planificar la ampliación del módulo transaccional para descontar automáticamente ingredientes de un inventario maestro (ej. gramos de café, litros de leche) cada vez que se cobre un producto.
 - **Seguridad y Mantenimiento:** Monitorear activamente los registros del servidor, rotar periódicamente la clave secreta de firmado de los _tokens_ JWT y actualizar las dependencias de Node.js para prevenir vulnerabilidades.
 - **Migración a la Nube:** Aprovechando la naturaleza NoSQL de MongoDB, se recomienda a futuro desplegar la base de datos en clústeres administrados (como MongoDB Atlas) para asegurar redundancia, _backups_ automáticos y la posibilidad de conectar múltiples sucursales de la cafetería.
+=======
+>>>>>>> 815a7ee (Quitado secciones 3 y 4)

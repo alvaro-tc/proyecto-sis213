@@ -106,7 +106,7 @@ La dependencia del cálculo mental y de anotaciones manuales para cobrar a los c
 
 ### Límites del Sistema
 
-El sistema de Punto de Venta (POS) web propuesto ha sido diseñado bajo un conjunto de restricciones técnicas y funcionales que delimitan su alcance en esta primera versión (MVP — *Minimum Viable Product*). Estos límites permiten enfocar el desarrollo en los requerimientos críticos del negocio, garantizando estabilidad, simplicidad y viabilidad en su implementación inicial.
+El sistema de Punto de Venta (POS) web propuesto ha sido diseñado bajo un conjunto de restricciones técnicas y funcionales que delimitan su alcance en esta primera versión (MVP — _Minimum Viable Product_). Estos límites permiten enfocar el desarrollo en los requerimientos críticos del negocio, garantizando estabilidad, simplicidad y viabilidad en su implementación inicial.
 
 Los principales límites del sistema son:
 
@@ -201,6 +201,25 @@ Se aplicará la metodología ágil **_Scrum_**, que se adapta idealmente al desa
 - **Modelado de Datos:** Estructuración de colecciones JSON y flujos de API REST.
 - **Modelado UML:** Para representar gráficamente el diseño de la solución (casos de uso, diagramas de clase, secuencia y despliegue).
 - **Puntos de Función COSMIC:** Para la medición objetiva del tamaño funcional del _software_ y su estimación de costos.
+- **Modelo C4:** Para documentar la arquitectura del sistema en cuatro niveles de abstracción progresiva (Contexto, Contenedores, Componentes y Código), permitiendo comunicar el diseño técnico de forma clara tanto a audiencias técnicas como no técnicas.
+
+### Modelo C4
+
+Se aplicarán diferentes modelos para diagramar todo el proceso y elaboriación del sistema POS. El Modelo C4 (_Context, Containers, Components, Code_) es un enfoque de documentación de arquitecturas de _software_ creado por Simon Brown que propone describir un sistema desde cuatro niveles de abstracción jerárquica, permitiendo que diferentes audiencias comprendan la arquitectura con el nivel de detalle que cada una requiere (Brown, 2018).
+
+**Nivel 1 — Diagrama de Contexto del Sistema (_System Context_):**
+Es el nivel más alto de abstracción. Muestra el sistema como una caja negra en el centro, rodeado de los usuarios (_actores_) que interactúan con él y de los sistemas externos con los que se comunica. Para el Sistema POS de Cafetería, este diagrama ubicaría al sistema en su entorno: el _Cajero_ y el _Administrador_ como actores principales, y sistemas externos como el servidor de correo electrónico (para notificaciones) o la pasarela de pagos (en versiones futuras). Su propósito es responder: ¿qué hace el sistema y quién lo usa?
+
+**Nivel 2 — Diagrama de Contenedores (_Containers_):**
+Descompone el sistema en sus grandes bloques tecnológicos desplegables: las aplicaciones, los servicios y los almacenes de datos que lo componen. Para el Sistema POS, este nivel revela los tres contenedores principales de la arquitectura MERN: la **Aplicación Web** (_Single Page Application_ en React.js, ejecutada en el navegador del operador), la **API REST** (servidor Node.js/Express.js desplegado en un contenedor Docker en AWS EC2) y la **Base de Datos** (instancia de MongoDB). Este diagrama responde: ¿cómo está estructurado técnicamente el sistema y cómo se comunican sus partes?
+
+**Nivel 3 — Diagrama de Componentes (_Components_):**
+Profundiza dentro de un contenedor específico, mostrando los componentes lógicos que lo integran y sus responsabilidades. Para el contenedor de la **API REST**, los componentes serían: el _Router de Autenticación_ (gestiona el registro y _login_), el _Middleware JWT_ (valida tokens en cada petición), el _Controlador de Órdenes_ (maneja el ciclo de vida de los pedidos), el _Controlador de Productos_ (gestiona el catálogo del menú), el _Controlador de Mesas_ (administra el estado de las mesas) y el _Generador de Reportes PDF_ (produce los comprobantes de venta). Este nivel responde: ¿qué hace cada parte interna del contenedor?
+
+**Nivel 4 — Código (_Code_):**
+Es el nivel más detallado y opcional, representado mediante diagramas de clases UML o directamente a través del código fuente documentado. Para el Sistema POS, este nivel se materializa en los esquemas de _Mongoose_ (`UserSchema`, `ProductSchema`, `OrderSchema`, `TableSchema`) y en la estructura de clases o módulos del _frontend_ React. Su propósito es responder: ¿cómo está implementado internamente cada componente?
+
+La adopción del Modelo C4 en este proyecto garantiza que la arquitectura MERN quede documentada de forma consistente y navegable, facilitando la incorporación de nuevos desarrolladores al equipo y la comunicación técnica con el cliente. Los diagramas de Contexto y Contenedores se incluyen en el presente informe; los de Componentes y Código se desarrollan en el Marco Práctico.
 
 ## Análisis preliminar del sistema TPS
 
@@ -312,12 +331,14 @@ La arquitectura del sistema POS se basa en el modelo Cliente–Servidor, una de 
 ### Cliente
 
 El cliente representa la capa de presentación del sistema, encargada de interactuar directamente con el usuario final mediante una interfaz gráfica accesible desde el navegador. En este proyecto, el cliente será desarrollado utilizando React.js, permitiendo:
+
 - Renderizado dinámico de componentes (Virtual DOM).
 - Interacciones en tiempo real en el POS.
 - Manejo del estado global mediante Redux Toolkit.
 - Navegación sin recarga de página (SPA).
 
 Funciones principales:
+
 - Capturar datos de entrada (pedidos, login).
 - Mostrar información procesada.
 - Enviar solicitudes HTTP al servidor.
@@ -327,6 +348,7 @@ Funciones principales:
 El servidor constituye la capa de lógica de negocio.
 Tecnologías: Node.js; Express.js.
 Funciones principales:
+
 - Procesamiento de órdenes.
 - Validaciones y cálculos.
 - Ejecución de la lógica transaccional.
@@ -335,6 +357,7 @@ Funciones principales:
 
 La API permite la comunicación entre cliente y servidor mediante HTTP y JSON. Actúa como el puente documentado que estructura y transmite la información bidireccionalmente.
 Características:
+
 - Métodos estándar: GET, POST, PUT, DELETE.
 - Arquitectura RESTful.
 
@@ -343,6 +366,7 @@ Características:
 Repositorio central donde reposa la persistencia de las entidades. Es el componente responsable de almacenar los datos operacionales a largo plazo para asegurar la durabilidad y disponibilidad de la información de las ventas y el menú.
 
 ### Flujo del Sistema
+
 1. Usuario interactúa con frontend.
 2. Cliente envía petición HTTP a la API.
 3. Servidor procesa la solicitud y valida.
@@ -415,9 +439,6 @@ Es un marco de trabajo ágil para el desarrollo, entrega y mantenimiento de prod
 - **Sprint Review (Revisión):** Demostración del _software_ funcional al _Product Owner_ y partes interesadas al finalizar el _Sprint_ para recoger impresiones.
 - **Sprint Retrospective (Retrospectiva):** Espacio de mejora continua donde el equipo reflexiona sobre sus propios procesos de trabajo de cara a la siguiente iteración.
 
-
-
-
 # MARCO PRÁCTICO — DESARROLLO DEL SISTEMA TPS
 
 ## Análisis del sistema
@@ -432,22 +453,22 @@ En base a la recopilación de datos, la estructura organizacional del sistema id
 
 Los requerimientos funcionales expresan lo que el sistema **debe hacer** operativamente.
 
-* **RF01:** El sistema permitirá registrar nuevos usuarios operativos.
-* **RF02:** El sistema permitirá a los usuarios iniciar y cerrar sesión de manera segura.
-* **RF03:** El sistema permitirá al administrador asignar o revocar roles de acceso.
-* **RF04:** El sistema permitirá registrar un nuevo proceso organizacional básico.
-* **RF05:** El sistema permitirá el registro consecutivo de transacciones asociadas a un proceso.
-* **RF06:** El sistema permitirá generar reportes tabulados basados en un rango de fechas.
+- **RF01:** El sistema permitirá registrar nuevos usuarios operativos.
+- **RF02:** El sistema permitirá a los usuarios iniciar y cerrar sesión de manera segura.
+- **RF03:** El sistema permitirá al administrador asignar o revocar roles de acceso.
+- **RF04:** El sistema permitirá registrar un nuevo proceso organizacional básico.
+- **RF05:** El sistema permitirá el registro consecutivo de transacciones asociadas a un proceso.
+- **RF06:** El sistema permitirá generar reportes tabulados basados en un rango de fechas.
 
 ### Requerimientos no funcionales
 
 Establecen las restricciones y la forma en cómo debe operar y comportarse estructuralmente la aplicación.
 
-* **Seguridad:** Encriptación de contraseñas usando algoritmos seguros (ej. *bcrypt*) y comunicaciones seguras.
-* **Rendimiento:** Tiempos de respuesta para guardado de transacciones menores a 2 segundos en carga moderada.
-* **Usabilidad:** Interfaces intuitivas, adaptables a monitores de escritorio (diseño responsivo).
-* **Disponibilidad:** Arquitectura preparada para mantener disponibilidad en un entorno de servidor las 24 horas.
-* **Escalabilidad:** Separación modular del código que facilite agregar futuros módulos sin modificar el núcleo operativo.
+- **Seguridad:** Encriptación de contraseñas usando algoritmos seguros (ej. _bcrypt_) y comunicaciones seguras.
+- **Rendimiento:** Tiempos de respuesta para guardado de transacciones menores a 2 segundos en carga moderada.
+- **Usabilidad:** Interfaces intuitivas, adaptables a monitores de escritorio (diseño responsivo).
+- **Disponibilidad:** Arquitectura preparada para mantener disponibilidad en un entorno de servidor las 24 horas.
+- **Escalabilidad:** Separación modular del código que facilite agregar futuros módulos sin modificar el núcleo operativo.
 
 ## Modelado del sistema
 
@@ -455,8 +476,8 @@ Establecen las restricciones y la forma en cómo debe operar y comportarse estru
 
 Se definen detallando la necesidad y la regla de aceptación:
 
-* *Como* administrador, *quiero* registrar y eliminar usuarios *para* controlar estrictamente el acceso a la plataforma corporativa.
-* *Como* operador de sistemas, *quiero* registrar una transacción en tiempo de ejecución *para* avanzar en mi cuota diaria de procesos.
+- _Como_ administrador, _quiero_ registrar y eliminar usuarios _para_ controlar estrictamente el acceso a la plataforma corporativa.
+- _Como_ operador de sistemas, _quiero_ registrar una transacción en tiempo de ejecución _para_ avanzar en mi cuota diaria de procesos.
 
 ### Diagramas UML
 
@@ -474,8 +495,8 @@ A continuación se muestra un ejemplo genérico de la estructura de un diagrama,
 ### Arquitectura del sistema
 
 **Modelo: Arquitectura Web Cliente-Servidor**
-El sistema se dividirá lógicamente en una aplicación cliente basada en componentes interactuando asíncronamente con un servidor *backend* que expondrá puntos de enlace (*endpoints*) REST.
-*Se sugiere aplicar adicionalmente el modelo C4 para diagramar las capas de contexto, contenedores, y componentes de la solución.*
+El sistema se dividirá lógicamente en una aplicación cliente basada en componentes interactuando asíncronamente con un servidor _backend_ que expondrá puntos de enlace (_endpoints_) REST.
+_Se sugiere aplicar adicionalmente el modelo C4 para diagramar las capas de contexto, contenedores, y componentes de la solución._
 
 ## Diseño de la Base de Datos
 
@@ -487,7 +508,7 @@ Se diseña bajo el paradigma relacional para modelar las entidades y su cardinal
 \rowcolor{headerblue} \bfseries \color{white} Campo & \bfseries \color{white} Tipo & \bfseries \color{white} Llave & \bfseries \color{white} Descripción \\ \hline
 \endhead
 id & Int & Primaria (PK) & Identificador único de la transacción. \\ \hline
-usuario\_id & Int & Foránea (FK) & Código del usuario responsable. \\ \hline
+usuario_id & Int & Foránea (FK) & Código del usuario responsable. \\ \hline
 fecha & Datetime & Ninguna & Fechas y hora de ejecución. \\ \hline
 estado & Varchar & Ninguna & Estado lógico de la transacción. \\ \hline
 \caption{Ejemplo de diccionario para tabla de Base de Datos}
@@ -501,69 +522,66 @@ estado & Varchar & Ninguna & Estado lógico de la transacción. \\ \hline
 
 Modulo fundamental para configurar el entorno.
 
-* **Registro de procesos:** Interfaces para ingresar la descripción de un proceso.
-* **Actualización:** Se permite modificar detalles exceptuando integridades históricas.
-* **Eliminación y consulta:** Eliminación lógica de procesos inactivos y un panel de cuadrícula (*Grid*) para buscar por criterios múltiples.
+- **Registro de procesos:** Interfaces para ingresar la descripción de un proceso.
+- **Actualización:** Se permite modificar detalles exceptuando integridades históricas.
+- **Eliminación y consulta:** Eliminación lógica de procesos inactivos y un panel de cuadrícula (_Grid_) para buscar por criterios múltiples.
 
 ### Módulo de Usuarios y Roles
 
 La barrera de seguridad del sistema TPS.
 
-* **Registro e Inicio de sesión:** Validaciones fuertes contra la tabla criptográfica.
-* **Gestión de roles y control de acceso:** El *frontend* renderizará menús diferenciados basados en el rol (Administrador versus Operativo) dictado por el *token* JWT emitido por la API *backend*.
+- **Registro e Inicio de sesión:** Validaciones fuertes contra la tabla criptográfica.
+- **Gestión de roles y control de acceso:** El _frontend_ renderizará menús diferenciados basados en el rol (Administrador versus Operativo) dictado por el _token_ JWT emitido por la API _backend_.
 
 ### Módulo de Transacciones
 
-Núcleo central del objeto TPS, diseñado para alta velocidad operativa y baja fricción en la entrada de datos (*Data Entry*).
+Núcleo central del objeto TPS, diseñado para alta velocidad operativa y baja fricción en la entrada de datos (_Data Entry_).
 
-* **Registro:** Pantallas con autocompletado y validaciones estrictas.
-* **Modificación/Consulta:** Vista detallada tipo "maestro-detalle" y bloqueo de interferencias concurrentes en caso de ediciones simultáneas.
-* **Historial de operaciones:** Bitácora interna de acciones ("El usuario X anuló la transacción a las 15:42 p.m.").
+- **Registro:** Pantallas con autocompletado y validaciones estrictas.
+- **Modificación/Consulta:** Vista detallada tipo "maestro-detalle" y bloqueo de interferencias concurrentes en caso de ediciones simultáneas.
+- **Historial de operaciones:** Bitácora interna de acciones ("El usuario X anuló la transacción a las 15:42 p.m.").
 
 ### Módulo de Reportes
 
 Módulo analítico que destila la información transaccional operativa.
 
-* Generación en memoria del "Reporte estadístico mensual".
-* Extracción y consolidación de "Reporte de transacciones por usuario", posibilitando descargas en formatos limpios o impresiones en formato PDF.
+- Generación en memoria del "Reporte estadístico mensual".
+- Extracción y consolidación de "Reporte de transacciones por usuario", posibilitando descargas en formatos limpios o impresiones en formato PDF.
 
 ## Capa Backend Funcional
 
-El *backend* es responsable único del procesamiento transaccional aislado de la interfaz gráfica, diseñado bajo principios REST y patrones en capas:
+El _backend_ es responsable único del procesamiento transaccional aislado de la interfaz gráfica, diseñado bajo principios REST y patrones en capas:
 
-* **Controladores (*Controllers*):** Capturan las peticiones HTTP y manejan la repuesta.
-* **Servicios (*Services*):** Contienen puramente la lógica de reglas de negocio organizacionales.
-* **Modelos/Entidades (*Models/Entities*):** Representación orientada a objetos de las tablas y procedimientos almacenados.
-* **Capa de Seguridad (*Middlewares*):** Componentes intermedios que verifican autenticidad mediante la inspección de cabeceras HTTP antes de conceder cualquier ejecución.
-* **Validaciones (*DTOs*):** Objetos de transferencia de datos (*Data Transfer Objects*) que verifican limpiamente los cuerpos de datos (*Payloads*) antes de impactar el Servicio.
+- **Controladores (_Controllers_):** Capturan las peticiones HTTP y manejan la repuesta.
+- **Servicios (_Services_):** Contienen puramente la lógica de reglas de negocio organizacionales.
+- **Modelos/Entidades (_Models/Entities_):** Representación orientada a objetos de las tablas y procedimientos almacenados.
+- **Capa de Seguridad (_Middlewares_):** Componentes intermedios que verifican autenticidad mediante la inspección de cabeceras HTTP antes de conceder cualquier ejecución.
+- **Validaciones (_DTOs_):** Objetos de transferencia de datos (_Data Transfer Objects_) que verifican limpiamente los cuerpos de datos (_Payloads_) antes de impactar el Servicio.
 
 ## Validación y pruebas del sistema
 
 El sistema asegura la calidad del producto final a través de distintas evaluaciones de estrés y rendimiento:
 
-* **Pruebas unitarias:** Validando que las funciones matemáticas y servicios individuales del *backend* operen según la lógica.
-* **Pruebas funcionales:** Ejecución de casos de uso (Ej: Qué sucede si el usuario ingresa un formato de fecha erróneo).
-* **Pruebas de integración:** Ensayos del flujo Cliente hacia la API y hacia la base de datos extremo a extremo.
-* **Pruebas de aceptación:** Pruebas finales realizadas con un entorno cercano a la organización para validación definitiva del *Product Owner*.
+- **Pruebas unitarias:** Validando que las funciones matemáticas y servicios individuales del _backend_ operen según la lógica.
+- **Pruebas funcionales:** Ejecución de casos de uso (Ej: Qué sucede si el usuario ingresa un formato de fecha erróneo).
+- **Pruebas de integración:** Ensayos del flujo Cliente hacia la API y hacia la base de datos extremo a extremo.
+- **Pruebas de aceptación:** Pruebas finales realizadas con un entorno cercano a la organización para validación definitiva del _Product Owner_.
 
 ## Desarrollo del prototipo funcional
 
-A lo largo de los *sprints* se generan prototipos incrementales. En esta etapa el proyecto expone sus interfaces plenamente interactivas reflejando casos de éxito desde el inicio de sesión (*login*), hasta el registro exitoso de la operación. *(Incluir evidencias y capturas de pantalla reales aquí)*.
+A lo largo de los _sprints_ se generan prototipos incrementales. En esta etapa el proyecto expone sus interfaces plenamente interactivas reflejando casos de éxito desde el inicio de sesión (_login_), hasta el registro exitoso de la operación. _(Incluir evidencias y capturas de pantalla reales aquí)_.
 
 ## Documentación de Ingeniería Completa
 
 Se acompañan como anexos técnicos o repositorios vinculados:
 
-* **Documentación funcional:** Incluye la Especificación de Requerimientos de Software (SRS), relevamiento documentado explícito e historias de usuario extendidas.
-* **Documentación técnica:** El diagrama de la arquitectura desplegada, diccionarios de datos, modelo E/R completo y especificación paramétrica de API.
-* **Documentación del sistema:** Manual de usuario para operadores, el manual técnico, directrices de instalación en entorno de servidor y parametrización de variables de entorno.
-* **Documentación del código:** Documentación generada automáticamente, estructura arquitectónica base (*Framework*), y lista de librerías vinculadas (*dependencias*).
+- **Documentación funcional:** Incluye la Especificación de Requerimientos de Software (SRS), relevamiento documentado explícito e historias de usuario extendidas.
+- **Documentación técnica:** El diagrama de la arquitectura desplegada, diccionarios de datos, modelo E/R completo y especificación paramétrica de API.
+- **Documentación del sistema:** Manual de usuario para operadores, el manual técnico, directrices de instalación en entorno de servidor y parametrización de variables de entorno.
+- **Documentación del código:** Documentación generada automáticamente, estructura arquitectónica base (_Framework_), y lista de librerías vinculadas (_dependencias_).
 
 \newpage
-
-
 
 # BIBLIOGRAFÍA
 
 <div id="refs"></div>
-

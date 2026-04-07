@@ -6,6 +6,8 @@ mainfont: "Arial"
 sansfont: "Arial"
 monofont: "Consolas"
 linestretch: 1.5
+bibliography: referencias.bib
+csl: apa.csl
 header-includes: |
   \usepackage{pdfpages}
   \usepackage{float}

@@ -257,7 +257,7 @@ El proyecto tiene una duración total de **4 meses (16 semanas)**, organizado en
 
 ### Definición
 
-Un Sistema de Información Organizacional (SIO) es un conjunto integrado de componentes — personas, procesos, datos, _hardware_ y _software_ — diseñado para recolectar, almacenar, procesar y distribuir información que apoye la coordinación, el control, el análisis y la toma de decisiones dentro de una organización (Laudon & Laudon, 2020). A diferencia de un simple programa informático, un SIO está profundamente imbricado con los procesos de negocio de la organización: define cómo fluye la información entre los actores, cuándo se captura, cómo se transforma y quién tiene acceso a ella.
+Un Sistema de Información Organizacional (SIO) es un conjunto integrado de componentes — personas, procesos, datos, _hardware_ y _software_ — diseñado para recolectar, almacenar, procesar y distribuir información que apoye la coordinación, el control, el análisis y la toma de decisiones dentro de una organización [@laudon2020]. A diferencia de un simple programa informático, un SIO está profundamente imbricado con los procesos de negocio de la organización: define cómo fluye la información entre los actores, cuándo se captura, cómo se transforma y quién tiene acceso a ella.
 
 En términos más precisos, un SIO transforma datos crudos (ej. el registro de una venta) en información significativa y estructurada (ej. un reporte de ingresos diarios), que a su vez se convierte en conocimiento útil para la gestión (ej. la identificación del turno de mayor rentabilidad). Este proceso de transformación es el núcleo del valor que aportan los SIO a las organizaciones modernas.
 
@@ -280,7 +280,7 @@ Desde una perspectiva funcional, los SIO se clasifican en distintos tipos según
 
 ### Definición
 
-Un Sistema de Procesamiento de Transacciones es un tipo especializado de SIO diseñado para capturar, procesar, validar y almacenar las transacciones operativas de una organización de forma inmediata, confiable y a gran escala (O'Brien & Marakas, 2011). En el contexto del negocio, una **transacción** se define como cualquier evento discreto que modifica el estado de los datos del sistema y que debe quedar registrado de forma permanente e inalterable: el registro de una venta, la creación de una orden, el cobro de una cuenta o la modificación del catálogo de productos.
+Un Sistema de Procesamiento de Transacciones es un tipo especializado de SIO diseñado para capturar, procesar, validar y almacenar las transacciones operativas de una organización de forma inmediata, confiable y a gran escala [@obrien2011]. En el contexto del negocio, una **transacción** se define como cualquier evento discreto que modifica el estado de los datos del sistema y que debe quedar registrado de forma permanente e inalterable: el registro de una venta, la creación de una orden, el cobro de una cuenta o la modificación del catálogo de productos.
 
 ### Características
 
@@ -414,3 +414,154 @@ Es un marco de trabajo ágil para el desarrollo, entrega y mantenimiento de prod
 - **Daily Scrum (Reunión diaria):** Reunión breve de sincronización del equipo de desarrollo para evaluar el progreso y exponer bloqueos u obstáculos.
 - **Sprint Review (Revisión):** Demostración del _software_ funcional al _Product Owner_ y partes interesadas al finalizar el _Sprint_ para recoger impresiones.
 - **Sprint Retrospective (Retrospectiva):** Espacio de mejora continua donde el equipo reflexiona sobre sus propios procesos de trabajo de cara a la siguiente iteración.
+
+
+
+
+# MARCO PRÁCTICO — DESARROLLO DEL SISTEMA TPS
+
+## Análisis del sistema
+
+En base a la recopilación de datos, la estructura organizacional del sistema identifica diversos actores: Administradores, quienes tienen control global; y Operadores, quienes ejecutan diariamente transacciones asociadas a los procesos de negocio. El flujo de procesos demanda digitalizar desde el ingreso del actor al sistema, registro de eventos, hasta la confirmación e impacto histórico.
+
+![Ejemplo de prueba en el análisis del sistema](assets/images/ejemplo.png){#fig:ejemplo_analisis width=65%}
+
+## Determinación de requerimientos
+
+### Requerimientos funcionales
+
+Los requerimientos funcionales expresan lo que el sistema **debe hacer** operativamente.
+
+* **RF01:** El sistema permitirá registrar nuevos usuarios operativos.
+* **RF02:** El sistema permitirá a los usuarios iniciar y cerrar sesión de manera segura.
+* **RF03:** El sistema permitirá al administrador asignar o revocar roles de acceso.
+* **RF04:** El sistema permitirá registrar un nuevo proceso organizacional básico.
+* **RF05:** El sistema permitirá el registro consecutivo de transacciones asociadas a un proceso.
+* **RF06:** El sistema permitirá generar reportes tabulados basados en un rango de fechas.
+
+### Requerimientos no funcionales
+
+Establecen las restricciones y la forma en cómo debe operar y comportarse estructuralmente la aplicación.
+
+* **Seguridad:** Encriptación de contraseñas usando algoritmos seguros (ej. *bcrypt*) y comunicaciones seguras.
+* **Rendimiento:** Tiempos de respuesta para guardado de transacciones menores a 2 segundos en carga moderada.
+* **Usabilidad:** Interfaces intuitivas, adaptables a monitores de escritorio (diseño responsivo).
+* **Disponibilidad:** Arquitectura preparada para mantener disponibilidad en un entorno de servidor las 24 horas.
+* **Escalabilidad:** Separación modular del código que facilite agregar futuros módulos sin modificar el núcleo operativo.
+
+## Modelado del sistema
+
+### Historias de Usuario
+
+Se definen detallando la necesidad y la regla de aceptación:
+
+* *Como* administrador, *quiero* registrar y eliminar usuarios *para* controlar estrictamente el acceso a la plataforma corporativa.
+* *Como* operador de sistemas, *quiero* registrar una transacción en tiempo de ejecución *para* avanzar en mi cuota diaria de procesos.
+
+### Diagramas UML
+
+A continuación se muestra un ejemplo genérico de la estructura de un diagrama, en este caso, se deben incrustar aquí los diagramas correspondientes: Diagramas de Casos de Uso, Clases, Secuencia y Actividades generados en herramientas tipo StarUML o Drawio.
+
+\begin{diagrama}[H]
+\centering
+\includegraphics[width=0.65\linewidth]{assets/diagrama/diagrama.png}
+\caption{Ejemplo general de Diagrama Estructural UML}
+\label{diag:ejemplo_diagrama}
+\end{diagrama}
+
+## Diseño del sistema
+
+### Arquitectura del sistema
+
+**Modelo: Arquitectura Web Cliente-Servidor**
+El sistema se dividirá lógicamente en una aplicación cliente basada en componentes interactuando asíncronamente con un servidor *backend* que expondrá puntos de enlace (*endpoints*) REST.
+*Se sugiere aplicar adicionalmente el modelo C4 para diagramar las capas de contexto, contenedores, y componentes de la solución.*
+
+## Diseño de la Base de Datos
+
+Se diseña bajo el paradigma relacional para modelar las entidades y su cardinalidad. Las restricciones aseguran que una transacción no puede existir sin su usuario operador o su proceso maestro.
+
+\begingroup\small
+\begin{longtable}{|p{3cm}|p{2cm}|p{2.5cm}|p{5cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} Campo & \bfseries \color{white} Tipo & \bfseries \color{white} Llave & \bfseries \color{white} Descripción \\ \hline
+\endhead
+id & Int & Primaria (PK) & Identificador único de la transacción. \\ \hline
+usuario\_id & Int & Foránea (FK) & Código del usuario responsable. \\ \hline
+fecha & Datetime & Ninguna & Fechas y hora de ejecución. \\ \hline
+estado & Varchar & Ninguna & Estado lógico de la transacción. \\ \hline
+\caption{Ejemplo de diccionario para tabla de Base de Datos}
+\label{tab:diccionario_bd}
+\end{longtable}
+\endgroup
+
+## IMPLEMENTACIÓN DE LOS MÓDULOS DEL SISTEMA
+
+### Módulo de Gestión de Procesos
+
+Modulo fundamental para configurar el entorno.
+
+* **Registro de procesos:** Interfaces para ingresar la descripción de un proceso.
+* **Actualización:** Se permite modificar detalles exceptuando integridades históricas.
+* **Eliminación y consulta:** Eliminación lógica de procesos inactivos y un panel de cuadrícula (*Grid*) para buscar por criterios múltiples.
+
+### Módulo de Usuarios y Roles
+
+La barrera de seguridad del sistema TPS.
+
+* **Registro e Inicio de sesión:** Validaciones fuertes contra la tabla criptográfica.
+* **Gestión de roles y control de acceso:** El *frontend* renderizará menús diferenciados basados en el rol (Administrador versus Operativo) dictado por el *token* JWT emitido por la API *backend*.
+
+### Módulo de Transacciones
+
+Núcleo central del objeto TPS, diseñado para alta velocidad operativa y baja fricción en la entrada de datos (*Data Entry*).
+
+* **Registro:** Pantallas con autocompletado y validaciones estrictas.
+* **Modificación/Consulta:** Vista detallada tipo "maestro-detalle" y bloqueo de interferencias concurrentes en caso de ediciones simultáneas.
+* **Historial de operaciones:** Bitácora interna de acciones ("El usuario X anuló la transacción a las 15:42 p.m.").
+
+### Módulo de Reportes
+
+Módulo analítico que destila la información transaccional operativa.
+
+* Generación en memoria del "Reporte estadístico mensual".
+* Extracción y consolidación de "Reporte de transacciones por usuario", posibilitando descargas en formatos limpios o impresiones en formato PDF.
+
+## Capa Backend Funcional
+
+El *backend* es responsable único del procesamiento transaccional aislado de la interfaz gráfica, diseñado bajo principios REST y patrones en capas:
+
+* **Controladores (*Controllers*):** Capturan las peticiones HTTP y manejan la repuesta.
+* **Servicios (*Services*):** Contienen puramente la lógica de reglas de negocio organizacionales.
+* **Modelos/Entidades (*Models/Entities*):** Representación orientada a objetos de las tablas y procedimientos almacenados.
+* **Capa de Seguridad (*Middlewares*):** Componentes intermedios que verifican autenticidad mediante la inspección de cabeceras HTTP antes de conceder cualquier ejecución.
+* **Validaciones (*DTOs*):** Objetos de transferencia de datos (*Data Transfer Objects*) que verifican limpiamente los cuerpos de datos (*Payloads*) antes de impactar el Servicio.
+
+## Validación y pruebas del sistema
+
+El sistema asegura la calidad del producto final a través de distintas evaluaciones de estrés y rendimiento:
+
+* **Pruebas unitarias:** Validando que las funciones matemáticas y servicios individuales del *backend* operen según la lógica.
+* **Pruebas funcionales:** Ejecución de casos de uso (Ej: Qué sucede si el usuario ingresa un formato de fecha erróneo).
+* **Pruebas de integración:** Ensayos del flujo Cliente hacia la API y hacia la base de datos extremo a extremo.
+* **Pruebas de aceptación:** Pruebas finales realizadas con un entorno cercano a la organización para validación definitiva del *Product Owner*.
+
+## Desarrollo del prototipo funcional
+
+A lo largo de los *sprints* se generan prototipos incrementales. En esta etapa el proyecto expone sus interfaces plenamente interactivas reflejando casos de éxito desde el inicio de sesión (*login*), hasta el registro exitoso de la operación. *(Incluir evidencias y capturas de pantalla reales aquí)*.
+
+## Documentación de Ingeniería Completa
+
+Se acompañan como anexos técnicos o repositorios vinculados:
+
+* **Documentación funcional:** Incluye la Especificación de Requerimientos de Software (SRS), relevamiento documentado explícito e historias de usuario extendidas.
+* **Documentación técnica:** El diagrama de la arquitectura desplegada, diccionarios de datos, modelo E/R completo y especificación paramétrica de API.
+* **Documentación del sistema:** Manual de usuario para operadores, el manual técnico, directrices de instalación en entorno de servidor y parametrización de variables de entorno.
+* **Documentación del código:** Documentación generada automáticamente, estructura arquitectónica base (*Framework*), y lista de librerías vinculadas (*dependencias*).
+
+\newpage
+
+# BIBLIOGRAFÍA
+
+<div id="refs"></div>
+

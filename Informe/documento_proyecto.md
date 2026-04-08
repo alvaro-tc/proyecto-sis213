@@ -110,26 +110,17 @@ El sistema de Punto de Venta (POS) web propuesto ha sido diseñado bajo un conju
 
 Los principales límites del sistema son:
 
-- **Plataforma exclusivamente web:**  
-  El sistema será accesible únicamente a través de navegadores web modernos, descartando el desarrollo de aplicaciones móviles nativas (Android/iOS) en esta etapa.
+- **Plataforma exclusivamente web:** El sistema será accesible únicamente a través de navegadores web modernos, descartando el desarrollo de aplicaciones móviles nativas (Android/iOS) en esta etapa.
 
-- **Dependencia de conectividad local o a internet:**  
-  El sistema requiere conexión a red (LAN o Internet) para operar, ya que la lógica de negocio y la base de datos residen en el servidor. No se contempla un modo offline.
+- **Dependencia de conectividad local o a internet:** El sistema requiere conexión a red (LAN o Internet) para operar, ya que la lógica de negocio y la base de datos residen en el servidor. No se contempla un modo offline.
 
-- **Base de datos NoSQL (MongoDB):**  
-  Se utilizará una base de datos documental orientada a rendimiento transaccional, sin implementación de motores relacionales tradicionales (SQL).
+- **Base de datos NoSQL (MongoDB):** Se utilizará una base de datos documental orientada a rendimiento transaccional, sin implementación de motores relacionales tradicionales (SQL).
 
-- **Sistema cerrado de autenticación:**  
-  No se integrarán servicios externos de autenticación como Google, Facebook o proveedores OAuth. El acceso será exclusivamente mediante credenciales internas.
+- **Sistema cerrado de autenticación:** No se integrarán servicios externos de autenticación como Google, Facebook o proveedores OAuth. El acceso será exclusivamente mediante credenciales internas.
 
-- **Pagos simulados (sin integración bancaria real):**  
-  En esta versión, los métodos de pago (efectivo, tarjeta) serán registrados de forma lógica sin conexión a pasarelas de pago reales.
+- **Pagos simulados (sin integración bancaria real):** En esta versión, los métodos de pago (efectivo, tarjeta) serán registrados de forma lógica sin conexión a pasarelas de pago reales.
 
-- **Sin gestión avanzada de inventario:**  
-  El sistema no descontará automáticamente insumos (ej. gramos de café, leche), limitándose al control de productos finales.
-
-- **Monosucursal:**  
-  El sistema estará diseñado para una única cafetería, sin soporte inicial para múltiples sucursales.
+- **Monosucursal:** El sistema estará diseñado para una única cafetería, sin soporte inicial para múltiples sucursales.
 
 ### Alcances del Sistema
 
@@ -508,7 +499,7 @@ Se diseña bajo el paradigma relacional para modelar las entidades y su cardinal
 \rowcolor{headerblue} \bfseries \color{white} Campo & \bfseries \color{white} Tipo & \bfseries \color{white} Llave & \bfseries \color{white} Descripción \\ \hline
 \endhead
 id & Int & Primaria (PK) & Identificador único de la transacción. \\ \hline
-usuario_id & Int & Foránea (FK) & Código del usuario responsable. \\ \hline
+usuario\_id & Int & Foránea (FK) & Código del usuario responsable. \\ \hline
 fecha & Datetime & Ninguna & Fechas y hora de ejecución. \\ \hline
 estado & Varchar & Ninguna & Estado lógico de la transacción. \\ \hline
 \caption{Ejemplo de diccionario para tabla de Base de Datos}
@@ -535,28 +526,32 @@ La barrera de seguridad del sistema TPS.
 
 ### Módulo de Transacciones
 
-Núcleo central del objeto TPS, diseñado para alta velocidad operativa y baja fricción en la entrada de datos (_Data Entry_).
+Núcleo central del sistema TPS para la cafetería, diseñado en React.js para ofrecer una interfaz táctil de alta velocidad y baja fricción en la toma de pedidos (Punto de Venta).
 
-- **Registro:** Pantallas con autocompletado y validaciones estrictas.
-- **Modificación/Consulta:** Vista detallada tipo "maestro-detalle" y bloqueo de interferencias concurrentes en caso de ediciones simultáneas.
-- **Historial de operaciones:** Bitácora interna de acciones ("El usuario X anuló la transacción a las 15:42 p.m.").
+- **Toma de Pedidos (POS):** Interfaz interactiva para seleccionar categorías (Cafés, Infusiones, Postres, Snacks) y agregar productos al carrito de compras con sus respectivas cantidades.
+- **Gestión de Mesas y Estados:** Vinculación obligatoria de cada orden a una mesa específica de la cafetería. Control del flujo del pedido cambiando su estado: "En preparación" (barra/cocina), "Servido" y "Pagado".
+- **Procesamiento de Pago y Cierre:** Cálculo automático en tiempo real de subtotales, impuestos y total a cobrar. Registro del método de pago (efectivo, tarjeta) e impresión del comprobante o ticket de venta.
+- **Historial de transacciones:** Bitácora inmutable en MongoDB de todas las ventas realizadas, asociadas al cajero en turno, con protección contra alteraciones concurrentes.
 
 ### Módulo de Reportes
 
-Módulo analítico que destila la información transaccional operativa.
+Módulo analítico estadístico que destila la información transaccional operativa de la cafetería para facilitar la toma de decisiones de la gerencia.
 
-- Generación en memoria del "Reporte estadístico mensual".
-- Extracción y consolidación de "Reporte de transacciones por usuario", posibilitando descargas en formatos limpios o impresiones en formato PDF.
+- **Dashboard Estadístico:** Panel visual en el _frontend_ que emplea librerías de gráficos (ej. Chart.js o Recharts) para mostrar las métricas clave en tiempo real.
+- **Reportes de Ventas:** Consultas agregadas a MongoDB para extraer ingresos diarios, semanales o mensuales.
+- **Rendimiento de Productos:** Identificación automática de los productos más vendidos (ej. Capuchino, Croissants) y los de menor rotación en el menú.
+- **Exportación de Datos:** Capacidad para generar y descargar los reportes consolidados por cajero o por turnos en formatos limpios como PDF o Excel, facilitando el arqueo de caja y la contabilidad externa.
 
 ## Capa Backend Funcional
 
-El _backend_ es responsable único del procesamiento transaccional aislado de la interfaz gráfica, diseñado bajo principios REST y patrones en capas:
+El _backend_ de la cafetería está desarrollado en **Node.js** con el _framework_ **Express.js**, actuando como una API RESTful robusta, aislada de la interfaz gráfica y conectada a **MongoDB**. Su arquitectura sigue el patrón MVC (Modelo-Vista-Controlador) adaptado a servicios:
 
-- **Controladores (_Controllers_):** Capturan las peticiones HTTP y manejan la repuesta.
-- **Servicios (_Services_):** Contienen puramente la lógica de reglas de negocio organizacionales.
-- **Modelos/Entidades (_Models/Entities_):** Representación orientada a objetos de las tablas y procedimientos almacenados.
-- **Capa de Seguridad (_Middlewares_):** Componentes intermedios que verifican autenticidad mediante la inspección de cabeceras HTTP antes de conceder cualquier ejecución.
-- **Validaciones (_DTOs_):** Objetos de transferencia de datos (_Data Transfer Objects_) que verifican limpiamente los cuerpos de datos (_Payloads_) antes de impactar el Servicio.
+- **Conexión BD:** Implementación de la cadena de conexión segura hacia MongoDB utilizando la librería `mongoose` para el modelado de datos mediante esquemas estructurados.
+- **Modelos (`Models`):** Representación orientada a documentos de las entidades principales de la cafetería: `UserSchema` (personal operativo y administrativo), `ProductSchema` (menú), `TableSchema` (mesas) y `OrderSchema` (transacciones/ventas).
+- **Controladores (`Controllers`):** Funciones que capturan las peticiones HTTP (GET, POST, PUT, DELETE), procesan la lógica central de ventas y devuelven respuestas estandarizadas en formato JSON.
+- **Rutas y Servicios (`Routes/Services`):** Definición ordenada de los _endpoints_ de la API (`/api/orders`, `/api/products`, etc.) extrayendo la lógica de negocio a un nivel de servicio para mantener controladores limpios.
+- **Capa de Seguridad (`Middlewares`):** Bloques intermedios que protegen rigurosamente las rutas. Incluyen la verificación de autenticidad mediante la validación y desencriptación de JSON Web Tokens (JWT) y la autorización por niveles (Ej. bloqueando a un Cajero de la ruta de borrado de productos).
+- **Validaciones:** Uso de librerías en el _backend_ para verificar la integridad de los _payloads_ antes de interactuar con la base de datos (ej. asegurar que una orden recibida contenga obligatoriamente el ID de una mesa válida y al menos un producto).
 
 ## Validación y pruebas del sistema
 
@@ -578,7 +573,10 @@ Se acompañan como anexos técnicos o repositorios vinculados:
 - **Documentación funcional:** Incluye la Especificación de Requerimientos de Software (SRS), relevamiento documentado explícito e historias de usuario extendidas.
 - **Documentación técnica:** El diagrama de la arquitectura desplegada, diccionarios de datos, modelo E/R completo y especificación paramétrica de API.
 - **Documentación del sistema:** Manual de usuario para operadores, el manual técnico, directrices de instalación en entorno de servidor y parametrización de variables de entorno.
-- **Documentación del código:** Documentación generada automáticamente, estructura arquitectónica base (_Framework_), y lista de librerías vinculadas (_dependencias_).
+- **3.10 Documentación del código:** Detalla la estructura de directorios del proyecto MERN y las dependencias utilizadas en el sistema de la cafetería.
+  - **Estructura del Proyecto:** Separación física y lógica entre el cliente (aplicación React en el directorio `/frontend`) y el servidor (API Node.js en el directorio `/backend`).
+  - **Librerías y Dependencias Backend:** Uso de `express` para el enrutamiento HTTP, `mongoose` como ODM para modelar los datos de MongoDB, `jsonwebtoken` para la generación y firma de tokens de sesión, `bcryptjs` para el hash de contraseñas, y `cors` para habilitar peticiones seguras desde el frontend.
+  - **Librerías y Dependencias Frontend:** Uso de `react` para la construcción de interfaces de usuario interactivas del POS, `react-router-dom` para la navegación entre el terminal de cobro y el panel de administración, y `axios` para consumir las rutas RESTful del backend asíncronamente.
 
 \newpage
 
@@ -587,5 +585,3 @@ Se acompañan como anexos técnicos o repositorios vinculados:
 # Referencias Bibliográficas {-}
 
 <div id="refs"></div>
-
-

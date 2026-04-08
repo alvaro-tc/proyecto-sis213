@@ -769,7 +769,31 @@ A lo largo de los _sprints_ se generan prototipos incrementales. En esta etapa e
 
 Se acompañan como anexos técnicos o repositorios vinculados:
 
-- **Documentación funcional:** Incluye la Especificación de Requerimientos de Software (SRS), relevamiento documentado explícito e historias de usuario extendidas.
+- **Documentación funcional**
+
+La documentación funcional consolida todos los artefactos producidos durante la fase de análisis y modelado del sistema. Está orientada a servir como referencia oficial para el equipo de desarrollo, el _Product Owner_ y las pruebas de aceptación.
+
+- **Especificación de Requerimientos de Software (SRS)**
+
+La Especificación de Requerimientos de Software documenta de forma estructurada y completa todos los requerimientos identificados para el Sistema POS de Cafetería. Se organiza en las siguientes secciones:
+
+    - **Propósito del sistema:** Desarrollar un Sistema de Punto de Venta (POS) web basado en la arquitectura MERN para digitalizar y centralizar las operaciones de una cafetería en la ciudad de La Paz, eliminando los procesos manuales y garantizando la trazabilidad de cada transacción.
+
+    - **Alcance funcional:** El sistema cubre seis módulos funcionales: Gestión de Ventas y Pedidos (RF-01, RF-08, RF-09, RF-11, RF-12, RF-13, RF-14), Control de Inventario (RF-03, RF-15, RF-16, RF-17, RF-18, RF-19), Gestión de Menú y Productos (RF-05, RF-06, RF-07, RF-10, RF-20, RF-21), Reportes y Toma de Decisiones (RF-04, RF-22, RF-23, RF-24, RF-25), Gestión de Proveedores y Compras (RF-02, RF-26, RF-27, RF-28) y Gestión de Personal y Turnos (RF-29, RF-30, RF-31, RF-32).
+
+    - **Restricciones del sistema:** Plataforma exclusivamente web; autenticación interna sin proveedores OAuth; pagos simulados sin integración bancaria real; sistema monosucursal en su primera versión; sin descuento automático de insumos compuestos. _(Referencia completa en la sección Límites y Alcances del Marco Referencial)._
+
+    - **Requerimientos funcionales:** 32 requerimientos funcionales organizados en 6 módulos, con identificador, descripción, actor responsable y prioridad. _(Referencia: Tablas RF-01 a RF-32 en la sección 3.2)._
+
+    - **Requerimientos no funcionales:** 13 requerimientos no funcionales en las categorías de Rendimiento, Confiabilidad, Seguridad, Disponibilidad, Escalabilidad, Usabilidad y Mantenibilidad. _(Referencia: Tabla RNF-01 a RNF-13 en la sección 3.2)._
+
+- **Relevamiento documentado**
+
+  El relevamiento de información se realizó mediante las siguientes técnicas aplicadas al personal de la cafetería:
+  - **Entrevista estructurada al administrador:** Se identificaron los procesos críticos de cobro, control de inventario y generación de reportes. El administrador manifestó la necesidad urgente de eliminar los descuadres de caja diarios y contar con información de ventas en tiempo real.
+  - **Observación directa del flujo de servicio:** Se documentó el ciclo completo de atención al cliente: toma de pedido verbal → comanda en papel → preparación → cobro manual → anotación en cuaderno. Se identificaron los puntos de falla más frecuentes: comandas ilegibles, errores de suma y ausencia de trazabilidad.
+  - **Revisión del repositorio de referencia:** Se analizó la estructura del repositorio _Restaurant_POS_System_ (amritmaurya1504, GitHub), identificando los módulos implementados: gestión de órdenes en tiempo real, reservas de mesa, autenticación con control de roles, integración de pagos y facturación automática. Estos módulos sirvieron como base para la definición del alcance funcional del presente sistema.
+
 - **Documentación técnica:** El diagrama de la arquitectura desplegada, diccionarios de datos, modelo E/R completo y especificación paramétrica de API.
 - **Documentación del sistema:** Manual de usuario para operadores, el manual técnico, directrices de instalación en entorno de servidor y parametrización de variables de entorno.
 - **3.10 Documentación del código:** Detalla la estructura de directorios del proyecto MERN y las dependencias utilizadas en el sistema de la cafetería.

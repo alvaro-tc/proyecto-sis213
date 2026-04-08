@@ -272,7 +272,14 @@ Los TPS han recorrido un largo camino desde las terminales monolíticas de los a
 
 ## Arquitectura de sistemas web
 
-La arquitectura del sistema POS se basa en el modelo Cliente–Servidor, una de las estructuras más utilizadas en aplicaciones web modernas por su capacidad de separación de responsabilidades, escalabilidad y mantenimiento [@sommerville2015].
+La arquitectura del sistema POS se basa en el modelo Cliente–Servidor, una de las estructuras más utilizadas en aplicaciones web modernas por su capacidad de separación de responsabilidades, escalabilidad y mantenimiento [@sommerville2015]. Siguiendo este diagrama:
+
+\begin{diagrama}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{assets/diagrama/arquitectura_mern.png}
+\caption{Diagrama de Arquitectura MERN}
+\label{diag:arquitectura_mern}
+\end{diagrama}
 
 ### Cliente
 

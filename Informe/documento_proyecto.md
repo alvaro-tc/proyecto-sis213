@@ -432,9 +432,31 @@ Es un marco de trabajo ágil para el desarrollo, entrega y mantenimiento de prod
 
 # MARCO PRÁCTICO — DESARROLLO DEL SISTEMA TPS
 
-## Análisis del sistema
+# Análisis del sistema
 
-En base a la recopilación de datos, la estructura organizacional del sistema identifica diversos actores: Administradores, quienes tienen control global; y Operadores, quienes ejecutan diariamente transacciones asociadas a los procesos de negocio. El flujo de procesos demanda digitalizar desde el ingreso del actor al sistema, registro de eventos, hasta la confirmación e impacto histórico.
+En base a la recopilación de datos realizada mediante entrevistas al personal y observación directa del flujo operativo de la cafetería, se identifican los siguientes actores, procesos y flujos que el sistema debe digitalizar.
+
+**Actores del sistema:**
+
+La cafetería opera con tres actores principales que interactúan con el sistema en distintos niveles de privilegio:
+
+- **Administrador:** Actor con control total del sistema. Gestiona el catálogo de productos, categorías y precios; administra usuarios y roles; supervisa el inventario de insumos; genera reportes financieros y de ventas; y toma decisiones estratégicas apoyadas en los indicadores del _dashboard_.
+- **Cajero / Operador POS:** Actor de atención directa. Registra ventas, selecciona productos del menú digital, asigna la mesa correspondiente, procesa el cobro y emite el comprobante digital al cliente.
+- **Encargado de Cocina:** Actor de apoyo operativo. Recibe notificaciones de pedidos en producción, actualiza la disponibilidad de productos cuando un insumo se agota y gestiona el menú semanal disponible.
+
+**Procesos principales identificados:**
+
+1. **Proceso de venta:** El cajero construye el pedido seleccionando productos del menú digital → asigna la mesa → el sistema calcula automáticamente el subtotal → se selecciona el método de pago (efectivo o QR) → el _backend_ procesa la transacción de forma atómica → se emite el comprobante digital → el inventario se descuenta automáticamente.
+
+2. **Proceso de gestión de inventario:** El administrador registra insumos y productos con su stock inicial → el sistema descuenta automáticamente al registrar cada venta → cuando un insumo alcanza el nivel mínimo, el sistema emite una alerta → el administrador genera la orden de compra vinculada al proveedor correspondiente → al recibir la mercadería, se registra la entrada y el stock se actualiza.
+
+3. **Proceso de gestión de menú:** El encargado de cocina actualiza semanalmente los productos disponibles → asigna precios de venta y costos de producción → agrupa productos por categoría (bebidas calientes, jugos, almuerzos, _snacks_, postres) → marca productos como no disponibles cuando el insumo se agota → gestiona combos y menús del día.
+
+4. **Proceso de reportes:** El administrador consulta el _dashboard_ con indicadores en tiempo real → filtra ventas por día, semana o mes → analiza productos más vendidos, horas pico, márgenes por categoría y comparativos históricos → exporta reportes en PDF.
+
+**Flujo de datos del sistema:**
+
+El flujo de información sigue la dirección: **Entrada (interfaz POS / administración)** → **Procesamiento (_backend_ Node.js/Express.js con validación JWT)** → **Persistencia (MongoDB)** → **Salida (reportes, comprobantes PDF, alertas de stock, _dashboard_)**. Cada transacción queda vinculada al cajero que la ejecutó, la mesa asignada, los productos con sus precios en ese instante y la fecha y hora exactas, garantizando trazabilidad completa y soporte a auditorías.
 
 ![Ejemplo de prueba en el análisis del sistema](assets/images/ejemplo.png){#fig:ejemplo_analisis width=65%}
 
@@ -442,43 +464,220 @@ En base a la recopilación de datos, la estructura organizacional del sistema id
 
 ### Requerimientos funcionales
 
-Los requerimientos funcionales expresan lo que el sistema **debe hacer** operativamente.
+Los requerimientos funcionales expresan lo que el sistema **debe hacer** operativamente. Se organizan por módulo funcional según el análisis del sistema.
 
-- **RF01:** El sistema permitirá registrar nuevos usuarios operativos.
-- **RF02:** El sistema permitirá a los usuarios iniciar y cerrar sesión de manera segura.
-- **RF03:** El sistema permitirá al administrador asignar o revocar roles de acceso.
-- **RF04:** El sistema permitirá registrar un nuevo proceso organizacional básico.
-- **RF05:** El sistema permitirá el registro consecutivo de transacciones asociadas a un proceso.
-- **RF06:** El sistema permitirá generar reportes tabulados basados en un rango de fechas.
+**4.1 Gestión de Ventas y Pedidos**
+
+\begingroup\small
+\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
+\endhead
+RF-01 & Registrar cada venta con detalle: producto, cantidad, precio y hora de transacción. & Cajero/Admin & Media \\ \hline
+RF-08 & Recibir pedidos que ya están hechos o que están en producción. & Admin/Cajero & Media \\ \hline
+RF-09 & Notificar que el pedido del cliente está preparado o en producción. & Enc. cocina/Admin & Media \\ \hline
+RF-11 & Emitir comprobantes o tickets digitales al cliente al momento del pago. & Cajero/Admin & Media \\ \hline
+RF-12 & Soportar múltiples formas de pago: efectivo, código QR. & Cajero/Admin & Alta \\ \hline
+RF-13 & Visualizar historial de ventas filtrado por día, semana o mes. & Admin & Media \\ \hline
+RF-14 & Cancelar o modificar pedidos antes de su despacho, con trazabilidad del cambio. & Cajero/Admin & Alta \\ \hline
+\caption{Requerimientos funcionales — Gestión de Ventas y Pedidos}
+\label{tab:rf_ventas}
+\end{longtable}
+\endgroup
+
+**4.2 Control de Inventario**
+
+\begingroup\small
+\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
+\endhead
+RF-03 & Registrar todos los productos e insumos con su stock actual y unidad de medida. & Admin & Alta \\ \hline
+RF-15 & Descontar automáticamente del inventario al momento de registrar una venta. & Sistema/Admin & Alta \\ \hline
+RF-16 & Emitir alertas automáticas cuando un insumo alcance el nivel mínimo de stock. & Sistema/Admin & Alta \\ \hline
+RF-17 & Registrar entradas de mercadería vinculadas a órdenes de compra y proveedores. & Admin & Alta \\ \hline
+RF-18 & Identificar productos con alta rotación y aquellos con riesgo de desperdicio. & Admin & Media \\ \hline
+RF-19 & Generar reportes de merma y diferencias de inventario. & Admin & Media \\ \hline
+\caption{Requerimientos funcionales — Control de Inventario}
+\label{tab:rf_inventario}
+\end{longtable}
+\endgroup
+
+**4.3 Gestión de Menú y Productos**
+
+\begingroup\small
+\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
+\endhead
+RF-05 & Crear, editar y desactivar productos del menú de forma rápida y sencilla. & Enc. cocina/Admin & Media \\ \hline
+RF-06 & Asignar precios de venta y costos de producción a cada producto para calcular el margen real. & Admin & Alta \\ \hline
+RF-07 & Agrupar productos por categorías: bebidas calientes, jugos, almuerzos, \emph{snacks}, postres, etc. & Admin & Alta \\ \hline
+RF-10 & Elaborar el menú disponible semanal actualizado. & Enc. cocina/Admin & Media \\ \hline
+RF-20 & Marcar productos como no disponibles cuando el insumo correspondiente se haya agotado. & Enc. cocina/Admin & Alta \\ \hline
+RF-21 & Gestionar combos o menús del día con precios especiales. & Admin & Media \\ \hline
+\caption{Requerimientos funcionales — Gestión de Menú y Productos}
+\label{tab:rf_menu}
+\end{longtable}
+\endgroup
+
+**4.4 Reportes y Apoyo a la Toma de Decisiones**
+
+\begingroup\small
+\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
+\endhead
+RF-04 & Reporte de productos más vendidos para identificar los artículos estrella del menú. & Admin & Media \\ \hline
+RF-22 & Generar reporte de ingresos diarios, semanales y mensuales con comparativos históricos. & Admin & Alta \\ \hline
+RF-23 & Analizar horas pico para optimizar la asignación de personal por turno. & Admin & Media \\ \hline
+RF-24 & Comparar costos versus ingresos por producto y por categoría. & Admin & Alta \\ \hline
+RF-25 & Mostrar un panel de control (\emph{dashboard}) con indicadores clave en tiempo real. & Admin & Alta \\ \hline
+\caption{Requerimientos funcionales — Reportes y Toma de Decisiones}
+\label{tab:rf_reportes}
+\end{longtable}
+\endgroup
+
+**4.5 Gestión de Proveedores y Compras**
+
+\begingroup\small
+\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
+\endhead
+RF-02 & Registrar proveedores con sus datos de contacto y condiciones comerciales. & Admin & Media \\ \hline
+RF-26 & Generar y registrar órdenes de compra vinculadas automáticamente al inventario. & Admin & Alta \\ \hline
+RF-27 & Mantener historial de compras por proveedor para evaluación y negociación. & Admin & Media \\ \hline
+RF-28 & Registrar precios de compra históricos para analizar variaciones de costo. & Admin & Media \\ \hline
+\caption{Requerimientos funcionales — Gestión de Proveedores y Compras}
+\label{tab:rf_proveedores}
+\end{longtable}
+\endgroup
+
+**4.6 Gestión de Personal y Turnos**
+
+\begingroup\small
+\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
+\endhead
+RF-29 & Registrar datos básicos de empleados: nombre, cargo y turno asignado. & Admin & Media \\ \hline
+RF-30 & Asociar cada venta al empleado que la realizó para garantizar trazabilidad y control. & Admin & Alta \\ \hline
+RF-31 & Registrar asistencia y puntualidad por turno. & Admin & Baja \\ \hline
+RF-32 & Gestionar permisos de acceso diferenciados por rol: administrador y cajero/operario. & Admin & Alta \\ \hline
+\caption{Requerimientos funcionales — Gestión de Personal y Turnos}
+\label{tab:rf_personal}
+\end{longtable}
+\endgroup
 
 ### Requerimientos no funcionales
 
 Establecen las restricciones y la forma en cómo debe operar y comportarse estructuralmente la aplicación.
 
-- **Seguridad:** Encriptación de contraseñas usando algoritmos seguros (ej. _bcrypt_) y comunicaciones seguras.
-- **Rendimiento:** Tiempos de respuesta para guardado de transacciones menores a 2 segundos en carga moderada.
-- **Usabilidad:** Interfaces intuitivas, adaptables a monitores de escritorio (diseño responsivo).
-- **Disponibilidad:** Arquitectura preparada para mantener disponibilidad en un entorno de servidor las 24 horas.
-- **Escalabilidad:** Separación modular del código que facilite agregar futuros módulos sin modificar el núcleo operativo.
+\begingroup\small
+\begin{longtable}{|p{1.2cm}|p{6.5cm}|p{2.5cm}|p{1.8cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Categoría & \bfseries \color{white} Prioridad \\ \hline
+\endhead
+RNF-01 & El registro de cada venta no debe superar los 5 segundos de respuesta. & Rendimiento & Media \\ \hline
+RNF-02 & Cada registro de venta se realizará con un \emph{token} para verificación e historial del administrador. & Confiabilidad & Alta \\ \hline
+RNF-03 & Control de acceso mediante usuario y contraseña con roles diferenciados. & Seguridad & Alta \\ \hline
+RNF-04 & Adición de claves únicas para reservas o llegadas de pedidos, evitando valores duplicados. & Disponibilidad & Media \\ \hline
+RNF-05 & Arquitectura que permita incorporar nuevos productos, usuarios o sucursales sin rediseño del sistema. & Escalabilidad & Alta \\ \hline
+RNF-06 & Interfaz intuitiva que permita operar al personal sin capacitación técnica avanzada. & Usabilidad & Alta \\ \hline
+RNF-07 & Diseño adaptado para uso en pantallas de mostrador. & Usabilidad & Media \\ \hline
+RNF-08 & El sistema debe estar disponible durante todo el horario de operación sin interrupciones no planificadas. & Disponibilidad & Alta \\ \hline
+RNF-09 & Las consultas de reportes deben completarse en menos de 10 segundos. & Rendimiento & Media \\ \hline
+RNF-10 & Protección de datos sensibles frente a accesos no autorizados. & Seguridad & Alta \\ \hline
+RNF-11 & Respaldo automático de datos para evitar pérdida de información. & Confiabilidad & Alta \\ \hline
+RNF-12 & Posibilidad de recuperar datos de los últimos 30 días. & Confiabilidad & Alta \\ \hline
+RNF-13 & El sistema debe contar con documentación técnica para facilitar mantenimiento. & Mantenibilidad & Media \\ \hline
+\caption{Requerimientos no funcionales del Sistema POS}
+\label{tab:rnf}
+\end{longtable}
+\endgroup
 
 ## Modelado del sistema
 
 ### Historias de Usuario
 
-Se definen detallando la necesidad y la regla de aceptación:
+Las historias de usuario se redactan siguiendo el formato estándar: _Como_ [rol], _quiero_ [acción], _para_ [beneficio]. Se ordenan por módulo funcional y se acompañan de criterios de aceptación que sirven como base para las pruebas de validación.
 
-- _Como_ administrador, _quiero_ registrar y eliminar usuarios _para_ controlar estrictamente el acceso a la plataforma corporativa.
-- _Como_ operador de sistemas, _quiero_ registrar una transacción en tiempo de ejecución _para_ avanzar en mi cuota diaria de procesos.
+**Módulo de autenticación y roles:**
+
+- _Como_ administrador, _quiero_ crear y gestionar cuentas de usuario con roles diferenciados _para_ garantizar que cada empleado acceda únicamente a las funciones de su responsabilidad.
+  - _Criterio de aceptación:_ Un cajero que intente acceder a la sección de reportes o administración recibe un error 403 y es redirigido a su panel POS.
+
+- _Como_ cajero, _quiero_ iniciar sesión con mis credenciales de forma rápida _para_ comenzar a operar el POS sin demoras al inicio del turno.
+  - _Criterio de aceptación:_ El _login_ exitoso redirige al panel POS en menos de 2 segundos y el _token_ JWT expira automáticamente al cerrar sesión.
+
+**Módulo de ventas y pedidos:**
+
+- _Como_ cajero en turno, _quiero_ seleccionar productos del menú digital por categoría y agregarlos al carrito _para_ construir el pedido del cliente de forma ágil y sin errores de suma.
+  - _Criterio de aceptación:_ El subtotal se actualiza en tiempo real con cada producto añadido o eliminado; el sistema no permite confirmar el cobro si el carrito está vacío.
+
+- _Como_ cajero, _quiero_ cancelar o modificar un pedido antes de su despacho _para_ corregir errores del cliente sin afectar la contabilidad.
+  - _Criterio de aceptación:_ La modificación queda registrada en la bitácora con fecha, hora y usuario que realizó el cambio.
+
+- _Como_ cajero, _quiero_ emitir un comprobante digital al cliente al momento del pago _para_ acreditar la transacción de forma inmediata.
+  - _Criterio de aceptación:_ El sistema genera el PDF del comprobante en menos de 3 segundos tras confirmar el cobro.
+
+**Módulo de inventario:**
+
+- _Como_ administrador, _quiero_ que el sistema descuente automáticamente los insumos del inventario al registrar cada venta _para_ mantener el stock actualizado sin intervención manual.
+  - _Criterio de aceptación:_ El stock de cada insumo se reduce correctamente tras cada venta confirmada; si el stock llega al mínimo, el sistema emite una alerta visible en el _dashboard_.
+
+- _Como_ administrador, _quiero_ registrar la entrada de mercadería vinculada a una orden de compra _para_ mantener el historial de compras por proveedor y actualizar el inventario.
+  - _Criterio de aceptación:_ La entrada de mercadería incrementa el stock del insumo correspondiente y queda vinculada al proveedor y la orden de compra en el historial.
+
+**Módulo de menú y productos:**
+
+- _Como_ encargado de cocina, _quiero_ marcar un producto como no disponible cuando su insumo se agota _para_ evitar que los cajeros lo incluyan en pedidos que no podrán completarse.
+  - _Criterio de aceptación:_ El producto marcado como no disponible desaparece de la interfaz POS del cajero en tiempo real y reaparece al actualizarse el stock.
+
+- _Como_ administrador, _quiero_ asignar precios de venta y costos de producción a cada producto _para_ calcular el margen real de cada ítem del menú.
+  - _Criterio de aceptación:_ El sistema calcula y muestra el margen porcentual en el panel de administración de productos.
+
+**Módulo de reportes:**
+
+- _Como_ administrador, _quiero_ visualizar un _dashboard_ con indicadores clave en tiempo real _para_ tomar decisiones operativas durante el turno sin necesidad de generar reportes manuales.
+  - _Criterio de aceptación:_ El _dashboard_ muestra ventas del día, productos más vendidos, alertas de stock crítico y total de ingresos actualizados en intervalos menores a 30 segundos.
+
+- _Como_ administrador, _quiero_ generar reportes de ingresos por día, semana o mes con comparativos históricos _para_ analizar la evolución financiera del negocio.
+  - _Criterio de aceptación:_ El reporte se genera en PDF en menos de 10 segundos y refleja exactamente los datos de las transacciones registradas en el período seleccionado.
 
 ### Diagramas UML
 
-A continuación se muestra un ejemplo genérico de la estructura de un diagrama, en este caso, se deben incrustar aquí los diagramas correspondientes: Diagramas de Casos de Uso, Clases, Secuencia y Actividades generados en herramientas tipo StarUML o Drawio.
+Los diagramas UML del sistema han sido elaborados en la herramienta Draw.io y se adjuntan como evidencia gráfica del diseño funcional. Se incluyen los siguientes tipos de diagrama:
+
+**Diagrama de Casos de Uso:**
+Representa las interacciones entre los actores del sistema (Administrador, Cajero, Encargado de Cocina) y los casos de uso identificados durante el análisis. Los casos de uso principales son: _Gestionar productos_, _Gestionar usuarios_, _Registrar venta_, _Emitir comprobante_, _Consultar inventario_, _Generar reporte_ y _Gestionar menú_.
 
 \begin{diagrama}[H]
 \centering
-\includegraphics[width=0.65\linewidth]{assets/diagrama/diagrama.png}
-\caption{Ejemplo general de Diagrama Estructural UML}
-\label{diag:ejemplo_diagrama}
+\includegraphics[width=0.85\linewidth]{assets/diagrama/casos_de_uso.png}
+\caption{Diagrama de Casos de Uso del Sistema POS}
+\label{diag:casos_uso}
+\end{diagrama}
+
+**Diagrama de Clases:**
+Modela la estructura estática del sistema mediante las entidades principales y sus relaciones. Las clases identificadas son: `Usuario` (con atributos: id, nombre, email, contraseña, rol), `Producto` (id, nombre, precio, costo, categoría, disponible, stock), `Categoría` (id, nombre), `Orden` (id, usuario_id, mesa, estado, total, fecha, cartItems[ ]), `ItemOrden` (producto_id, cantidad, precioUnitario), `Proveedor` (id, nombre, contacto, condiciones) e `Inventario` (producto_id, stockActual, stockMínimo).
+
+\begin{diagrama}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{assets/diagrama/clases.png}
+\caption{Diagrama de Clases del Sistema POS}
+\label{diag:clases}
+\end{diagrama}
+
+**Diagrama de Actividades:**
+Representa el flujo de actividades del proceso principal del sistema: el ciclo completo de una venta, desde que el cajero inicia sesión hasta que se emite el comprobante y se actualiza el inventario.
+
+\begin{diagrama}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{assets/diagrama/actividades.png}
+\caption{Diagrama de Actividades — Flujo de Venta}
+\label{diag:actividades}
 \end{diagrama}
 
 ## Diseño del sistema
@@ -499,7 +698,7 @@ Se diseña bajo el paradigma relacional para modelar las entidades y su cardinal
 \rowcolor{headerblue} \bfseries \color{white} Campo & \bfseries \color{white} Tipo & \bfseries \color{white} Llave & \bfseries \color{white} Descripción \\ \hline
 \endhead
 id & Int & Primaria (PK) & Identificador único de la transacción. \\ \hline
-usuario\_id & Int & Foránea (FK) & Código del usuario responsable. \\ \hline
+usuario_id & Int & Foránea (FK) & Código del usuario responsable. \\ \hline
 fecha & Datetime & Ninguna & Fechas y hora de ejecución. \\ \hline
 estado & Varchar & Ninguna & Estado lógico de la transacción. \\ \hline
 \caption{Ejemplo de diccionario para tabla de Base de Datos}
@@ -579,8 +778,6 @@ Se acompañan como anexos técnicos o repositorios vinculados:
   - **Librerías y Dependencias Frontend:** Uso de `react` para la construcción de interfaces de usuario interactivas del POS, `react-router-dom` para la navegación entre el terminal de cobro y el panel de administración, y `axios` para consumir las rutas RESTful del backend asíncronamente.
 
 \newpage
-
-
 
 # Referencias Bibliográficas {-}
 

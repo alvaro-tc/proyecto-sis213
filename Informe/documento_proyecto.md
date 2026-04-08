@@ -99,13 +99,13 @@ El Administrador accede al módulo de reportes para consultar el resumen financi
 
 ## Formulación del Problema
 
-¿De qué manera el desarrollo e implementación de un Sistema de Información Organizacional Web basado en el enfoque de Procesamiento de Transacciones (TPS), construido sobre la arquitectura MERN, puede optimizar la gestión de pedidos, la administración de mesas, el control de usuarios por roles, el procesamiento de cobros y la generación de reportes financieros en una cafetería de la ciudad de La Paz, reduciendo los errores operativos y garantizando la trazabilidad e integridad de cada transacción?
+¿Cómo el desarrollo de un prototipo funcional basado en el procesamiento de transacciones permite proyectar una reducción en los errores operativos y una mejora en el control de usuarios por roles, asegurando la consistencia de los datos financieros desde una arquitectura web?
 
 ## Objetivos
 
 ### Objetivo General
 
-Desarrollar un Sistema Web de Punto de Venta (POS) para cafeterías, basado en la arquitectura MERN (MongoDB, Express.js, React.js, Node.js), que permita optimizar la gestión integral de pedidos, la administración visual de mesas y la facturación automatizada, reduciendo los errores operativos y mejorando la experiencia del cliente en establecimientos gastronómicos medianos de la ciudad de La Paz.
+Desarrollar un prototipo funcional de un Sistema de Información Organizacional Web basado en el enfoque de Procesamiento de Transacciones (TPS), que permita gestionar procesos, usuarios, transacciones y reportes mediante una arquitectura _backend_ funcional, con el propósito de proyectar una reducción en los errores operativos y una mejora en el control de usuarios por roles, asegurando la consistencia de los datos financieros desde una arquitectura web.
 
 ### Objetivos Específicos
 
@@ -121,41 +121,76 @@ Desarrollar un Sistema Web de Punto de Venta (POS) para cafeterías, basado en l
 
 - Desplegar el sistema en infraestructura _cloud_ (AWS o DigitalOcean) utilizando contenedores Docker para garantizar la portabilidad, disponibilidad y escalabilidad del entorno productivo.
 
-**Nivel 2 — Diagrama de Contenedores (_Containers_):**
-Descompone el sistema en sus grandes bloques tecnológicos desplegables: las aplicaciones, los servicios y los almacenes de datos que lo componen. Para el Sistema POS, este nivel revela los tres contenedores principales de la arquitectura MERN: la **Aplicación Web** (_Single Page Application_ en React.js, ejecutada en el navegador del operador), la **API REST** (servidor Node.js/Express.js desplegado en un contenedor Docker en AWS EC2) y la **Base de Datos** (instancia de MongoDB). Este diagrama responde: ¿cómo está estructurado técnicamente el sistema y cómo se comunican sus partes?
+## Justificación
 
-**Nivel 3 — Diagrama de Componentes (_Components_):**
-Profundiza dentro de un contenedor específico, mostrando los componentes lógicos que lo integran y sus responsabilidades. Para el contenedor de la **API REST**, los componentes serían: el _Router de Autenticación_ (gestiona el registro y _login_), el _Middleware JWT_ (valida tokens en cada petición), el _Controlador de Órdenes_ (maneja el ciclo de vida de los pedidos), el _Controlador de Productos_ (gestiona el catálogo del menú), el _Controlador de Mesas_ (administra el estado de las mesas) y el _Generador de Reportes PDF_ (produce los comprobantes de venta). Este nivel responde: ¿qué hace cada parte interna del contenedor?
+### Justificación Técnica
+El desarrollo de este prototipo se fundamenta en la implementación de una arquitectura web moderna y de alta disponibilidad, estructurada bajo el entorno Cliente-Servidor empleando el stack MERN. Esta elección garantiza una separación absoluta entre la interfaz de usuario y la lógica de negocio. Se construirá un backend funcional y asíncrono utilizando Node.js y Express.js, optimizado para el procesamiento rápido de múltiples transacciones concurrentes (TPS). Para la persistencia de datos, se utilizará MongoDB, una base de datos orientada a documentos que otorga la flexibilidad necesaria para manejar carritos de compra dinámicos y catálogos escalables. En términos de seguridad, el sistema prescindirá del manejo tradicional de sesiones, implementando en su lugar autenticación sin estado mediante JSON Web Tokens (JWT) y el cifrado irreversible de contraseñas con el algoritmo Bcrypt. Esta infraestructura dota al sistema de una alta escalabilidad técnica, permitiendo futuras integraciones o el despliegue en infraestructuras en la nube (Cloud Hosting) sin necesidad de refactorizar el código base.
 
-**Nivel 4 — Código (_Code_):**
-Es el nivel más detallado y opcional, representado mediante diagramas de clases UML o directamente a través del código fuente documentado. Para el Sistema POS, este nivel se materializa en los esquemas de _Mongoose_ (`UserSchema`, `ProductSchema`, `OrderSchema`, `TableSchema`) y en la estructura de clases o módulos del _frontend_ React. Su propósito es responder: ¿cómo está implementado internamente cada componente?
+### Justificación Organizacional
+A nivel organizacional, el prototipo representa un salto cualitativo en la gestión de procesos internos de la cafetería. La automatización de transacciones permite estandarizar el ciclo de servicio, eliminando las ambigüedades y retrasos propios de los procesos manuales y la comunicación verbal. Se establecerá un estricto control de usuarios mediante la implementación de un modelo de acceso basado en roles (RBAC), asegurando que los operadores (cajeros) y los tomadores de decisiones (administradores) interactúen únicamente con las interfaces y datos correspondientes a sus responsabilidades. Además, la capacidad del sistema para la generación de reportes automáticos dotará a la gerencia de información estructurada y en tiempo real sobre el rendimiento del negocio, transformando datos aislados en conocimiento estratégico.
 
-La adopción del Modelo C4 en este proyecto garantiza que la arquitectura MERN quede documentada de forma consistente y navegable, facilitando la incorporación de nuevos desarrolladores al equipo y la comunicación técnica con el cliente. Los diagramas de Contexto y Contenedores se incluyen en el presente informe; los de Componentes y Código se desarrollan en el Marco Práctico.
+### Justificación Económica
+La viabilidad y necesidad del proyecto se sustentan en el impacto financiero positivo que genera la digitalización. La implementación del TPS asegura una drástica reducción de errores operativos; al automatizar el cálculo de subtotales, impuestos y cambio, se eliminan los recurrentes descuadres de caja diarios. Esto se traduce inmediatamente en la prevención de fugas de capital. Asimismo, la optimización del tiempo por cada transacción permite aumentar la capacidad de atención en horas pico (mayor rotación de mesas), elevando los ingresos. A mediano plazo, estas mejoras operativas confluyen en una notable reducción de costos operativos y administrativos.
+
+
+## Límites y Alcances
+
+### Límites
+El alcance del presente proyecto se enmarca dentro de las siguientes restricciones técnicas y operativas:
+* El sistema será exclusivamente web, requiriendo un navegador moderno y conexión a la red local o internet para su funcionamiento.
+* Se utilizará una base de datos NoSQL (MongoDB) en lugar de una base de datos relacional tradicional, priorizando la agilidad en la estructura de los pedidos (documentos).
+* Tendrá un sistema de autenticación de usuarios interno y cerrado; no se permitirá el registro público ni el inicio de sesión con redes sociales.
+* No incluirá integración con sistemas externos en esta fase (como plataformas de delivery de terceros, o pasarelas de impuestos gubernamentales directas).
+
+### Alcances
+El sistema funcional entregado al finalizar el proyecto permitirá realizar las siguientes operaciones:
+* Gestionar procesos operativos centrales, incluyendo la asignación y liberación de mesas de la cafetería.
+* Gestionar usuarios y roles, otorgando permisos específicos para la administración del menú o la operación de la caja.
+* Registrar transacciones comerciales en tiempo real, almacenando el detalle exacto de cada venta de manera inmutable.
+* Generar reportes financieros e históricos de ventas filtrados por fechas o turnos.
+* Administrar información maestra del negocio, como el alta, baja y modificación de productos, precios y categorías del catálogo.
+
+
+## Metodología del Proyecto
+
+### Tipo de estudio
+La presente investigación se define bajo tres enfoques metodológicos:
+* **Aplicado:** Ya que no se limita a la investigación teórica, sino que busca resolver un problema operativo concreto de la cafetería mediante la construcción de una herramienta útil.
+* **Tecnológico:** Debido a que el núcleo de la solución requiere la aplicación de ingeniería de software, lenguajede programación y arquitecturas de sistemas modernos.
+* **Descriptivo:** Puesto que requiere analizar, detallar y comprender la naturaleza del flujo de trabajo actual de la organización para poder traducirlo a requerimientos de software.
+
+### Metodología de desarrollo
+Para la construcción del software se adoptará **Scrum**, un marco de trabajo ágil iterativo e incremental, ideal para proyectos tecnológicos donde los requerimientos pueden evolucionar.
+* **Sprint:** El desarrollo se dividirá en ciclos de trabajo cortos y de duración fija (ej. dos semanas), garantizando revisiones periódicas.
+* **Product Backlog:** Se manejará una lista priorizada con todos los requerimientos funcionales, técnicos y de interfaz que el sistema POS necesita para operar.
+* **Sprint Backlog:** En cada planificación, el equipo seleccionará un subconjunto de tareas del Product Backlog para diseñarlas, codificarlas y probarlas durante ese ciclo.
+* **Entregables:** Al finalizar cada Sprint, se presentará un incremento de software funcional (un módulo operativo, como el panel de login o la interfaz de toma de pedidos) listo para ser validado por los interesados.
+
+### Técnicas
+Para garantizar que el sistema capture fielmente la realidad del negocio y se diseñe con robustez técnica, se aplicarán las siguientes técnicas:
+
+* **Entrevistas:** Se realizarán entrevistas estructuradas a los actores clave (el administrador y el personal de caja). El objetivo es extraer requerimientos funcionales precisos, comprender los cuellos de botella actuales en la toma de pedidos y definir las métricas que la gerencia necesita visualizar en los reportes diarios.
+* **Observación:** Se aplicará la observación directa no participante durante las horas pico de la cafetería. Esta técnica es fundamental para mapear el flujo de trabajo real (tiempo de atención por cliente, comunicación entre caja y preparación, y manejo físico del efectivo), identificando fricciones operativas que las entrevistas podrían omitir.
+* **Análisis documental:** Se examinarán los registros físicos actuales de la organización (comandas de papel, libretas de contabilidad, inventarios manuales y facturas de proveedores). El análisis de estos documentos es el paso previo a la normalización de datos, permitiendo diseñar los esquemas exactos que conformarán la base de datos (MongoDB).
+* **Modelado UML:** Se utilizará el Lenguaje Unificado de Modelado como puente entre la recolección de datos y la codificación. Se elaborarán Diagramas de Casos de Uso para definir la interacción por roles; Diagramas de Actividades para trazar el flujo lógico del Procesamiento de Transacciones (desde el pedido hasta la factura); y Diagramas de Clases para estructurar las entidades del sistema.
+* **Modelo C4 (Técnica de Arquitectura):** Complementando a UML, se utilizará el modelo C4 para documentar la arquitectura web. Se elaborarán diagramas de Contexto (el sistema en su entorno), Contenedores (interacción entre React, Node.js y MongoDB), Componentes (controladores y servicios) y Código, facilitando la comprensión técnica del prototipo.
 
 ## Análisis preliminar del sistema TPS
 
-Como Ingeniero de Requerimientos y Datos, el análisis preliminar dictamina que la transición de una cafetería puramente manual a un entorno digital requiere modelar transacciones rápidas y precisas, integrando la gestión física del local (mesas). Se han especificado los siguientes requerimientos de persistencia y flujo:
+El relevamiento inicial demuestra que los **procesos actuales** de la cafetería son enteramente manuales. El ciclo de servicio se basa en la transcripción de pedidos en libretas, cálculos matemáticos mentales y arqueos de caja basados en anotaciones físicas. Los **problemas** derivados de esta operatividad son severos: pérdida constante de comandas, errores humanos en el cobro, lentitud en el servicio y una total falta de auditoría que resulta en discrepancias financieras. 
 
-- **Detalle de Usuarios (Actores y Control de Acceso):**
-  - **Administrador:** Actor con privilegios absolutos (_Full CRUD_). Su rol a nivel de datos implica alimentar las entidades maestras del sistema: gestión del catálogo de ítems de la cafetería (nombres, precios, imágenes, categorías como 'Cafés', 'Postres'), control de inventario base y la creación o inhabilitación de cuentas para el personal operativo.
-  - **Cajero / Operador POS:** Actor confinado a la interfaz de Punto de Venta. Su interacción con la base de datos es de lectura sobre el menú y de escritura intensiva sobre las colecciones/tablas de ventas, sin permisos para alterar precios históricos o borrar registros contables.
-- **Detalle de Transacciones (El Flujo de la Orden y Mesas):**
-  - **Transacción POS y Asignación:** Reemplazando por completo la libreta de papel, el nuevo flujo demanda que el cajero construya la orden mediante un panel interactivo con categorías. El modelo de datos requerirá que, antes de proceder al cobro, la colección del carrito de compras (compuesta por los ítems seleccionados y sus cantidades) sea vinculada obligatoriamente al nombre del cliente y al **número de mesa**.
-  - **Facturación y Cierre:** Una vez que se confirma el método de pago, el _backend_ debe procesar matemáticamente el subtotal, aplicar los impuestos correspondientes y sellar la transacción con la fecha exacta. El registro resultante en la base de datos se vuelve inmutable y dispara en el _frontend_ la opción de generar e imprimir la factura o ticket (_Bill/Receipt_), dando por finalizado el servicio para esa mesa.
+En cuanto a los **usuarios**, el personal opera sin una jerarquía digital; cualquiera puede modificar o anular un registro físico sin dejar rastro. Las **transacciones**, que deberían ser tratadas como eventos inmutables de entrada de capital, carecen de respaldo. Finalmente, la **información** generada por el negocio se pierde al finalizar el día, privando a la gerencia de datos históricos críticos para analizar qué productos se venden más o en qué horarios se requiere más personal.
+
 
 ## Propuesta de solución
 
-- **Sistema:** Sistema de Punto de Venta (POS) Web enfocado en TPS.
-- **Arquitectura:** Patrón Cliente — Servidor con separación de responsabilidades API REST y arquitectura de tres capas (presentación, lógica de negocio y datos) siguiendo el patrón MVC (Modelo-Vista-Controlador).
+Para resolver la problemática descrita, se propone el desarrollo y despliegue de un **Sistema de Información Organizacional Web**, específicamente orientado como un Punto de Venta (POS) transaccional.
 
-A continuación se presenta el diagrama de la arquitectura propuesta:
-
-\begin{diagrama}[H]
-\centering
-\includegraphics[width=0.85\linewidth]{assets/diagrama/arquitectura_mern.png}
-\caption{Diagrama de Arquitectura MERN de tres capas del Sistema POS}
-\label{diag:arquitectura_mern}
-\end{diagrama}
+* **Arquitectura:** El sistema se construirá bajo el patrón Cliente — Servidor, separando la capa de presentación visual de la capa de procesamiento lógico y acceso a datos, garantizando rendimiento y seguridad.
+* **Tecnologías seleccionadas:**
+    * **Backend (Servidor y Lógica):** Se desarrollará en **Node.js** utilizando el framework Express.js, creando una API RESTful encargada de la validación matemática, autenticación de usuarios y reglas de negocio.
+    * **Base de datos (Persistencia):** Se utilizará **MongoDB** (NoSQL), modelada mediante Mongoose, para almacenar de forma ágil y estructurada los usuarios, catálogos y el historial inmutable de órdenes de venta.
+    * **Frontend (Cliente y UI):** Se construirá con la biblioteca **React.js** (junto con HTML, CSS y JavaScript), desarrollando una interfaz de usuario interactiva, dinámica y adaptada a pantallas táctiles, que permita a los cajeros operar con máxima velocidad y mínima fricción.
 
 ## Cronograma
 
@@ -350,7 +385,9 @@ Es un marco de trabajo ágil para el desarrollo, entrega y mantenimiento de prod
 - **Sprint Review (Revisión):** Demostración del _software_ funcional al _Product Owner_ y partes interesadas al finalizar el _Sprint_ para recoger impresiones.
 - **Sprint Retrospective (Retrospectiva):** Espacio de mejora continua donde el equipo reflexiona sobre sus propios procesos de trabajo de cara a la siguiente iteración.
 
-# MARCO PRÁCTICO — DESARROLLO DEL SISTEMA TPS
+---
+
+# MARCO PRÁCTICO
 
 ## Análisis del sistema
 
@@ -577,21 +614,21 @@ Representa las interacciones entre los actores del sistema (Administrador, Cajer
 \centering
 \includegraphics[width=0.85\linewidth]{assets/diagrama/casos_de_uso1.png}
 \caption{Diagrama de Casos de Uso del Sistema POS}
-\label{diag:casos_uso}
+\label{diag:casos_uso_1}
 \end{diagrama}
 
 \begin{diagrama}[H]
 \centering
 \includegraphics[width=0.85\linewidth]{assets/diagrama/casos_de_uso2.png}
 \caption{Diagrama de Casos de Uso del Sistema POS}
-\label{diag:casos_uso}
+\label{diag:casos_uso_2}
 \end{diagrama}
 
 \begin{diagrama}[H]
 \centering
 \includegraphics[width=0.85\linewidth]{assets/diagrama/casos_de_uso3.png}
 \caption{Diagrama de Casos de Uso del Sistema POS}
-\label{diag:casos_uso}
+\label{diag:casos_uso_3}
 \end{diagrama}
 
 **Diagrama de Clases:**
@@ -614,7 +651,7 @@ Representa el flujo de actividades del proceso principal del sistema: el ciclo c
 \label{diag:actividades}
 \end{diagrama}
 
-## 3.4 Diseño del sistema
+## Diseño del sistema
 
 ### Arquitectura del sistema — Modelo C4
 
@@ -642,7 +679,6 @@ El Diagrama de Contexto es la vista de más alto nivel. Su propósito es mostrar
 
 El _Administrador_ y el _Cajero_ acceden al Sistema POS a través del protocolo HTTPS desde sus respectivos navegadores. El Sistema POS se comunica con la _Pasarela de Pagos_ mediante llamadas HTTP/REST para procesar cobros electrónicos, y reside desplegado en el _Servicio de Hosting Cloud_.
 
----
 
 #### Nivel 2 — Diagrama de Contenedores (_Containers_)
 
@@ -650,51 +686,54 @@ El Diagrama de Contenedores descompone el sistema en sus bloques tecnológicos d
 
 **Contenedor 1 — Aplicación Web SPA (Frontend)**
 
-| Atributo            | Detalle                                                                                                                                                                               |
-| :------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Tecnología**      | React.js 18 + Redux Toolkit + React Router DOM                                                                                                                                        |
-| **Tipo**            | Single Page Application (SPA) — ejecutada en el navegador                                                                                                                             |
-| **Responsabilidad** | Renderizar la interfaz del POS, el panel de administración y los reportes. Gestionar el estado global de la sesión y del carrito de compras.                                          |
-| **Comunicación**    | Envía peticiones HTTP/REST en formato JSON a la API Backend a través de `axios`. Recibe el JWT del backend y lo adjunta en la cabecera `Authorization` de cada petición subsiguiente. |
+\begingroup\small
+\begin{longtable}{|p{3cm}|p{9.5cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} Atributo & \bfseries \color{white} Detalle \\ \hline
+\endhead
+**Tecnología** & React.js 18 + Redux Toolkit + React Router DOM \\ \hline
+**Tipo** & Single Page Application (SPA) — ejecutada en el navegador \\ \hline
+**Responsabilidad** & Renderizar la interfaz del POS, el panel de administración y los reportes. Gestionar el estado global de la sesión y del carrito de compras. \\ \hline
+**Comunicación** & Envía peticiones HTTP/REST en formato JSON a la API Backend a través de \texttt{axios}. Recibe el JWT del backend y lo adjunta en la cabecera \texttt{Authorization} de cada petición subsiguiente. \\ \hline
+\caption{Especificaciones Técnicas del Frontend}
+\label{tab:especificaciones_frontend}
+\end{longtable}
+\endgroup
 
 **Contenedor 2 — API REST (Backend)**
 
-| Atributo            | Detalle                                                                                                                                                                                                                                                   |
-| :------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Tecnología**      | Node.js 20 LTS + Express.js 4                                                                                                                                                                                                                             |
-| **Tipo**            | Servidor de API RESTful — desplegado en contenedor Docker (AWS EC2)                                                                                                                                                                                       |
-| **Responsabilidad** | Exponer los _endpoints_ REST (`/api/auth`, `/api/users`, `/api/products`, `/api/tables`, `/api/orders`, `/api/payments`). Ejecutar la lógica de negocio, validaciones, cálculos transaccionales y control de acceso por roles mediante _middlewares_ JWT. |
-| **Comunicación**    | Recibe peticiones HTTPS del Frontend. Lee y escribe documentos en MongoDB a través del ODM Mongoose. Invoca la API de la Pasarela de Pagos externa cuando se procesa un cobro electrónico.                                                                |
+\begingroup\small
+\begin{longtable}{|p{3cm}|p{9.5cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} Atributo & \bfseries \color{white} Detalle \\ \hline
+\endhead
+**Tecnología** & Node.js 20 LTS + Express.js 4 \\ \hline
+**Tipo** & Servidor de API RESTful — desplegado en contenedor Docker (AWS EC2) \\ \hline
+**Responsabilidad** & Exponer los \textit{endpoints} REST (\texttt{/api/auth}, \texttt{/api/users}, \texttt{/api/products}, \texttt{/api/tables}, \texttt{/api/orders}, \texttt{/api/payments}). Ejecutar la lógica de negocio, validaciones, cálculos transaccionales y control de acceso por roles mediante \textit{middlewares} JWT. \\ \hline
+**Comunicación** & Recibe peticiones HTTPS del Frontend. Lee y escribe documentos en MongoDB a través del ODM Mongoose. Invoca la API de la Pasarela de Pagos externa cuando se procesa un cobro electrónico. \\ \hline
+\caption{Especificaciones Técnicas del Backend}
+\label{tab:especificaciones_backend}
+\end{longtable}
+\endgroup
 
 **Contenedor 3 — Base de Datos (MongoDB)**
 
-| Atributo            | Detalle                                                                                                                                                                         |
-| :------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Tecnología**      | MongoDB 7 (desplegado en contenedor Docker o MongoDB Atlas)                                                                                                                     |
-| **Tipo**            | Base de datos NoSQL orientada a documentos                                                                                                                                      |
-| **Responsabilidad** | Persistir de forma duradera todos los documentos del sistema: usuarios (`users`), productos (`products`), mesas (`tables`), órdenes (`orders`) y pagos (`payments`).            |
-| **Comunicación**    | Solo es accedida directamente por el Backend API a través del driver Mongoose. No expone puertos públicos; es accesible únicamente dentro de la red privada del entorno Docker. |
+\begingroup\small
+\begin{longtable}{|p{3cm}|p{9.5cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} Atributo & \bfseries \color{white} Detalle \\ \hline
+\endhead
+**Tecnología** & MongoDB 7 (desplegado en contenedor Docker o MongoDB Atlas) \\ \hline
+**Tipo** & Base de datos NoSQL orientada a documentos \\ \hline
+**Responsabilidad** & Persistir de forma duradera todos los documentos del sistema: usuarios (\texttt{users}), productos (\texttt{products}), mesas (\texttt{tables}), órdenes (\texttt{orders}) y pagos (\texttt{payments}). \\ \hline
+**Comunicación** & Solo es accedida directamente por el Backend API a través del driver Mongoose. No expone puertos públicos; es accesible únicamente dentro de la red privada del entorno Docker. \\ \hline
+\caption{Especificaciones Técnicas de la Base de Datos}
+\label{tab:especificaciones_bd}
+\end{longtable}
+\endgroup
 
-**Flujo de comunicación entre contenedores:**
 
-```
-[Navegador del Operador]
-        |  HTTPS / JSON
-        ▼
-[SPA React.js — Frontend]
-        |  HTTP/REST + JWT Header
-        ▼
-[API Node.js/Express.js — Backend]
-        |  Mongoose / MongoDB Protocol
-        ▼
-[Base de Datos MongoDB]
-```
-
-La separación en tres contenedores independientes garantiza que el Frontend pueda actualizarse sin afectar la API, y que la Base de Datos pueda migrarse a MongoDB Atlas sin modificar la lógica del Backend, favoreciendo la mantenibilidad y escalabilidad del sistema.
-
----
-
-## 3.5 Diseño de la Base de Datos
+## Diseño de la Base de Datos
 
 ### Paradigma de persistencia
 
@@ -702,7 +741,6 @@ El sistema adopta **MongoDB** como motor de base de datos NoSQL orientado a docu
 
 A pesar del paradigma documental, el diseño lógico preserva los principios de integridad referencial relacionales mediante el uso de `ObjectId` y la configuración `ref` de Mongoose, que permiten realizar operaciones de _populate_ (equivalentes a `JOIN`) entre colecciones relacionadas.
 
----
 
 ### Diccionarios de Datos
 
@@ -710,88 +748,119 @@ A pesar del paradigma documental, el diseño lógico preserva los principios de 
 
 Almacena los registros del personal operativo y administrativo con acceso al sistema.
 
-| Campo       | Tipo     | Requerido | Descripción                             | Notas Técnicas                                                                                                                      |
-| :---------- | :------- | :-------: | :-------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
-| `_id`       | ObjectId |  **Sí**   | Identificador único del documento.      | Generado automáticamente por MongoDB.                                                                                               |
-| `name`      | String   |  **Sí**   | Nombre completo del usuario.            | Mínimo 3 caracteres.                                                                                                                |
-| `email`     | String   |  **Sí**   | Dirección de correo electrónico.        | Validado con expresión regular. Indexado como `unique: true`.                                                                       |
-| `phone`     | Number   |  **Sí**   | Número de teléfono de contacto.         | Debe contener 10 dígitos.                                                                                                           |
-| `password`  | String   |  **Sí**   | Contraseña de acceso al sistema.        | Almacenada exclusivamente como _hash_ irreversible generado con **Bcrypt** (factor de coste: 10). Nunca se persiste en texto plano. |
-| `role`      | String   |  **Sí**   | Rol funcional asignado al usuario.      | Valores admitidos: `"Admin"` o `"Cashier"`. Determina los permisos de acceso a los _endpoints_ de la API.                           |
-| `createdAt` | Date     |  **Sí**   | Fecha y hora de creación del registro.  | Generado automáticamente por la opción `timestamps` de Mongoose.                                                                    |
-| `updatedAt` | Date     |  **Sí**   | Fecha y hora de la última modificación. | Actualizado automáticamente por la opción `timestamps` de Mongoose.                                                                 |
+\begingroup\small
+\begin{longtable}{|p{2.2cm}|p{1.5cm}|p{1.8cm}|p{3.5cm}|p{4.5cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} Campo & \bfseries \color{white} Tipo & \bfseries \color{white} Requerido & \bfseries \color{white} Descripción & \bfseries \color{white} Notas Técnicas \\ \hline
+\endhead
+\texttt{\_id} & ObjectId & \centering \textbf{Sí} & Identificador único del documento. & Generado automáticamente por MongoDB. \\ \hline
+\texttt{name} & String & \centering \textbf{Sí} & Nombre completo del usuario. & Mínimo 3 caracteres. \\ \hline
+\texttt{email} & String & \centering \textbf{Sí} & Dirección de correo electrónico. & Validado con expresión regular. Indexado como \texttt{unique: true}. \\ \hline
+\texttt{phone} & Number & \centering \textbf{Sí} & Número de teléfono de contacto. & Debe contener 10 dígitos. \\ \hline
+\texttt{password} & String & \centering \textbf{Sí} & Contraseña de acceso al sistema. & Almacenada como \textit{hash} irreversible con \textbf{Bcrypt} (coste: 10). Nunca en texto plano. \\ \hline
+\texttt{role} & String & \centering \textbf{Sí} & Rol funcional asignado al usuario. & Valores: \texttt{"Admin"} o \texttt{"Cashier"}. Determina permisos en los \textit{endpoints}. \\ \hline
+\texttt{createdAt} & Date & \centering \textbf{Sí} & Fecha y hora de creación del registro. & Generado automáticamente por \texttt{timestamps} de Mongoose. \\ \hline
+\texttt{updatedAt} & Date & \centering \textbf{Sí} & Fecha y hora de la última modificación. & Actualizado automáticamente por \texttt{timestamps} de Mongoose. \\ \hline
+\caption{Diccionario de datos: Colección Users}
+\label{tab:diccionario_users}
+\end{longtable}
+\endgroup                                                            |
 
----
 
 #### Colección: `tables`
 
 Gestiona la información de las mesas físicas del establecimiento y su estado operativo en tiempo real.
 
-| Campo          | Tipo     | Requerido | Descripción                                     | Notas Técnicas                                                                                                                  |
-| :------------- | :------- | :-------: | :---------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------ |
-| `_id`          | ObjectId |  **Sí**   | Identificador único del documento.              | Generado automáticamente por MongoDB.                                                                                           |
-| `tableNo`      | Number   |  **Sí**   | Número identificador de la mesa.                | Configurado como `unique: true`. No pueden existir dos mesas con el mismo número.                                               |
-| `status`       | String   |    No     | Estado operativo actual de la mesa.             | Valor por defecto: `"Available"`. Valores posibles: `"Available"` / `"Occupied"`.                                               |
-| `seats`        | Number   |  **Sí**   | Capacidad máxima de personas de la mesa.        | Número entero positivo. Ej: `4`, `6`.                                                                                           |
-| `currentOrder` | ObjectId |    No     | Referencia al pedido activo asignado a la mesa. | **Clave foránea lógica** → referencia al documento `_id` de la colección `orders`. Valor `null` cuando la mesa está disponible. |
 
----
+\begingroup\small
+\begin{longtable}{|p{2.2cm}|p{1.5cm}|p{1.8cm}|p{3.5cm}|p{4.5cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} Campo & \bfseries \color{white} Tipo & \bfseries \color{white} Requerido & \bfseries \color{white} Descripción & \bfseries \color{white} Notas Técnicas \\ \hline
+\endhead
+\texttt{\_id} & ObjectId & \centering \textbf{Sí} \arraybackslash & Identificador único del documento. & Generado automáticamente por MongoDB. \\ \hline
+\texttt{tableNo} & Number & \centering \textbf{Sí} \arraybackslash & Número identificador de la mesa. & Configurado como \texttt{unique: true}. No pueden existir dos mesas con el mismo número. \\ \hline
+\texttt{status} & String & \centering No \arraybackslash & Estado operativo actual de la mesa. & Valor por defecto: \texttt{"Available"}. Valores posibles: \texttt{"Available"} / \texttt{"Occupied"}. \\ \hline
+\texttt{seats} & Number & \centering \textbf{Sí} \arraybackslash & Capacidad máxima de personas de la mesa. & Número entero positivo. Ej: \texttt{4}, \texttt{6}. \\ \hline
+\texttt{currentOrder} & ObjectId & \centering No \arraybackslash & Referencia al pedido activo asignado a la mesa. & \textbf{Clave foránea lógica} $\rightarrow$ referencia al documento \texttt{\_id} de la colección \texttt{orders}. Valor \texttt{null} cuando la mesa está disponible. \\ \hline
+\caption{Diccionario de datos: Colección Tables}
+\label{tab:diccionario_tables}
+\end{longtable}
+\endgroup
+
 
 #### Colección: `payments`
 
 Registra los comprobantes de las transacciones financieras procesadas, almacenando los identificadores de seguimiento de la pasarela de pagos y el estado de cada operación.
 
-| Campo       | Tipo     | Requerido | Descripción                                             | Notas Técnicas                                                                                               |
-| :---------- | :------- | :-------: | :------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------- |
-| `_id`       | ObjectId |  **Sí**   | Identificador único del documento.                      | Generado automáticamente por MongoDB.                                                                        |
-| `paymentId` | String   |    No     | Identificador de la transacción en la pasarela externa. | Proporcionado por Razorpay o la pasarela configurada (ej. `pay_Abc123XYZ`).                                  |
-| `orderId`   | String   |    No     | Identificador del pedido asociado al pago.              | Relación lógica con la colección `orders`. Almacenado como `String` para compatibilidad con IDs de pasarela. |
-| `amount`    | Number   |    No     | Monto total de la transacción.                          | Valor numérico decimal. Representa el importe cobrado (con impuestos).                                       |
-| `currency`  | String   |    No     | Código de la moneda de la transacción.                  | Ej: `"BOB"` (Boliviano), `"USD"`, `"ARS"`.                                                                   |
-| `status`    | String   |    No     | Estado de la operación de pago.                         | Valores posibles: `"Captured"`, `"Pending"`, `"Failed"`, `"Refunded"`.                                       |
-| `method`    | String   |    No     | Canal o instrumento de pago utilizado.                  | Ej: `"Cash"`, `"Credit Card"`, `"QR"`, `"Razorpay"`.                                                         |
-| `email`     | String   |    No     | Correo electrónico del pagador.                         | Utilizado para el envío del comprobante digital.                                                             |
-| `contact`   | String   |    No     | Dato de contacto adicional del pagador.                 | Número de teléfono u otro identificador de contacto.                                                         |
-| `createdAt` | Date     |    No     | Fecha y hora de registro del pago.                      | Registrado manualmente mediante `Date.now()` al momento de procesar el cobro.                                |
+\begingroup\small
+\begin{longtable}{|p{2.2cm}|p{1.5cm}|p{1.8cm}|p{3.5cm}|p{4.5cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} Campo & \bfseries \color{white} Tipo & \bfseries \color{white} Requerido & \bfseries \color{white} Descripción & \bfseries \color{white} Notas Técnicas \\ \hline
+\endhead
+\texttt{\_id} & ObjectId & \centering \textbf{Sí} \arraybackslash & Identificador único del documento. & Generado automáticamente por MongoDB. \\ \hline
+\texttt{paymentId} & String & \centering No \arraybackslash & Identificador de la transacción en la pasarela externa. & Proporcionado por Razorpay o la pasarela configurada (ej. \texttt{pay\_Abc123XYZ}). \\ \hline
+\texttt{orderId} & String & \centering No \arraybackslash & Identificador del pedido asociado al pago. & Relación lógica con la colección \texttt{orders}. Almacenado como \texttt{String} para compatibilidad con IDs de pasarela. \\ \hline
+\texttt{amount} & Number & \centering No \arraybackslash & Monto total de la transacción. & Valor numérico decimal. Representa el importe cobrado (con impuestos). \\ \hline
+\texttt{currency} & String & \centering No \arraybackslash & Código de la moneda de la transacción. & Ej: \texttt{"BOB"} (Boliviano), \texttt{"USD"}, \texttt{"ARS"}. \\ \hline
+\texttt{status} & String & \centering No \arraybackslash & Estado de la operación de pago. & Valores posibles: \texttt{"Captured"}, \texttt{"Pending"}, \texttt{"Failed"}, \texttt{"Refunded"}. \\ \hline
+\texttt{method} & String & \centering No \arraybackslash & Canal o instrumento de pago utilizado. & Ej: \texttt{"Cash"}, \texttt{"Credit Card"}, \texttt{"QR"}, \texttt{"Razorpay"}. \\ \hline
+\texttt{email} & String & \centering No \arraybackslash & Correo electrónico del pagador. & Utilizado para el envío del comprobante digital. \\ \hline
+\texttt{contact} & String & \centering No \arraybackslash & Dato de contacto adicional del pagador. & Número de teléfono u otro identificador de contacto. \\ \hline
+\texttt{createdAt} & Date & \centering No \arraybackslash & Fecha y hora de registro del pago. & Registrado manualmente mediante \texttt{Date.now()} al momento de procesar el cobro. \\ \hline
+\caption{Diccionario de datos: Colección Payments}
+\label{tab:diccionario_payments}
+\end{longtable}
+\endgroup
 
----
 
 #### Colección: `orders`
 
 Constituye el eje central del sistema TPS. Registra cada transacción de venta de forma integral e inmutable, vinculando los datos del cliente, los productos consumidos, el detalle de facturación, la mesa asignada y el método de pago.
 
-| Campo             | Tipo     | Requerido | Descripción                                           | Notas Técnicas                                                                                                                                                                  |
-| :---------------- | :------- | :-------: | :---------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `_id`             | ObjectId |  **Sí**   | Identificador único del documento.                    | Generado automáticamente por MongoDB.                                                                                                                                           |
-| `customerDetails` | Object   |  **Sí**   | Datos del cliente para quien se abre el pedido.       | Objeto anidado con los sub-campos: `name` (String), `phone` (Number) y `guests` (Number).                                                                                       |
-| `orderStatus`     | String   |  **Sí**   | Estado actual del pedido en el flujo de servicio.     | Valores posibles: `"Pending"`, `"In Preparation"`, `"Served"`, `"Paid"`.                                                                                                        |
-| `orderDate`       | Date     |    No     | Fecha y hora de creación del pedido.                  | Valor por defecto: `Date.now()`.                                                                                                                                                |
-| `bills`           | Object   |  **Sí**   | Resumen de facturación calculado por el backend.      | Objeto anidado con los sub-campos: `total` (Number, subtotal sin impuesto), `tax` (Number, porcentaje de impuesto) y `totalWithTax` (Number, monto final a cobrar).             |
-| `items`           | Array    |    No     | Lista de productos incluidos en el pedido.            | Arreglo flexible de objetos. Cada elemento contiene el detalle del ítem (nombre, precio unitario, cantidad) desnormalizado al momento de la venta para inmutabilidad histórica. |
-| `table`           | ObjectId |    No     | Mesa física asignada al pedido.                       | **Clave foránea lógica** → referencia al documento `_id` de la colección `tables`.                                                                                              |
-| `paymentMethod`   | String   |    No     | Método de pago con el que se cerró el pedido.         | Ej: `"Cash"`, `"Razorpay"`.                                                                                                                                                     |
-| `paymentData`     | Object   |    No     | Datos de confirmación retornados por la pasarela.     | Objeto con los IDs de seguimiento de la transacción electrónica (ej. `razorpay_payment_id`, `razorpay_order_id`).                                                               |
-| `createdAt`       | Date     |  **Sí**   | Fecha y hora de registro del documento.               | Generado automáticamente por la opción `timestamps` de Mongoose.                                                                                                                |
-| `updatedAt`       | Date     |  **Sí**   | Fecha y hora de la última modificación del documento. | Actualizado automáticamente por la opción `timestamps` de Mongoose.                                                                                                             |
+\begingroup\small
+\begin{longtable}{|p{2.4cm}|p{1.4cm}|p{1.6cm}|p{3.2cm}|p{4.9cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} Campo & \bfseries \color{white} Tipo & \bfseries \color{white} Requerido & \bfseries \color{white} Descripción & \bfseries \color{white} Notas Técnicas \\ \hline
+\endhead
+\texttt{\_id} & ObjectId & \centering \textbf{Sí} \arraybackslash & Identificador único del documento. & Generado automáticamente por MongoDB. \\ \hline
+\texttt{customerDetails} & Object & \centering \textbf{Sí} \arraybackslash & Datos del cliente para quien se abre el pedido. & Objeto anidado con los sub-campos: \texttt{name} (String), \texttt{phone} (Number) y \texttt{guests} (Number). \\ \hline
+\texttt{orderStatus} & String & \centering \textbf{Sí} \arraybackslash & Estado actual del pedido en el flujo de servicio. & Valores posibles: \texttt{"Pending"}, \texttt{"In Preparation"}, \texttt{"Served"}, \texttt{"Paid"}. \\ \hline
+\texttt{orderDate} & Date & \centering No \arraybackslash & Fecha y hora de creación del pedido. & Valor por defecto: \texttt{Date.now()}. \\ \hline
+\texttt{bills} & Object & \centering \textbf{Sí} \arraybackslash & Resumen de facturación calculado por el backend. & Objeto anidado: \texttt{total} (subtotal), \texttt{tax} (\% impuesto) y \texttt{totalWithTax} (monto final). \\ \hline
+\texttt{items} & Array & \centering No \arraybackslash & Lista de productos incluidos en el pedido. & Arreglo de objetos. Contiene nombre, precio y cantidad desnormalizados para inmutabilidad. \\ \hline
+\texttt{table} & ObjectId & \centering No \arraybackslash & Mesa física asignada al pedido. & \textbf{Clave foránea lógica} $\rightarrow$ referencia al documento \texttt{\_id} de la colección \texttt{tables}. \\ \hline
+\texttt{paymentMethod} & String & \centering No \arraybackslash & Método de pago con el que se cerró el pedido. & Ej: \texttt{"Cash"}, \texttt{"Razorpay"}. \\ \hline
+\texttt{paymentData} & Object & \centering No \arraybackslash & Datos de confirmación retornados por la pasarela. & Contiene IDs de seguimiento (ej. \texttt{razorpay\_payment\_id}, \texttt{razorpay\_order\_id}). \\ \hline
+\texttt{createdAt} & Date & \centering \textbf{Sí} \arraybackslash & Fecha y hora de registro del documento. & Generado automáticamente por la opción \texttt{timestamps} de Mongoose. \\ \hline
+\texttt{updatedAt} & Date & \centering \textbf{Sí} \arraybackslash & Fecha y hora de la última modificación. & Actualizado automáticamente por la opción \texttt{timestamps} de Mongoose. \\ \hline
+\caption{Diccionario de datos: Colección Orders}
+\label{tab:diccionario_orders}
+\end{longtable}
+\endgroup
 
----
 
 ### Relaciones entre colecciones
 
 El modelo de datos, aunque documental (NoSQL), establece relaciones lógicas explícitas entre las colecciones mediante referencias `ObjectId`, preservando la integridad referencial del sistema TPS:
 
-| Relación                     | Cardinalidad | Descripción                                                                                                                                                                       |
-| :--------------------------- | :----------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `users` → `orders`           |  **1 : N**   | Un usuario (cajero) puede haber procesado múltiples órdenes a lo largo de su operación. Cada orden registra implícitamente al operador responsable de la sesión activa.           |
-| `tables` → `orders`          |  **1 : N**   | Una mesa puede estar asociada a múltiples órdenes a lo largo del tiempo (una por cada servicio). En un momento dado, solo una orden puede estar activa por mesa (`currentOrder`). |
-| `tables` → `orders` (activa) |  **1 : 1**   | En tiempo real, la relación entre una mesa y su pedido en curso es uno a uno: el campo `currentOrder` en `Table` apunta a exactamente un único documento activo en `orders`.      |
-| `orders` → `payments`        |  **1 : 1**   | Cada orden pagada genera exactamente un registro de pago en la colección `payments`. La relación se establece a través del campo `orderId` en `Payment`.                          |
+\begingroup\small
+\begin{longtable}{|p{4.5cm}|p{2.5cm}|p{7cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} Relación & \bfseries \color{white} Cardinalidad & \bfseries \color{white} Descripción \\ \hline
+\endhead
+\texttt{users} $\rightarrow$ \texttt{orders} & \centering \textbf{1 : N} \arraybackslash & Un usuario (cajero) puede haber procesado múltiples órdenes a lo largo de su operación. Cada orden registra implícitamente al operador responsable de la sesión activa. \\ \hline
+\texttt{tables} $\rightarrow$ \texttt{orders} & \centering \textbf{1 : N} \arraybackslash & Una mesa puede estar asociada a múltiples órdenes a lo largo del tiempo (una por cada servicio). En un momento dado, solo una orden puede estar activa por mesa (\texttt{currentOrder}). \\ \hline
+\texttt{tables} $\rightarrow$ \texttt{orders} (activa) & \centering \textbf{1 : 1} \arraybackslash & En tiempo real, la relación entre una mesa y su pedido en curso es uno a uno: el campo \texttt{currentOrder} en \texttt{Table} apunta a exactamente un único documento activo en \texttt{orders}. \\ \hline
+\texttt{orders} $\rightarrow$ \texttt{payments} & \centering \textbf{1 : 1} \arraybackslash & Cada orden pagada genera exactamente un registro de pago en la colección \texttt{payments}. La relación se establece a través del campo \texttt{orderId} en \texttt{Payment}. \\ \hline
+\caption{Relaciones y Cardinalidad del Modelo de Datos}
+\label{tab:relaciones_modelo}
+\end{longtable}
+\endgroup
 
----
 
 ## IMPLEMENTACIÓN DE LOS MÓDULOS DEL SISTEMA
 
-### 3.6.1 Módulo de Gestión de Procesos
+### Módulo de Gestión de Procesos
 
 #### Descripción y propósito
 
@@ -823,9 +892,8 @@ Este submódulo administra el registro de las mesas físicas del establecimiento
 
 - **Baja de mesa (Delete):** La eliminación de una mesa del registro solo está permitida si no tiene una orden activa vinculada (`currentOrder: null`), preservando la integridad referencial del historial.
 
----
 
-### 3.6.2 Módulo de Usuarios y Roles
+### Módulo de Usuarios y Roles
 
 #### Descripción y propósito
 
@@ -859,23 +927,28 @@ El almacenamiento de contraseñas en texto plano es una vulnerabilidad crítica 
 
 Los dos roles del sistema tienen accesos claramente delimitados, implementados mediante _middlewares_ de autorización en el backend y renderizado condicional en el frontend:
 
-| Acción / Recurso                              | Rol `Admin` | Rol `Cashier` |
-| :-------------------------------------------- | :---------: | :-----------: |
-| Iniciar sesión                                |     SI      |      SI       |
-| Operar el módulo POS (crear y cerrar órdenes) |     SI      |      SI       |
-| Consultar estado de mesas                     |     SI      |      SI       |
-| Gestionar catálogo de productos (CRUD)        |     SI      |      NO       |
-| Gestionar mesas (CRUD)                        |     SI      |      NO       |
-| Crear, editar o eliminar usuarios             |     SI      |      NO       |
-| Acceder al módulo de reportes financieros     |     SI      |      NO       |
-| Consultar historial completo de ventas        |     SI      |      NO       |
-| Ver únicamente las ventas de su turno         |     SI      |      SI       |
+\begingroup\small
+\begin{longtable}{|p{7cm}|p{2.5cm}|p{2.5cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} Acción / Recurso & \bfseries \color{white} Rol \texttt{Admin} & \bfseries \color{white} Rol \texttt{Cashier} \\ \hline
+\endhead
+Iniciar sesión & \centering SI \arraybackslash & \centering SI \arraybackslash \\ \hline
+Operar el módulo POS (crear y cerrar órdenes) & \centering SI \arraybackslash & \centering SI \arraybackslash \\ \hline
+Consultar estado de mesas & \centering SI \arraybackslash & \centering SI \arraybackslash \\ \hline
+Gestionar catálogo de productos (CRUD) & \centering SI \arraybackslash & \centering NO \arraybackslash \\ \hline
+Gestionar mesas (CRUD) & \centering SI \arraybackslash & \centering NO \arraybackslash \\ \hline
+Crear, editar o eliminar usuarios & \centering SI \arraybackslash & \centering NO \arraybackslash \\ \hline
+Acceder al módulo de reportes financieros & \centering SI \arraybackslash & \centering NO \arraybackslash \\ \hline
+Consultar historial completo de ventas & \centering SI \arraybackslash & \centering NO \arraybackslash \\ \hline
+Ver únicamente las ventas de su turno & \centering SI \arraybackslash & \centering SI \arraybackslash \\ \hline
+\caption{Matriz de Control de Acceso por Roles (RBAC)}
+\label{tab:matriz_permisos}
+\end{longtable}
+\endgroup
 
 **Implementación en el backend:** Un segundo _middleware_ de Express (`verifyRole('Admin')`) se encadena después de `verifyToken` en las rutas sensibles. Si el `req.user.role` no coincide con el rol requerido, el _middleware_ interrumpe la cadena y retorna una respuesta `403 Forbidden` con un mensaje de error descriptivo, sin ejecutar el controlador.
 
 **Implementación en el frontend:** React renderiza condicionalmente los componentes de navegación y las opciones del menú lateral basándose en el rol almacenado en el estado de Redux. Un cajero nunca verá los botones de administración de productos ni el acceso al panel de reportes gerenciales, reduciendo la superficie de error operativo y mejorando la experiencia de usuario.
-
----
 
 ### Módulo de Transacciones
 
@@ -976,7 +1049,7 @@ El relevamiento de información se realizó mediante las siguientes técnicas ap
 
 - **Documentación técnica:** El diagrama de la arquitectura desplegada, diccionarios de datos, modelo E/R completo y especificación paramétrica de API.
 - **Documentación del sistema:** Manual de usuario para operadores, el manual técnico, directrices de instalación en entorno de servidor y parametrización de variables de entorno.
-- **3.10 Documentación del código:** Detalla la estructura de directorios del proyecto MERN y las dependencias utilizadas en el sistema de la cafetería.
+- **Documentación del código:** Detalla la estructura de directorios del proyecto MERN y las dependencias utilizadas en el sistema de la cafetería.
   - **Estructura del Proyecto:** Separación física y lógica entre el cliente (aplicación React en el directorio `/frontend`) y el servidor (API Node.js en el directorio `/backend`).
   - **Librerías y Dependencias Backend:** Uso de `express` para el enrutamiento HTTP, `mongoose` como ODM para modelar los datos de MongoDB, `jsonwebtoken` para la generación y firma de tokens de sesión, `bcryptjs` para el hash de contraseñas, y `cors` para habilitar peticiones seguras desde el frontend.
   - **Librerías y Dependencias Frontend:** Uso de `react` para la construcción de interfaces de usuario interactivas del POS, `react-router-dom` para la navegación entre el terminal de cobro y el panel de administración, y `axios` para consumir las rutas RESTful del backend asíncronamente.

@@ -563,7 +563,8 @@ Se acompañan como anexos técnicos o repositorios vinculados:
 
 
 
-# BIBLIOGRAFÍA
+# Referencias Bibliográficas {-}
 
 <div id="refs"></div>
+
 

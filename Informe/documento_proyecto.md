@@ -30,6 +30,7 @@ Esta situación genera un conjunto de problemas operativos concretos y recurrent
 Como parte del análisis de referencia, se relevaron tres sistemas de gestión para cafeterías y restaurantes disponibles públicamente en GitHub. El estudio de estos proyectos permite identificar patrones de diseño comunes, tecnologías adoptadas por la comunidad y brechas funcionales que el presente sistema busca superar.
 
 1. **proyecto-cafeteria** — ValentinHer (GitHub)
+
    - **Repositorio:** `https://github.com/ValentinHer/proyecto-cafeteria.git`
    - **Descripción general:** Sistema de gestión para cafetería desarrollado como proyecto académico. Implementa las operaciones básicas de un punto de venta: registro de productos, toma de pedidos y generación de órdenes.
    - **Stack tecnológico:** Aplicación web con arquitectura cliente-servidor, base de datos relacional para la persistencia de productos y transacciones, e interfaz de usuario orientada a la administración del negocio.
@@ -37,6 +38,7 @@ Como parte del análisis de referencia, se relevaron tres sistemas de gestión p
    - **Diferencia con el sistema propuesto:** Este proyecto carece de un sistema de autenticación basado en roles diferenciados (Administrador vs. Cajero), no implementa procesamiento transaccional ACID para garantizar la integridad de los cobros concurrentes, y no genera comprobantes de pago en formato PDF. El sistema propuesto aborda estas limitaciones mediante JWT, sesiones de transacción en MongoDB y el módulo de facturación con PDFKit/jsPDF.
 
 2. **Sistema-POS-Restaurantes** — ValentinPacheco (GitHub)
+
    - **Repositorio:** `https://github.com/ValentinPacheco/Sistema-POS-Restaurantes.git`
    - **Descripción general:** Sistema de Punto de Venta orientado a restaurantes, con enfoque en la gestión de órdenes en sala y el flujo de cobro al cliente. Representa una solución más cercana al dominio del presente proyecto por su naturaleza POS.
    - **Stack tecnológico:** Implementación web con separación de capas frontend y backend, manejo de estado de mesas y control de órdenes activas.
@@ -44,6 +46,7 @@ Como parte del análisis de referencia, se relevaron tres sistemas de gestión p
    - **Diferencia con el sistema propuesto:** Si bien aborda la gestión de mesas y órdenes, el sistema no contempla una arquitectura de microservicios contenerizada con Docker, ni un despliegue en infraestructura _cloud_ (AWS/DigitalOcean). Asimismo, el control de acceso por roles y la generación automatizada de reportes financieros con cortes de caja son funcionalidades ausentes que el presente proyecto incorpora de forma nativa.
 
 3. **cafeteria-app** — FFW4 (GitHub)
+
    - **Repositorio:** `https://github.com/FFW4/cafeteria-app.git`
    - **Descripción general:** Aplicación web para la gestión de una cafetería, con foco en la experiencia del operador en el punto de atención. Desarrollada con un enfoque pragmático orientado a la agilidad en la toma de pedidos.
    - **Stack tecnológico:** Aplicación de página única (_SPA_) con componentes reactivos para la interfaz del POS y conexión a un servicio de backend para la persistencia de datos.
@@ -354,264 +357,51 @@ Es un marco de trabajo ágil para el desarrollo, entrega y mantenimiento de prod
 
 ## Análisis del sistema
 
-En base a la recopilación de datos realizada mediante entrevistas al personal y observación directa del flujo operativo de la cafetería, se identifican los siguientes actores, procesos y flujos que el sistema debe digitalizar.
+En base a la recopilación de datos, la estructura organizacional del sistema identifica diversos actores: Administradores, quienes tienen control global; y Operadores, quienes ejecutan diariamente transacciones asociadas a los procesos de negocio. El flujo de procesos demanda digitalizar desde el ingreso del actor al sistema, registro de eventos, hasta la confirmación e impacto histórico.
 
-**Actores del sistema:**
-
-La cafetería opera con tres actores principales que interactúan con el sistema en distintos niveles de privilegio:
-
-- **Administrador:** Actor con control total del sistema. Gestiona el catálogo de productos, categorías y precios; administra usuarios y roles; supervisa el inventario de insumos; genera reportes financieros y de ventas; y toma decisiones estratégicas apoyadas en los indicadores del _dashboard_.
-- **Cajero / Operador POS:** Actor de atención directa. Registra ventas, selecciona productos del menú digital, asigna la mesa correspondiente, procesa el cobro y emite el comprobante digital al cliente.
-- **Encargado de Cocina:** Actor de apoyo operativo. Recibe notificaciones de pedidos en producción, actualiza la disponibilidad de productos cuando un insumo se agota y gestiona el menú semanal disponible.
-
-**Procesos principales identificados:**
-
-1. **Proceso de venta:** El cajero construye el pedido seleccionando productos del menú digital → asigna la mesa → el sistema calcula automáticamente el subtotal → se selecciona el método de pago (efectivo o QR) → el _backend_ procesa la transacción de forma atómica → se emite el comprobante digital → el inventario se descuenta automáticamente.
-
-2. **Proceso de gestión de inventario:** El administrador registra insumos y productos con su stock inicial → el sistema descuenta automáticamente al registrar cada venta → cuando un insumo alcanza el nivel mínimo, el sistema emite una alerta → el administrador genera la orden de compra vinculada al proveedor correspondiente → al recibir la mercadería, se registra la entrada y el stock se actualiza.
-
-3. **Proceso de gestión de menú:** El encargado de cocina actualiza semanalmente los productos disponibles → asigna precios de venta y costos de producción → agrupa productos por categoría (bebidas calientes, jugos, almuerzos, _snacks_, postres) → marca productos como no disponibles cuando el insumo se agota → gestiona combos y menús del día.
-
-4. **Proceso de reportes:** El administrador consulta el _dashboard_ con indicadores en tiempo real → filtra ventas por día, semana o mes → analiza productos más vendidos, horas pico, márgenes por categoría y comparativos históricos → exporta reportes en PDF.
-
-**Flujo de datos del sistema:**
-
-El flujo de información sigue la dirección: **Entrada (interfaz POS / administración)** → **Procesamiento (_backend_ Node.js/Express.js con validación JWT)** → **Persistencia (MongoDB)** → **Salida (reportes, comprobantes PDF, alertas de stock, _dashboard_)**. Cada transacción queda vinculada al cajero que la ejecutó, la mesa asignada, los productos con sus precios en ese instante y la fecha y hora exactas, garantizando trazabilidad completa y soporte a auditorías.
-
-![Ejemplo de prueba en el análisis del sistema](assets/images/flujodatos.png){#fig:ejemplo_analisis width=65%}
+![Ejemplo de prueba en el análisis del sistema](assets/images/ejemplo.png){#fig:ejemplo_analisis width=65%}
 
 ## Determinación de requerimientos
 
 ### Requerimientos funcionales
 
-Los requerimientos funcionales expresan lo que el sistema **debe hacer** operativamente. Se organizan por módulo funcional según el análisis del sistema.
+Los requerimientos funcionales expresan lo que el sistema **debe hacer** operativamente.
 
-**4.1 Gestión de Ventas y Pedidos**
-
-\begingroup\small
-\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
-\endhead
-RF-01 & Registrar cada venta con detalle: producto, cantidad, precio y hora de transacción. & Cajero/Admin & Media \\ \hline
-RF-08 & Recibir pedidos que ya están hechos o que están en producción. & Admin/Cajero & Media \\ \hline
-RF-09 & Notificar que el pedido del cliente está preparado o en producción. & Enc. cocina/Admin & Media \\ \hline
-RF-11 & Emitir comprobantes o tickets digitales al cliente al momento del pago. & Cajero/Admin & Media \\ \hline
-RF-12 & Soportar múltiples formas de pago: efectivo, código QR. & Cajero/Admin & Alta \\ \hline
-RF-13 & Visualizar historial de ventas filtrado por día, semana o mes. & Admin & Media \\ \hline
-RF-14 & Cancelar o modificar pedidos antes de su despacho, con trazabilidad del cambio. & Cajero/Admin & Alta \\ \hline
-\caption{Requerimientos funcionales — Gestión de Ventas y Pedidos}
-\label{tab:rf_ventas}
-\end{longtable}
-\endgroup
-
-**4.2 Control de Inventario**
-
-\begingroup\small
-\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
-\endhead
-RF-03 & Registrar todos los productos e insumos con su stock actual y unidad de medida. & Admin & Alta \\ \hline
-RF-15 & Descontar automáticamente del inventario al momento de registrar una venta. & Sistema/Admin & Alta \\ \hline
-RF-16 & Emitir alertas automáticas cuando un insumo alcance el nivel mínimo de stock. & Sistema/Admin & Alta \\ \hline
-RF-17 & Registrar entradas de mercadería vinculadas a órdenes de compra y proveedores. & Admin & Alta \\ \hline
-RF-18 & Identificar productos con alta rotación y aquellos con riesgo de desperdicio. & Admin & Media \\ \hline
-RF-19 & Generar reportes de merma y diferencias de inventario. & Admin & Media \\ \hline
-\caption{Requerimientos funcionales — Control de Inventario}
-\label{tab:rf_inventario}
-\end{longtable}
-\endgroup
-
-**4.3 Gestión de Menú y Productos**
-
-\begingroup\small
-\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
-\endhead
-RF-05 & Crear, editar y desactivar productos del menú de forma rápida y sencilla. & Enc. cocina/Admin & Media \\ \hline
-RF-06 & Asignar precios de venta y costos de producción a cada producto para calcular el margen real. & Admin & Alta \\ \hline
-RF-07 & Agrupar productos por categorías: bebidas calientes, jugos, almuerzos, \emph{snacks}, postres, etc. & Admin & Alta \\ \hline
-RF-10 & Elaborar el menú disponible semanal actualizado. & Enc. cocina/Admin & Media \\ \hline
-RF-20 & Marcar productos como no disponibles cuando el insumo correspondiente se haya agotado. & Enc. cocina/Admin & Alta \\ \hline
-RF-21 & Gestionar combos o menús del día con precios especiales. & Admin & Media \\ \hline
-\caption{Requerimientos funcionales — Gestión de Menú y Productos}
-\label{tab:rf_menu}
-\end{longtable}
-\endgroup
-
-**4.4 Reportes y Apoyo a la Toma de Decisiones**
-
-\begingroup\small
-\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
-\endhead
-RF-04 & Reporte de productos más vendidos para identificar los artículos estrella del menú. & Admin & Media \\ \hline
-RF-22 & Generar reporte de ingresos diarios, semanales y mensuales con comparativos históricos. & Admin & Alta \\ \hline
-RF-23 & Analizar horas pico para optimizar la asignación de personal por turno. & Admin & Media \\ \hline
-RF-24 & Comparar costos versus ingresos por producto y por categoría. & Admin & Alta \\ \hline
-RF-25 & Mostrar un panel de control (\emph{dashboard}) con indicadores clave en tiempo real. & Admin & Alta \\ \hline
-\caption{Requerimientos funcionales — Reportes y Toma de Decisiones}
-\label{tab:rf_reportes}
-\end{longtable}
-\endgroup
-
-**4.5 Gestión de Proveedores y Compras**
-
-\begingroup\small
-\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
-\endhead
-RF-02 & Registrar proveedores con sus datos de contacto y condiciones comerciales. & Admin & Media \\ \hline
-RF-26 & Generar y registrar órdenes de compra vinculadas automáticamente al inventario. & Admin & Alta \\ \hline
-RF-27 & Mantener historial de compras por proveedor para evaluación y negociación. & Admin & Media \\ \hline
-RF-28 & Registrar precios de compra históricos para analizar variaciones de costo. & Admin & Media \\ \hline
-\caption{Requerimientos funcionales — Gestión de Proveedores y Compras}
-\label{tab:rf_proveedores}
-\end{longtable}
-\endgroup
-
-**4.6 Gestión de Personal y Turnos**
-
-\begingroup\small
-\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
-\endhead
-RF-29 & Registrar datos básicos de empleados: nombre, cargo y turno asignado. & Admin & Media \\ \hline
-RF-30 & Asociar cada venta al empleado que la realizó para garantizar trazabilidad y control. & Admin & Alta \\ \hline
-RF-31 & Registrar asistencia y puntualidad por turno. & Admin & Baja \\ \hline
-RF-32 & Gestionar permisos de acceso diferenciados por rol: administrador y cajero/operario. & Admin & Alta \\ \hline
-\caption{Requerimientos funcionales — Gestión de Personal y Turnos}
-\label{tab:rf_personal}
-\end{longtable}
-\endgroup
+- **RF01:** El sistema permitirá registrar nuevos usuarios operativos.
+- **RF02:** El sistema permitirá a los usuarios iniciar y cerrar sesión de manera segura.
+- **RF03:** El sistema permitirá al administrador asignar o revocar roles de acceso.
+- **RF04:** El sistema permitirá registrar un nuevo proceso organizacional básico.
+- **RF05:** El sistema permitirá el registro consecutivo de transacciones asociadas a un proceso.
+- **RF06:** El sistema permitirá generar reportes tabulados basados en un rango de fechas.
 
 ### Requerimientos no funcionales
 
 Establecen las restricciones y la forma en cómo debe operar y comportarse estructuralmente la aplicación.
 
-\begingroup\small
-\begin{longtable}{|p{1.2cm}|p{6.5cm}|p{2.5cm}|p{1.8cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Categoría & \bfseries \color{white} Prioridad \\ \hline
-\endhead
-RNF-01 & El registro de cada venta no debe superar los 5 segundos de respuesta. & Rendimiento & Media \\ \hline
-RNF-02 & Cada registro de venta se realizará con un \emph{token} para verificación e historial del administrador. & Confiabilidad & Alta \\ \hline
-RNF-03 & Control de acceso mediante usuario y contraseña con roles diferenciados. & Seguridad & Alta \\ \hline
-RNF-04 & Adición de claves únicas para reservas o llegadas de pedidos, evitando valores duplicados. & Disponibilidad & Media \\ \hline
-RNF-05 & Arquitectura que permita incorporar nuevos productos, usuarios o sucursales sin rediseño del sistema. & Escalabilidad & Alta \\ \hline
-RNF-06 & Interfaz intuitiva que permita operar al personal sin capacitación técnica avanzada. & Usabilidad & Alta \\ \hline
-RNF-07 & Diseño adaptado para uso en pantallas de mostrador. & Usabilidad & Media \\ \hline
-RNF-08 & El sistema debe estar disponible durante todo el horario de operación sin interrupciones no planificadas. & Disponibilidad & Alta \\ \hline
-RNF-09 & Las consultas de reportes deben completarse en menos de 10 segundos. & Rendimiento & Media \\ \hline
-RNF-10 & Protección de datos sensibles frente a accesos no autorizados. & Seguridad & Alta \\ \hline
-RNF-11 & Respaldo automático de datos para evitar pérdida de información. & Confiabilidad & Alta \\ \hline
-RNF-12 & Posibilidad de recuperar datos de los últimos 30 días. & Confiabilidad & Alta \\ \hline
-RNF-13 & El sistema debe contar con documentación técnica para facilitar mantenimiento. & Mantenibilidad & Media \\ \hline
-\caption{Requerimientos no funcionales del Sistema POS}
-\label{tab:rnf}
-\end{longtable}
-\endgroup
+- **Seguridad:** Encriptación de contraseñas usando algoritmos seguros (ej. _bcrypt_) y comunicaciones seguras.
+- **Rendimiento:** Tiempos de respuesta para guardado de transacciones menores a 2 segundos en carga moderada.
+- **Usabilidad:** Interfaces intuitivas, adaptables a monitores de escritorio (diseño responsivo).
+- **Disponibilidad:** Arquitectura preparada para mantener disponibilidad en un entorno de servidor las 24 horas.
+- **Escalabilidad:** Separación modular del código que facilite agregar futuros módulos sin modificar el núcleo operativo.
 
 ## Modelado del sistema
 
 ### Historias de Usuario
 
-Las historias de usuario se redactan siguiendo el formato estándar: _Como_ [rol], _quiero_ [acción], _para_ [beneficio]. Se ordenan por módulo funcional y se acompañan de criterios de aceptación que sirven como base para las pruebas de validación.
+Se definen detallando la necesidad y la regla de aceptación:
 
-**Módulo de autenticación y roles:**
-
-- _Como_ administrador, _quiero_ crear y gestionar cuentas de usuario con roles diferenciados _para_ garantizar que cada empleado acceda únicamente a las funciones de su responsabilidad.
-  - _Criterio de aceptación:_ Un cajero que intente acceder a la sección de reportes o administración recibe un error 403 y es redirigido a su panel POS.
-
-- _Como_ cajero, _quiero_ iniciar sesión con mis credenciales de forma rápida _para_ comenzar a operar el POS sin demoras al inicio del turno.
-  - _Criterio de aceptación:_ El _login_ exitoso redirige al panel POS en menos de 2 segundos y el _token_ JWT expira automáticamente al cerrar sesión.
-
-**Módulo de ventas y pedidos:**
-
-- _Como_ cajero en turno, _quiero_ seleccionar productos del menú digital por categoría y agregarlos al carrito _para_ construir el pedido del cliente de forma ágil y sin errores de suma.
-  - _Criterio de aceptación:_ El subtotal se actualiza en tiempo real con cada producto añadido o eliminado; el sistema no permite confirmar el cobro si el carrito está vacío.
-
-- _Como_ cajero, _quiero_ cancelar o modificar un pedido antes de su despacho _para_ corregir errores del cliente sin afectar la contabilidad.
-  - _Criterio de aceptación:_ La modificación queda registrada en la bitácora con fecha, hora y usuario que realizó el cambio.
-
-- _Como_ cajero, _quiero_ emitir un comprobante digital al cliente al momento del pago _para_ acreditar la transacción de forma inmediata.
-  - _Criterio de aceptación:_ El sistema genera el PDF del comprobante en menos de 3 segundos tras confirmar el cobro.
-
-**Módulo de inventario:**
-
-- _Como_ administrador, _quiero_ que el sistema descuente automáticamente los insumos del inventario al registrar cada venta _para_ mantener el stock actualizado sin intervención manual.
-  - _Criterio de aceptación:_ El stock de cada insumo se reduce correctamente tras cada venta confirmada; si el stock llega al mínimo, el sistema emite una alerta visible en el _dashboard_.
-
-- _Como_ administrador, _quiero_ registrar la entrada de mercadería vinculada a una orden de compra _para_ mantener el historial de compras por proveedor y actualizar el inventario.
-  - _Criterio de aceptación:_ La entrada de mercadería incrementa el stock del insumo correspondiente y queda vinculada al proveedor y la orden de compra en el historial.
-
-**Módulo de menú y productos:**
-
-- _Como_ encargado de cocina, _quiero_ marcar un producto como no disponible cuando su insumo se agota _para_ evitar que los cajeros lo incluyan en pedidos que no podrán completarse.
-  - _Criterio de aceptación:_ El producto marcado como no disponible desaparece de la interfaz POS del cajero en tiempo real y reaparece al actualizarse el stock.
-
-- _Como_ administrador, _quiero_ asignar precios de venta y costos de producción a cada producto _para_ calcular el margen real de cada ítem del menú.
-  - _Criterio de aceptación:_ El sistema calcula y muestra el margen porcentual en el panel de administración de productos.
-
-**Módulo de reportes:**
-
-- _Como_ administrador, _quiero_ visualizar un _dashboard_ con indicadores clave en tiempo real _para_ tomar decisiones operativas durante el turno sin necesidad de generar reportes manuales.
-  - _Criterio de aceptación:_ El _dashboard_ muestra ventas del día, productos más vendidos, alertas de stock crítico y total de ingresos actualizados en intervalos menores a 30 segundos.
-
-- _Como_ administrador, _quiero_ generar reportes de ingresos por día, semana o mes con comparativos históricos _para_ analizar la evolución financiera del negocio.
-  - _Criterio de aceptación:_ El reporte se genera en PDF en menos de 10 segundos y refleja exactamente los datos de las transacciones registradas en el período seleccionado.
+- _Como_ administrador, _quiero_ registrar y eliminar usuarios _para_ controlar estrictamente el acceso a la plataforma corporativa.
+- _Como_ operador de sistemas, _quiero_ registrar una transacción en tiempo de ejecución _para_ avanzar en mi cuota diaria de procesos.
 
 ### Diagramas UML
 
-Los diagramas UML del sistema han sido elaborados en la herramienta Draw.io y se adjuntan como evidencia gráfica del diseño funcional. Se incluyen los siguientes tipos de diagrama:
-
-**Diagrama de Casos de Uso:**
-Representa las interacciones entre los actores del sistema (Administrador, Cajero, Encargado de Cocina) y los casos de uso identificados durante el análisis. Los casos de uso principales son: _Gestionar productos_, _Gestionar usuarios_, _Registrar venta_, _Emitir comprobante_, _Consultar inventario_, _Generar reporte_ y _Gestionar menú_.
+A continuación se muestra un ejemplo genérico de la estructura de un diagrama, en este caso, se deben incrustar aquí los diagramas correspondientes: Diagramas de Casos de Uso, Clases, Secuencia y Actividades generados en herramientas tipo StarUML o Drawio.
 
 \begin{diagrama}[H]
 \centering
-\includegraphics[width=0.85\linewidth]{assets/diagrama/casos_de_uso1.png}
-\caption{Diagrama de Casos de Uso del Sistema POS}
-\label{diag:casos_uso}
-\end{diagrama}
-
-\begin{diagrama}[H]
-\centering
-\includegraphics[width=0.85\linewidth]{assets/diagrama/casos_de_uso2.png}
-\caption{Diagrama de Casos de Uso del Sistema POS}
-\label{diag:casos_uso}
-\end{diagrama}
-
-\begin{diagrama}[H]
-\centering
-\includegraphics[width=0.85\linewidth]{assets/diagrama/casos_de_uso3.png}
-\caption{Diagrama de Casos de Uso del Sistema POS}
-\label{diag:casos_uso}
-\end{diagrama}
-
-**Diagrama de Clases:**
-Modela la estructura estática del sistema mediante las entidades principales y sus relaciones. Las clases identificadas son: `Usuario` (con atributos: id, nombre, email, contraseña, rol), `Producto` (id, nombre, precio, costo, categoría, disponible, stock), `Categoría` (id, nombre), `Orden` (id, usuario_id, mesa, estado, total, fecha, cartItems[ ]), `ItemOrden` (producto_id, cantidad, precioUnitario), `Proveedor` (id, nombre, contacto, condiciones) e `Inventario` (producto_id, stockActual, stockMínimo).
-
-\begin{diagrama}[H]
-\centering
-\includegraphics[width=0.85\linewidth]{assets/diagrama/clases.png}
-\caption{Diagrama de Clases del Sistema POS}
-\label{diag:clases}
-\end{diagrama}
-
-**Diagrama de Actividades:**
-Representa el flujo de actividades del proceso principal del sistema: el ciclo completo de una venta, desde que el cajero inicia sesión hasta que se emite el comprobante y se actualiza el inventario.
-
-\begin{diagrama}[H]
-\centering
-\includegraphics[width=0.75\linewidth]{assets/diagrama/actividades.png}
-\caption{Diagrama de Actividades — Flujo de Venta}
-\label{diag:actividades}
+\includegraphics[width=0.65\linewidth]{assets/diagrama/diagrama.png}
+\caption{Ejemplo general de Diagrama Estructural UML}
+\label{diag:ejemplo_diagrama}
 \end{diagrama}
 
 ## 3.4 Diseño del sistema
@@ -650,30 +440,30 @@ El Diagrama de Contenedores descompone el sistema en sus bloques tecnológicos d
 
 **Contenedor 1 — Aplicación Web SPA (Frontend)**
 
-| Atributo            | Detalle                                                                                                                                                                               |
-| :------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Tecnología**      | React.js 18 + Redux Toolkit + React Router DOM                                                                                                                                        |
-| **Tipo**            | Single Page Application (SPA) — ejecutada en el navegador                                                                                                                             |
-| **Responsabilidad** | Renderizar la interfaz del POS, el panel de administración y los reportes. Gestionar el estado global de la sesión y del carrito de compras.                                          |
-| **Comunicación**    | Envía peticiones HTTP/REST en formato JSON a la API Backend a través de `axios`. Recibe el JWT del backend y lo adjunta en la cabecera `Authorization` de cada petición subsiguiente. |
+| Atributo | Detalle |
+| :--- | :--- |
+| **Tecnología** | React.js 18 + Redux Toolkit + React Router DOM |
+| **Tipo** | Single Page Application (SPA) — ejecutada en el navegador |
+| **Responsabilidad** | Renderizar la interfaz del POS, el panel de administración y los reportes. Gestionar el estado global de la sesión y del carrito de compras. |
+| **Comunicación** | Envía peticiones HTTP/REST en formato JSON a la API Backend a través de `axios`. Recibe el JWT del backend y lo adjunta en la cabecera `Authorization` de cada petición subsiguiente. |
 
 **Contenedor 2 — API REST (Backend)**
 
-| Atributo            | Detalle                                                                                                                                                                                                                                                   |
-| :------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Tecnología**      | Node.js 20 LTS + Express.js 4                                                                                                                                                                                                                             |
-| **Tipo**            | Servidor de API RESTful — desplegado en contenedor Docker (AWS EC2)                                                                                                                                                                                       |
+| Atributo | Detalle |
+| :--- | :--- |
+| **Tecnología** | Node.js 20 LTS + Express.js 4 |
+| **Tipo** | Servidor de API RESTful — desplegado en contenedor Docker (AWS EC2) |
 | **Responsabilidad** | Exponer los _endpoints_ REST (`/api/auth`, `/api/users`, `/api/products`, `/api/tables`, `/api/orders`, `/api/payments`). Ejecutar la lógica de negocio, validaciones, cálculos transaccionales y control de acceso por roles mediante _middlewares_ JWT. |
-| **Comunicación**    | Recibe peticiones HTTPS del Frontend. Lee y escribe documentos en MongoDB a través del ODM Mongoose. Invoca la API de la Pasarela de Pagos externa cuando se procesa un cobro electrónico.                                                                |
+| **Comunicación** | Recibe peticiones HTTPS del Frontend. Lee y escribe documentos en MongoDB a través del ODM Mongoose. Invoca la API de la Pasarela de Pagos externa cuando se procesa un cobro electrónico. |
 
 **Contenedor 3 — Base de Datos (MongoDB)**
 
-| Atributo            | Detalle                                                                                                                                                                         |
-| :------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Tecnología**      | MongoDB 7 (desplegado en contenedor Docker o MongoDB Atlas)                                                                                                                     |
-| **Tipo**            | Base de datos NoSQL orientada a documentos                                                                                                                                      |
-| **Responsabilidad** | Persistir de forma duradera todos los documentos del sistema: usuarios (`users`), productos (`products`), mesas (`tables`), órdenes (`orders`) y pagos (`payments`).            |
-| **Comunicación**    | Solo es accedida directamente por el Backend API a través del driver Mongoose. No expone puertos públicos; es accesible únicamente dentro de la red privada del entorno Docker. |
+| Atributo | Detalle |
+| :--- | :--- |
+| **Tecnología** | MongoDB 7 (desplegado en contenedor Docker o MongoDB Atlas) |
+| **Tipo** | Base de datos NoSQL orientada a documentos |
+| **Responsabilidad** | Persistir de forma duradera todos los documentos del sistema: usuarios (`users`), productos (`products`), mesas (`tables`), órdenes (`orders`) y pagos (`payments`). |
+| **Comunicación** | Solo es accedida directamente por el Backend API a través del driver Mongoose. No expone puertos públicos; es accesible únicamente dentro de la red privada del entorno Docker. |
 
 **Flujo de comunicación entre contenedores:**
 
@@ -710,16 +500,16 @@ A pesar del paradigma documental, el diseño lógico preserva los principios de 
 
 Almacena los registros del personal operativo y administrativo con acceso al sistema.
 
-| Campo       | Tipo     | Requerido | Descripción                             | Notas Técnicas                                                                                                                      |
-| :---------- | :------- | :-------: | :-------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
-| `_id`       | ObjectId |  **Sí**   | Identificador único del documento.      | Generado automáticamente por MongoDB.                                                                                               |
-| `name`      | String   |  **Sí**   | Nombre completo del usuario.            | Mínimo 3 caracteres.                                                                                                                |
-| `email`     | String   |  **Sí**   | Dirección de correo electrónico.        | Validado con expresión regular. Indexado como `unique: true`.                                                                       |
-| `phone`     | Number   |  **Sí**   | Número de teléfono de contacto.         | Debe contener 10 dígitos.                                                                                                           |
-| `password`  | String   |  **Sí**   | Contraseña de acceso al sistema.        | Almacenada exclusivamente como _hash_ irreversible generado con **Bcrypt** (factor de coste: 10). Nunca se persiste en texto plano. |
-| `role`      | String   |  **Sí**   | Rol funcional asignado al usuario.      | Valores admitidos: `"Admin"` o `"Cashier"`. Determina los permisos de acceso a los _endpoints_ de la API.                           |
-| `createdAt` | Date     |  **Sí**   | Fecha y hora de creación del registro.  | Generado automáticamente por la opción `timestamps` de Mongoose.                                                                    |
-| `updatedAt` | Date     |  **Sí**   | Fecha y hora de la última modificación. | Actualizado automáticamente por la opción `timestamps` de Mongoose.                                                                 |
+| Campo | Tipo | Requerido | Descripción | Notas Técnicas |
+| :--- | :--- | :---: | :--- | :--- |
+| `_id` | ObjectId | **Sí** | Identificador único del documento. | Generado automáticamente por MongoDB. |
+| `name` | String | **Sí** | Nombre completo del usuario. | Mínimo 3 caracteres. |
+| `email` | String | **Sí** | Dirección de correo electrónico. | Validado con expresión regular. Indexado como `unique: true`. |
+| `phone` | Number | **Sí** | Número de teléfono de contacto. | Debe contener 10 dígitos. |
+| `password` | String | **Sí** | Contraseña de acceso al sistema. | Almacenada exclusivamente como _hash_ irreversible generado con **Bcrypt** (factor de coste: 10). Nunca se persiste en texto plano. |
+| `role` | String | **Sí** | Rol funcional asignado al usuario. | Valores admitidos: `"Admin"` o `"Cashier"`. Determina los permisos de acceso a los _endpoints_ de la API. |
+| `createdAt` | Date | **Sí** | Fecha y hora de creación del registro. | Generado automáticamente por la opción `timestamps` de Mongoose. |
+| `updatedAt` | Date | **Sí** | Fecha y hora de la última modificación. | Actualizado automáticamente por la opción `timestamps` de Mongoose. |
 
 ---
 
@@ -727,13 +517,13 @@ Almacena los registros del personal operativo y administrativo con acceso al sis
 
 Gestiona la información de las mesas físicas del establecimiento y su estado operativo en tiempo real.
 
-| Campo          | Tipo     | Requerido | Descripción                                     | Notas Técnicas                                                                                                                  |
-| :------------- | :------- | :-------: | :---------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------ |
-| `_id`          | ObjectId |  **Sí**   | Identificador único del documento.              | Generado automáticamente por MongoDB.                                                                                           |
-| `tableNo`      | Number   |  **Sí**   | Número identificador de la mesa.                | Configurado como `unique: true`. No pueden existir dos mesas con el mismo número.                                               |
-| `status`       | String   |    No     | Estado operativo actual de la mesa.             | Valor por defecto: `"Available"`. Valores posibles: `"Available"` / `"Occupied"`.                                               |
-| `seats`        | Number   |  **Sí**   | Capacidad máxima de personas de la mesa.        | Número entero positivo. Ej: `4`, `6`.                                                                                           |
-| `currentOrder` | ObjectId |    No     | Referencia al pedido activo asignado a la mesa. | **Clave foránea lógica** → referencia al documento `_id` de la colección `orders`. Valor `null` cuando la mesa está disponible. |
+| Campo | Tipo | Requerido | Descripción | Notas Técnicas |
+| :--- | :--- | :---: | :--- | :--- |
+| `_id` | ObjectId | **Sí** | Identificador único del documento. | Generado automáticamente por MongoDB. |
+| `tableNo` | Number | **Sí** | Número identificador de la mesa. | Configurado como `unique: true`. No pueden existir dos mesas con el mismo número. |
+| `status` | String | No | Estado operativo actual de la mesa. | Valor por defecto: `"Available"`. Valores posibles: `"Available"` / `"Occupied"`. |
+| `seats` | Number | **Sí** | Capacidad máxima de personas de la mesa. | Número entero positivo. Ej: `4`, `6`. |
+| `currentOrder` | ObjectId | No | Referencia al pedido activo asignado a la mesa. | **Clave foránea lógica** → referencia al documento `_id` de la colección `orders`. Valor `null` cuando la mesa está disponible. |
 
 ---
 
@@ -741,18 +531,18 @@ Gestiona la información de las mesas físicas del establecimiento y su estado o
 
 Registra los comprobantes de las transacciones financieras procesadas, almacenando los identificadores de seguimiento de la pasarela de pagos y el estado de cada operación.
 
-| Campo       | Tipo     | Requerido | Descripción                                             | Notas Técnicas                                                                                               |
-| :---------- | :------- | :-------: | :------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------- |
-| `_id`       | ObjectId |  **Sí**   | Identificador único del documento.                      | Generado automáticamente por MongoDB.                                                                        |
-| `paymentId` | String   |    No     | Identificador de la transacción en la pasarela externa. | Proporcionado por Razorpay o la pasarela configurada (ej. `pay_Abc123XYZ`).                                  |
-| `orderId`   | String   |    No     | Identificador del pedido asociado al pago.              | Relación lógica con la colección `orders`. Almacenado como `String` para compatibilidad con IDs de pasarela. |
-| `amount`    | Number   |    No     | Monto total de la transacción.                          | Valor numérico decimal. Representa el importe cobrado (con impuestos).                                       |
-| `currency`  | String   |    No     | Código de la moneda de la transacción.                  | Ej: `"BOB"` (Boliviano), `"USD"`, `"ARS"`.                                                                   |
-| `status`    | String   |    No     | Estado de la operación de pago.                         | Valores posibles: `"Captured"`, `"Pending"`, `"Failed"`, `"Refunded"`.                                       |
-| `method`    | String   |    No     | Canal o instrumento de pago utilizado.                  | Ej: `"Cash"`, `"Credit Card"`, `"QR"`, `"Razorpay"`.                                                         |
-| `email`     | String   |    No     | Correo electrónico del pagador.                         | Utilizado para el envío del comprobante digital.                                                             |
-| `contact`   | String   |    No     | Dato de contacto adicional del pagador.                 | Número de teléfono u otro identificador de contacto.                                                         |
-| `createdAt` | Date     |    No     | Fecha y hora de registro del pago.                      | Registrado manualmente mediante `Date.now()` al momento de procesar el cobro.                                |
+| Campo | Tipo | Requerido | Descripción | Notas Técnicas |
+| :--- | :--- | :---: | :--- | :--- |
+| `_id` | ObjectId | **Sí** | Identificador único del documento. | Generado automáticamente por MongoDB. |
+| `paymentId` | String | No | Identificador de la transacción en la pasarela externa. | Proporcionado por Razorpay o la pasarela configurada (ej. `pay_Abc123XYZ`). |
+| `orderId` | String | No | Identificador del pedido asociado al pago. | Relación lógica con la colección `orders`. Almacenado como `String` para compatibilidad con IDs de pasarela. |
+| `amount` | Number | No | Monto total de la transacción. | Valor numérico decimal. Representa el importe cobrado (con impuestos). |
+| `currency` | String | No | Código de la moneda de la transacción. | Ej: `"BOB"` (Boliviano), `"USD"`, `"ARS"`. |
+| `status` | String | No | Estado de la operación de pago. | Valores posibles: `"Captured"`, `"Pending"`, `"Failed"`, `"Refunded"`. |
+| `method` | String | No | Canal o instrumento de pago utilizado. | Ej: `"Cash"`, `"Credit Card"`, `"QR"`, `"Razorpay"`. |
+| `email` | String | No | Correo electrónico del pagador. | Utilizado para el envío del comprobante digital. |
+| `contact` | String | No | Dato de contacto adicional del pagador. | Número de teléfono u otro identificador de contacto. |
+| `createdAt` | Date | No | Fecha y hora de registro del pago. | Registrado manualmente mediante `Date.now()` al momento de procesar el cobro. |
 
 ---
 
@@ -760,19 +550,19 @@ Registra los comprobantes de las transacciones financieras procesadas, almacenan
 
 Constituye el eje central del sistema TPS. Registra cada transacción de venta de forma integral e inmutable, vinculando los datos del cliente, los productos consumidos, el detalle de facturación, la mesa asignada y el método de pago.
 
-| Campo             | Tipo     | Requerido | Descripción                                           | Notas Técnicas                                                                                                                                                                  |
-| :---------------- | :------- | :-------: | :---------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `_id`             | ObjectId |  **Sí**   | Identificador único del documento.                    | Generado automáticamente por MongoDB.                                                                                                                                           |
-| `customerDetails` | Object   |  **Sí**   | Datos del cliente para quien se abre el pedido.       | Objeto anidado con los sub-campos: `name` (String), `phone` (Number) y `guests` (Number).                                                                                       |
-| `orderStatus`     | String   |  **Sí**   | Estado actual del pedido en el flujo de servicio.     | Valores posibles: `"Pending"`, `"In Preparation"`, `"Served"`, `"Paid"`.                                                                                                        |
-| `orderDate`       | Date     |    No     | Fecha y hora de creación del pedido.                  | Valor por defecto: `Date.now()`.                                                                                                                                                |
-| `bills`           | Object   |  **Sí**   | Resumen de facturación calculado por el backend.      | Objeto anidado con los sub-campos: `total` (Number, subtotal sin impuesto), `tax` (Number, porcentaje de impuesto) y `totalWithTax` (Number, monto final a cobrar).             |
-| `items`           | Array    |    No     | Lista de productos incluidos en el pedido.            | Arreglo flexible de objetos. Cada elemento contiene el detalle del ítem (nombre, precio unitario, cantidad) desnormalizado al momento de la venta para inmutabilidad histórica. |
-| `table`           | ObjectId |    No     | Mesa física asignada al pedido.                       | **Clave foránea lógica** → referencia al documento `_id` de la colección `tables`.                                                                                              |
-| `paymentMethod`   | String   |    No     | Método de pago con el que se cerró el pedido.         | Ej: `"Cash"`, `"Razorpay"`.                                                                                                                                                     |
-| `paymentData`     | Object   |    No     | Datos de confirmación retornados por la pasarela.     | Objeto con los IDs de seguimiento de la transacción electrónica (ej. `razorpay_payment_id`, `razorpay_order_id`).                                                               |
-| `createdAt`       | Date     |  **Sí**   | Fecha y hora de registro del documento.               | Generado automáticamente por la opción `timestamps` de Mongoose.                                                                                                                |
-| `updatedAt`       | Date     |  **Sí**   | Fecha y hora de la última modificación del documento. | Actualizado automáticamente por la opción `timestamps` de Mongoose.                                                                                                             |
+| Campo | Tipo | Requerido | Descripción | Notas Técnicas |
+| :--- | :--- | :---: | :--- | :--- |
+| `_id` | ObjectId | **Sí** | Identificador único del documento. | Generado automáticamente por MongoDB. |
+| `customerDetails` | Object | **Sí** | Datos del cliente para quien se abre el pedido. | Objeto anidado con los sub-campos: `name` (String), `phone` (Number) y `guests` (Number). |
+| `orderStatus` | String | **Sí** | Estado actual del pedido en el flujo de servicio. | Valores posibles: `"Pending"`, `"In Preparation"`, `"Served"`, `"Paid"`. |
+| `orderDate` | Date | No | Fecha y hora de creación del pedido. | Valor por defecto: `Date.now()`. |
+| `bills` | Object | **Sí** | Resumen de facturación calculado por el backend. | Objeto anidado con los sub-campos: `total` (Number, subtotal sin impuesto), `tax` (Number, porcentaje de impuesto) y `totalWithTax` (Number, monto final a cobrar). |
+| `items` | Array | No | Lista de productos incluidos en el pedido. | Arreglo flexible de objetos. Cada elemento contiene el detalle del ítem (nombre, precio unitario, cantidad) desnormalizado al momento de la venta para inmutabilidad histórica. |
+| `table` | ObjectId | No | Mesa física asignada al pedido. | **Clave foránea lógica** → referencia al documento `_id` de la colección `tables`. |
+| `paymentMethod` | String | No | Método de pago con el que se cerró el pedido. | Ej: `"Cash"`, `"Razorpay"`. |
+| `paymentData` | Object | No | Datos de confirmación retornados por la pasarela. | Objeto con los IDs de seguimiento de la transacción electrónica (ej. `razorpay_payment_id`, `razorpay_order_id`). |
+| `createdAt` | Date | **Sí** | Fecha y hora de registro del documento. | Generado automáticamente por la opción `timestamps` de Mongoose. |
+| `updatedAt` | Date | **Sí** | Fecha y hora de la última modificación del documento. | Actualizado automáticamente por la opción `timestamps` de Mongoose. |
 
 ---
 
@@ -780,12 +570,12 @@ Constituye el eje central del sistema TPS. Registra cada transacción de venta d
 
 El modelo de datos, aunque documental (NoSQL), establece relaciones lógicas explícitas entre las colecciones mediante referencias `ObjectId`, preservando la integridad referencial del sistema TPS:
 
-| Relación                     | Cardinalidad | Descripción                                                                                                                                                                       |
-| :--------------------------- | :----------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `users` → `orders`           |  **1 : N**   | Un usuario (cajero) puede haber procesado múltiples órdenes a lo largo de su operación. Cada orden registra implícitamente al operador responsable de la sesión activa.           |
-| `tables` → `orders`          |  **1 : N**   | Una mesa puede estar asociada a múltiples órdenes a lo largo del tiempo (una por cada servicio). En un momento dado, solo una orden puede estar activa por mesa (`currentOrder`). |
-| `tables` → `orders` (activa) |  **1 : 1**   | En tiempo real, la relación entre una mesa y su pedido en curso es uno a uno: el campo `currentOrder` en `Table` apunta a exactamente un único documento activo en `orders`.      |
-| `orders` → `payments`        |  **1 : 1**   | Cada orden pagada genera exactamente un registro de pago en la colección `payments`. La relación se establece a través del campo `orderId` en `Payment`.                          |
+| Relación | Cardinalidad | Descripción |
+| :--- | :---: | :--- |
+| `users` → `orders` | **1 : N** | Un usuario (cajero) puede haber procesado múltiples órdenes a lo largo de su operación. Cada orden registra implícitamente al operador responsable de la sesión activa. |
+| `tables` → `orders` | **1 : N** | Una mesa puede estar asociada a múltiples órdenes a lo largo del tiempo (una por cada servicio). En un momento dado, solo una orden puede estar activa por mesa (`currentOrder`). |
+| `tables` → `orders` (activa) | **1 : 1** | En tiempo real, la relación entre una mesa y su pedido en curso es uno a uno: el campo `currentOrder` en `Table` apunta a exactamente un único documento activo en `orders`. |
+| `orders` → `payments` | **1 : 1** | Cada orden pagada genera exactamente un registro de pago en la colección `payments`. La relación se establece a través del campo `orderId` en `Payment`. |
 
 ---
 
@@ -859,17 +649,17 @@ El almacenamiento de contraseñas en texto plano es una vulnerabilidad crítica 
 
 Los dos roles del sistema tienen accesos claramente delimitados, implementados mediante _middlewares_ de autorización en el backend y renderizado condicional en el frontend:
 
-| Acción / Recurso                              | Rol `Admin` | Rol `Cashier` |
-| :-------------------------------------------- | :---------: | :-----------: |
-| Iniciar sesión                                |     SI      |      SI       |
-| Operar el módulo POS (crear y cerrar órdenes) |     SI      |      SI       |
-| Consultar estado de mesas                     |     SI      |      SI       |
-| Gestionar catálogo de productos (CRUD)        |     SI      |      NO       |
-| Gestionar mesas (CRUD)                        |     SI      |      NO       |
-| Crear, editar o eliminar usuarios             |     SI      |      NO       |
-| Acceder al módulo de reportes financieros     |     SI      |      NO       |
-| Consultar historial completo de ventas        |     SI      |      NO       |
-| Ver únicamente las ventas de su turno         |     SI      |      SI       |
+| Acción / Recurso | Rol `Admin` | Rol `Cashier` |
+| :--- | :---: | :---: |
+| Iniciar sesión | SI | SI |
+| Operar el módulo POS (crear y cerrar órdenes) | SI | SI |
+| Consultar estado de mesas | SI | SI |
+| Gestionar catálogo de productos (CRUD) | SI | NO |
+| Gestionar mesas (CRUD) | SI | NO |
+| Crear, editar o eliminar usuarios | SI | NO |
+| Acceder al módulo de reportes financieros | SI | NO |
+| Consultar historial completo de ventas | SI | NO |
+| Ver únicamente las ventas de su turno | SI | SI |
 
 **Implementación en el backend:** Un segundo _middleware_ de Express (`verifyRole('Admin')`) se encadena después de `verifyToken` en las rutas sensibles. Si el `req.user.role` no coincide con el rol requerido, el _middleware_ interrumpe la cadena y retorna una respuesta `403 Forbidden` con un mensaje de error descriptivo, sin ejecutar el controlador.
 
@@ -923,57 +713,7 @@ A lo largo de los _sprints_ se generan prototipos incrementales. En esta etapa e
 
 Se acompañan como anexos técnicos o repositorios vinculados:
 
-- **Documentación funcional**
-
-La documentación funcional consolida todos los artefactos producidos durante la fase de análisis y modelado del sistema. Está orientada a servir como referencia oficial para el equipo de desarrollo, el _Product Owner_ y las pruebas de aceptación.
-
-- **Especificación de Requerimientos de Software (SRS)**
-
-La Especificación de Requerimientos de Software documenta de forma estructurada y completa todos los requerimientos identificados para el Sistema POS de Cafetería. Se organiza en las siguientes secciones:
-
-1. **Propósito del sistema:**  
-   Desarrollar un Sistema de Punto de Venta (POS) web basado en la arquitectura MERN para digitalizar y centralizar las operaciones de una cafetería en la ciudad de La Paz, eliminando los procesos manuales y garantizando la trazabilidad de cada transacción.
-
-2. **Alcance funcional:**  
-   El sistema cubre seis módulos funcionales:
-   - Gestión de Ventas y Pedidos (RF-01, RF-08, RF-09, RF-11, RF-12, RF-13, RF-14)
-   - Control de Inventario (RF-03, RF-15, RF-16, RF-17, RF-18, RF-19)
-   - Gestión de Menú y Productos (RF-05, RF-06, RF-07, RF-10, RF-20, RF-21)
-   - Reportes y Toma de Decisiones (RF-04, RF-22, RF-23, RF-24, RF-25)
-   - Gestión de Proveedores y Compras (RF-02, RF-26, RF-27, RF-28)
-   - Gestión de Personal y Turnos (RF-29, RF-30, RF-31, RF-32)
-
-3. **Restricciones del sistema:**
-   - Plataforma exclusivamente web
-   - Autenticación interna sin proveedores OAuth
-   - Pagos simulados sin integración bancaria real
-   - Sistema monosucursal en su primera versión
-   - Sin descuento automático de insumos compuestos  
-     _(Referencia completa en la sección Límites y Alcances del Marco Referencial)._
-
-4. **Requerimientos funcionales:**  
-   32 requerimientos funcionales organizados en 6 módulos, con identificador, descripción, actor responsable y prioridad.  
-   _(Referencia: Tablas RF-01 a RF-32 en la sección 3.2)._
-
-5. **Requerimientos no funcionales:**  
-   13 requerimientos no funcionales en las categorías de Rendimiento, Confiabilidad, Seguridad, Disponibilidad, Escalabilidad, Usabilidad y Mantenibilidad.  
-   _(Referencia: Tabla RNF-01 a RNF-13 en la sección 3.2)._
-
-- **Relevamiento documentado**
-
-El relevamiento de información se realizó mediante las siguientes técnicas aplicadas al personal de la cafetería:
-
-1. **Entrevista estructurada al administrador:**  
-   Se identificaron los procesos críticos de cobro, control de inventario y generación de reportes. El administrador manifestó la necesidad urgente de eliminar los descuadres de caja diarios y contar con información de ventas en tiempo real.
-
-2. **Observación directa del flujo de servicio:**  
-   Se documentó el ciclo completo de atención al cliente:  
-   `toma de pedido verbal → comanda en papel → preparación → cobro manual → anotación en cuaderno`  
-   Se identificaron los puntos de falla más frecuentes: comandas ilegibles, errores de suma y ausencia de trazabilidad.
-
-3. **Revisión del repositorio de referencia:**  
-   Se analizó la estructura del repositorio _Restaurant_POS_System_ (amritmaurya1504, GitHub), identificando los módulos implementados: gestión de órdenes en tiempo real, reservas de mesa, autenticación con control de roles, integración de pagos y facturación automática. Estos módulos sirvieron como base para la definición del alcance funcional del presente sistema.
-
+- **Documentación funcional:** Incluye la Especificación de Requerimientos de Software (SRS), relevamiento documentado explícito e historias de usuario extendidas.
 - **Documentación técnica:** El diagrama de la arquitectura desplegada, diccionarios de datos, modelo E/R completo y especificación paramétrica de API.
 - **Documentación del sistema:** Manual de usuario para operadores, el manual técnico, directrices de instalación en entorno de servidor y parametrización de variables de entorno.
 - **3.10 Documentación del código:** Detalla la estructura de directorios del proyecto MERN y las dependencias utilizadas en el sistema de la cafetería.
@@ -982,6 +722,120 @@ El relevamiento de información se realizó mediante las siguientes técnicas ap
   - **Librerías y Dependencias Frontend:** Uso de `react` para la construcción de interfaces de usuario interactivas del POS, `react-router-dom` para la navegación entre el terminal de cobro y el panel de administración, y `axios` para consumir las rutas RESTful del backend asíncronamente.
 
 \newpage
+
+# 3.6 Planificación de Sprints y Product Backlog
+
+## 3.6.1 Introducción
+La planificación del Sistema POS basado en TPS se desarrolla bajo Scrum, organizando el trabajo en 8 Sprints de 2 semanas. Cada Sprint entrega un incremento funcional validado. El Product Backlog centraliza y prioriza todos los requerimientos del sistema.
+
+## 3.6.2 Product Backlog
+| ID | Historia de Usuario | Prioridad | Sprint |
+|----|--------------------|----------|--------|
+| HU01 | Iniciar sesión en el sistema | Alta | 1 |
+| HU02 | Gestionar usuarios (Admin) | Alta | 1 |
+| HU03 | Gestionar productos | Alta | 2 |
+| HU04 | Gestionar mesas | Alta | 2 |
+| HU05 | Registrar órdenes en POS | Alta | 4 |
+| HU06 | Asignar pedidos a mesas | Alta | 4 |
+| HU07 | Calcular totales automáticamente | Alta | 6 |
+| HU08 | Procesar pagos | Alta | 6 |
+| HU09 | Generar comprobantes PDF | Media | 6 |
+| HU10 | Ver reportes de ventas | Alta | 7 |
+| HU11 | Auditar transacciones | Media | 7 |
+| HU12 | Interfaz usable y rápida | Alta | Todos |
+
+## 3.6.3 Planificación de Sprints
+- Sprint 0: Requerimientos, diseño BD, wireframes, entorno
+- Sprint 1: Autenticación (JWT, roles, bcrypt)
+- Sprint 2: CRUD Productos, Mesas, Orders
+- Sprint 3: Frontend base (React, login)
+- Sprint 4: POS (carrito, pedidos)
+- Sprint 5: Mesas y dashboard
+- Sprint 6: Facturación, pagos, PDF
+- Sprint 7: QA, corrección, despliegue
+
+## 3.6.4 Sprint Backlog (Ejemplo Sprint 4)
+| Tarea | Responsable | Estado |
+|------|------------|--------|
+| UI POS | Frontend | ✔ |
+| Carrito | Frontend | ✔ |
+| API Orders | Backend | ✔ |
+| Validación | QA | ✔ |
+
+## 3.6.5 Definition of Done
+- Código implementado
+- Integrado
+- Probado
+- Validado por QA
+- Documentado
+- Desplegado
+
+# 3.8 Validación y Pruebas del Sistema
+
+## 3.8.1 Introducción
+Las pruebas garantizan integridad TPS, seguridad, correcto funcionamiento y reducción de errores. Se aplican pruebas unitarias, funcionales, integración y aceptación.
+
+## 3.8.2 Tipos de pruebas
+
+### 1. Unitarias
+Validan componentes individuales:
+- Login JWT
+- Cálculo de totales
+- Validación de modelos
+Herramientas: Jest, Mocha
+
+### 2. Funcionales
+Verifican funcionalidades completas:
+| Caso | Entrada | Resultado |
+|------|--------|----------|
+| Login | Datos correctos | Acceso |
+| Producto | Datos válidos | Registro |
+| Orden | Items + mesa | Guardado |
+
+### 3. Integración
+Validan interacción entre módulos:
+- Frontend → Backend → DB
+- Orden → Mesa
+- Pago → Factura
+
+### 4. Aceptación (UAT)
+Validación con usuario real:
+- Flujo de venta completo
+- Gestión de mesas
+- Cierre de caja
+
+## 3.8.3 Casos de prueba
+Caso 1: Registro de orden → Entrada: productos → Resultado: orden guardada
+Caso 2: Cierre de venta → Entrada: orden + pago → Resultado: total correcto, mesa liberada
+Caso 3: Factura → Entrada: orden pagada → Resultado: PDF generado
+
+## 3.8.4 Validación ACID
+| Propiedad | Implementación |
+|----------|--------------|
+| Atomicidad | Transacciones MongoDB |
+| Consistencia | Validación datos |
+| Aislamiento | Control concurrencia |
+| Durabilidad | Persistencia BD |
+
+## 3.8.5 Gestión de errores
+- Identificación de bugs
+- Corrección continua
+Herramientas: GitHub Issues, logs
+
+## 3.8.6 Evidencias
+Funcionales: capturas, flujo POS
+Técnicas: pruebas, logs
+Despliegue: sistema online, Docker
+
+## 3.8.7 Criterios de aceptación
+- Pruebas completas
+- Sin errores críticos
+- Flujo TPS funcional
+- Validación del usuario
+- Sistema desplegado
+
+## 3.8.8 Conclusión
+El sistema cumple con el enfoque TPS, garantizando confiabilidad, trazabilidad e integridad en cada transacción, reduciendo errores operativos.
 
 # Referencias Bibliográficas {-}
 

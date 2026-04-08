@@ -352,7 +352,7 @@ Es un marco de trabajo ágil para el desarrollo, entrega y mantenimiento de prod
 
 # MARCO PRÁCTICO — DESARROLLO DEL SISTEMA TPS
 
-# Análisis del sistema
+## Análisis del sistema
 
 En base a la recopilación de datos realizada mediante entrevistas al personal y observación directa del flujo operativo de la cafetería, se identifican los siguientes actores, procesos y flujos que el sistema debe digitalizar.
 

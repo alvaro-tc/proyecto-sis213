@@ -4,6 +4,19 @@ const crypto = require("crypto");
 const Payment = require("../models/paymentModel");
 
 const createOrder = async (req, res, next) => {
+  if (!config.razorpayKeyId || !config.razorpaySecretKey) {
+    console.log("⚠️  Razorpay credentials missing. Using Mock Order.");
+    return res.status(200).json({
+      success: true,
+      isMock: true,
+      order: {
+        id: `mock_order_${Date.now()}`,
+        amount: req.body.amount * 100,
+        currency: "INR",
+      },
+    });
+  }
+
   const razorpay = new Razorpay({
     key_id: config.razorpayKeyId,
     key_secret: config.razorpaySecretKey,
@@ -29,6 +42,11 @@ const verifyPayment = async (req, res, next) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
+
+    if (!config.razorpaySecretKey && razorpay_order_id.startsWith("mock_")) {
+      console.log("⚠️  Mock Payment Verified.");
+      return res.json({ success: true, message: "Mock Payment verified successfully!" });
+    }
 
     const expectedSignature = crypto
       .createHmac("sha256", config.razorpaySecretKey)

@@ -72,6 +72,37 @@ const Bill = () => {
 
         const { data } = await createOrderRazorpay(reqData);
 
+        if (data.isMock) {
+          enqueueSnackbar("Mock Payment Mode Active!", { variant: "info" });
+          
+          const orderData = {
+            customerDetails: {
+              name: customerData.customerName,
+              phone: customerData.customerPhone,
+              guests: customerData.guests,
+            },
+            orderStatus: "In Progress",
+            bills: {
+              total: total,
+              tax: tax,
+              totalWithTax: totalPriceWithTax,
+            },
+            items: cartData,
+            table: customerData.table.tableId,
+            paymentMethod: paymentMethod,
+            paymentData: {
+              razorpay_order_id: data.order.id,
+              razorpay_payment_id: "mock_payment_id",
+            },
+          };
+
+          setTimeout(() => {
+            orderMutation.mutate(orderData);
+          }, 1500);
+
+          return;
+        }
+
         const options = {
           key: `${import.meta.env.VITE_RAZORPAY_KEY_ID}`,
           amount: data.order.amount,

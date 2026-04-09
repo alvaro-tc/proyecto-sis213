@@ -38,3 +38,4 @@ app.use(globalErrorHandler);
 app.listen(PORT, () => {
     console.log(`☑️  POS Server is listening on port ${PORT}`);
 })
+// restarted

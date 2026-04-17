@@ -3,7 +3,7 @@
 ## Introducción
 
 En el entorno empresarial actual, los Sistemas de Información Organizacional (SIO) se han convertido en un pilar indispensable. Su importancia radica en que permiten a las empresas estructurar, centralizar y gestionar su información para operar con eficiencia y respaldar la toma de decisiones. Dentro de esta jerarquía, el núcleo operativo recae en los Sistemas de Procesamiento de Transacciones (TPS). Estos sistemas han experimentado una profunda evolución tecnológica: pasaron de ser arquitecturas rígidas y lentas de procesamiento por lotes (batch) a convertirse en plataformas dinámicas en línea, capaces de registrar y procesar datos en tiempo real.
-
+git 
 Este avance tecnológico responde directamente a la necesidad imperiosa de automatizar procesos. En cualquier negocio, depender de operaciones manuales genera cuellos de botella, errores humanos y una falta total de trazabilidad. Automatizar significa transformar esas tareas repetitivas en flujos de trabajo eficientes. Para lograrlo, el uso de sistemas web se ha consolidado como el estándar ideal en las organizaciones. Desarrollar sobre tecnologías web permite a las empresas implementar herramientas escalables, flexibles y de fácil acceso desde cualquier dispositivo, democratizando soluciones robustas para las pequeñas y medianas empresas.
 
 En este marco, este proyecto consiste en el desarrollo de un Sistema de Información Organizacional Web basado en la evolución del enfoque TPS, que permitirá gestionar procesos, usuarios, transacciones y reportes mediante una plataforma tecnológica accesible y segura. La solución está diseñada para modernizar la gestión operativa de una cafetería en La Paz, Bolivia, reemplazando el uso de libretas de papel por un Punto de Venta (POS) digital que eleve la eficiencia y el control administrativo del establecimiento.
@@ -960,35 +960,73 @@ Ver únicamente las ventas de su turno & \centering SI \arraybackslash & \center
 **Implementación en el backend:** Un segundo _middleware_ de Express (`verifyRole('Admin')`) se encadena después de `verifyToken` en las rutas sensibles. Si el `req.user.role` no coincide con el rol requerido, el _middleware_ interrumpe la cadena y retorna una respuesta `403 Forbidden` con un mensaje de error descriptivo, sin ejecutar el controlador.
 
 **Implementación en el frontend:** React renderiza condicionalmente los componentes de navegación y las opciones del menú lateral basándose en el rol almacenado en el estado de Redux. Un cajero nunca verá los botones de administración de productos ni el acceso al panel de reportes gerenciales, reduciendo la superficie de error operativo y mejorando la experiencia de usuario.
+### Módulo de Transacciones (Extensión Técnica)
 
-### Módulo de Transacciones
+Para reforzar su rol como núcleo TPS, el módulo incorpora mecanismos adicionales orientados a la consistencia y resiliencia del sistema:
 
-Núcleo central del sistema TPS para la cafetería, diseñado en React.js para ofrecer una interfaz táctil de alta velocidad y baja fricción en la toma de pedidos (Punto de Venta).
+- **Persistencia transaccional (ACID):**
+  Uso de sesiones en MongoDB (`mongoose.startSession()`) para garantizar que cada venta se registre completamente o se revierta ante fallos.
 
-- **Toma de Pedidos (POS):** Interfaz interactiva para seleccionar categorías (Cafés, Infusiones, Postres, Snacks) y agregar productos al carrito de compras con sus respectivas cantidades.
-- **Gestión de Mesas y Estados:** Vinculación obligatoria de cada orden a una mesa específica de la cafetería. Control del flujo del pedido cambiando su estado: "En preparación" (barra/cocina), "Servido" y "Pagado".
-- **Procesamiento de Pago y Cierre:** Cálculo automático en tiempo real de subtotales, impuestos y total a cobrar. Registro del método de pago (efectivo, tarjeta) e impresión del comprobante o ticket de venta.
-- **Historial de transacciones:** Bitácora inmutable en MongoDB de todas las ventas realizadas, asociadas al cajero en turno, con protección contra alteraciones concurrentes.
+- **Control de inventario (opcional escalable):**
+  Descuento automático de stock por producto al confirmar una venta, evitando sobreventa en escenarios de alta concurrencia.
 
-### Módulo de Reportes
+- **Idempotencia de operaciones:**
+  Prevención de duplicidad de transacciones ante reintentos de red o fallos del cliente.
 
-Módulo analítico estadístico que destila la información transaccional operativa de la cafetería para facilitar la toma de decisiones de la gerencia.
+- **Auditoría de operaciones:**
+  Registro de eventos críticos (creación, actualización, cancelación de órdenes) con metadatos del usuario y timestamp.
 
-- **Dashboard Estadístico:** Panel visual en el _frontend_ que emplea librerías de gráficos (ej. Chart.js o Recharts) para mostrar las métricas clave en tiempo real.
-- **Reportes de Ventas:** Consultas agregadas a MongoDB para extraer ingresos diarios, semanales o mensuales.
-- **Rendimiento de Productos:** Identificación automática de los productos más vendidos (ej. Capuchino, Croissants) y los de menor rotación en el menú.
-- **Exportación de Datos:** Capacidad para generar y descargar los reportes consolidados por cajero o por turnos en formatos limpios como PDF o Excel, facilitando el arqueo de caja y la contabilidad externa.
+- **Manejo de concurrencia:**
+  Estrategias de bloqueo lógico o validación de versiones para evitar inconsistencias en múltiples operaciones simultáneas.
 
-## Capa Backend Funcional
+---
 
-El _backend_ de la cafetería está desarrollado en **Node.js** con el _framework_ **Express.js**, actuando como una API RESTful robusta, aislada de la interfaz gráfica y conectada a **MongoDB**. Su arquitectura sigue el patrón MVC (Modelo-Vista-Controlador) adaptado a servicios:
+### Módulo de Reportes (Extensión Técnica)
 
-- **Conexión BD:** Implementación de la cadena de conexión segura hacia MongoDB utilizando la librería `mongoose` para el modelado de datos mediante esquemas estructurados.
-- **Modelos (`Models`):** Representación orientada a documentos de las entidades principales de la cafetería: `UserSchema` (personal operativo y administrativo), `ProductSchema` (menú), `TableSchema` (mesas) y `OrderSchema` (transacciones/ventas).
-- **Controladores (`Controllers`):** Funciones que capturan las peticiones HTTP (GET, POST, PUT, DELETE), procesan la lógica central de ventas y devuelven respuestas estandarizadas en formato JSON.
-- **Rutas y Servicios (`Routes/Services`):** Definición ordenada de los _endpoints_ de la API (`/api/orders`, `/api/products`, etc.) extrayendo la lógica de negocio a un nivel de servicio para mantener controladores limpios.
-- **Capa de Seguridad (`Middlewares`):** Bloques intermedios que protegen rigurosamente las rutas. Incluyen la verificación de autenticidad mediante la validación y desencriptación de JSON Web Tokens (JWT) y la autorización por niveles (Ej. bloqueando a un Cajero de la ruta de borrado de productos).
-- **Validaciones:** Uso de librerías en el _backend_ para verificar la integridad de los _payloads_ antes de interactuar con la base de datos (ej. asegurar que una orden recibida contenga obligatoriamente el ID de una mesa válida y al menos un producto).
+Para mejorar el análisis y escalabilidad del módulo analítico:
+
+- **Agregaciones avanzadas:**
+  Uso del framework de agregación de MongoDB (`aggregate()`) para cálculos eficientes sobre grandes volúmenes de datos.
+
+- **Preprocesamiento de datos:**
+  Generación de colecciones derivadas o vistas materializadas para acelerar consultas frecuentes.
+
+- **Filtros dinámicos:**
+  Capacidad de segmentar reportes por rango de fechas, usuario (cajero), método de pago o categoría de producto.
+
+- **Indicadores clave (KPIs):**
+  - Ticket promedio por cliente  
+  - Ingreso por hora  
+  - Productos más rentables  
+
+- **Escalabilidad analítica:**
+  Posibilidad de integrar herramientas externas de BI en el futuro (Power BI, Metabase).
+
+---
+
+## Capa Backend Funcional (Extensión Completa)
+
+Para completar la arquitectura backend con un enfoque más profesional y productivo:
+
+### **Servicios de Negocio (`Services`)**
+- Encapsulan la lógica compleja del sistema.
+- Permiten reutilización y desacoplamiento.
+- Ejemplo: `orderService.createOrder()`, `reportService.generateSalesReport()`.
+
+---
+
+### **Middlewares Adicionales**
+
+- **Logging:**
+  Registro de todas las peticiones HTTP (ej. con Morgan o Winston).
+  
+- **Manejo global de errores:**
+  Middleware centralizado para capturar excepciones y devolver respuestas consistentes:
+  ```json
+  {
+    "error": true,
+    "message": "Error interno del servidor"
+  }
 
 ## Validación y pruebas del sistema
 

@@ -386,107 +386,88 @@ El flujo de información sigue la dirección: **Entrada (interfaz POS / administ
 
 Los requerimientos funcionales expresan lo que el sistema **debe hacer** operativamente. Se organizan por módulo funcional según el análisis del sistema.
 
-**4.1 Gestión de Ventas y Pedidos**
+**Autenticación y Control de Acceso**
 
 \begingroup\small
 \begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
 \hline
 \rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
 \endhead
-RF-01 & Registrar cada venta con detalle: producto, cantidad, precio y hora de transacción. & Cajero/Admin & Media \\ \hline
-RF-08 & Recibir pedidos que ya están hechos o que están en producción. & Admin/Cajero & Media \\ \hline
-RF-09 & Notificar que el pedido del cliente está preparado o en producción. & Enc. cocina/Admin & Media \\ \hline
-RF-11 & Emitir comprobantes o tickets digitales al cliente al momento del pago. & Cajero/Admin & Media \\ \hline
-RF-12 & Soportar múltiples formas de pago: efectivo, código QR. & Cajero/Admin & Alta \\ \hline
-RF-13 & Visualizar historial de ventas filtrado por día, semana o mes. & Admin & Media \\ \hline
-RF-14 & Cancelar o modificar pedidos antes de su despacho, con trazabilidad del cambio. & Cajero/Admin & Alta \\ \hline
+RF-01 & Permitir el inicio de sesión de usuarios del sistema mediante credenciales registradas. & Admin, Cajero, Cocina & Alta \\ \hline
+RF-02 & Gestionar roles de usuario: crear, editar y eliminar cuentas del personal operativo. & Admin & Alta \\ \hline
+RF-03 & Restringir el acceso a funcionalidades del sistema según el rol asignado al usuario autenticado. & Sistema/Admin & Alta \\ \hline
+\caption{Requerimientos funcionales — Autenticación y Control de Acceso}
+\label{tab:rf_auth}
+\end{longtable}
+\endgroup
+
+**Gestión de Ventas y Pedidos**
+
+\begingroup\small
+\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
+\hline
+\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
+\endhead
+RF-04 & Registrar pedidos de clientes vinculados a una mesa y al cajero en turno. & Cajero & Alta \\ \hline
+RF-05 & Agregar, editar y eliminar productos dentro de un pedido antes de su despacho. & Cajero & Alta \\ \hline
+RF-06 & Enviar pedidos registrados al área de cocina para su preparación. & Cajero & Alta \\ \hline
+RF-09 & Notificar al cajero automáticamente cuando el pedido esté listo para ser servido. & Sistema & Media \\ \hline
+RF-10 & Gestionar el estado de mesas del establecimiento (disponible, ocupada). & Cajero & Media \\ \hline
+RF-11 & Generar facturas o comprobantes digitales automáticamente por cada pedido cerrado. & Sistema & Alta \\ \hline
+RF-12 & Calcular automáticamente el total del pedido, incluyendo subtotales e impuestos. & Sistema & Alta \\ \hline
+RF-13 & Registrar pagos de pedidos con el método de pago utilizado (efectivo, QR). & Cajero & Alta \\ \hline
+RF-14 & Registrar y actualizar el estado del pago de cada orden (pagado, pendiente). & Sistema & Alta \\ \hline
 \caption{Requerimientos funcionales — Gestión de Ventas y Pedidos}
 \label{tab:rf_ventas}
 \end{longtable}
 \endgroup
 
-**4.2 Control de Inventario**
+**Gestión del Área de Cocina**
 
 \begingroup\small
 \begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
 \hline
 \rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
 \endhead
-RF-03 & Registrar todos los productos e insumos con su stock actual y unidad de medida. & Admin & Alta \\ \hline
-RF-15 & Descontar automáticamente del inventario al momento de registrar una venta. & Sistema/Admin & Alta \\ \hline
-RF-16 & Emitir alertas automáticas cuando un insumo alcance el nivel mínimo de stock. & Sistema/Admin & Alta \\ \hline
-RF-17 & Registrar entradas de mercadería vinculadas a órdenes de compra y proveedores. & Admin & Alta \\ \hline
-RF-18 & Identificar productos con alta rotación y aquellos con riesgo de desperdicio. & Admin & Media \\ \hline
-RF-19 & Generar reportes de merma y diferencias de inventario. & Admin & Media \\ \hline
-\caption{Requerimientos funcionales — Control de Inventario}
-\label{tab:rf_inventario}
+RF-04 & Registrar pedidos de clientes vinculados a una mesa y al cajero en turno. & Cajero & Alta \\ \hline
+RF-05 & Agregar, editar y eliminar productos dentro de un pedido antes de su despacho. & Cajero & Alta \\ \hline
+RF-06 & Enviar pedidos registrados al área de cocina para su preparación. & Cajero & Alta \\ \hline
+RF-09 & Notificar al cajero automáticamente cuando el pedido esté listo para ser servido. & Sistema & Media \\ \hline
+RF-10 & Gestionar el estado de mesas del establecimiento (disponible, ocupada). & Cajero & Media \\ \hline
+RF-11 & Generar facturas o comprobantes digitales automáticamente por cada pedido cerrado. & Sistema & Alta \\ \hline
+RF-12 & Calcular automáticamente el total del pedido, incluyendo subtotales e impuestos. & Sistema & Alta \\ \hline
+RF-13 & Registrar pagos de pedidos con el método de pago utilizado (efectivo, QR). & Cajero & Alta \\ \hline
+RF-14 & Registrar y actualizar el estado del pago de cada orden (pagado, pendiente). & Sistema & Alta \\ \hline
+\caption{Requerimientos funcionales — Gestión de Ventas y Pedidos}
+\label{tab:rf_ventas}
 \end{longtable}
 \endgroup
 
-**4.3 Gestión de Menú y Productos**
+**Gestión de Menú y Productos**
 
 \begingroup\small
 \begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
 \hline
 \rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
 \endhead
-RF-05 & Crear, editar y desactivar productos del menú de forma rápida y sencilla. & Enc. cocina/Admin & Media \\ \hline
-RF-06 & Asignar precios de venta y costos de producción a cada producto para calcular el margen real. & Admin & Alta \\ \hline
-RF-07 & Agrupar productos por categorías: bebidas calientes, jugos, almuerzos, \emph{snacks}, postres, etc. & Admin & Alta \\ \hline
-RF-10 & Elaborar el menú disponible semanal actualizado. & Enc. cocina/Admin & Media \\ \hline
-RF-20 & Marcar productos como no disponibles cuando el insumo correspondiente se haya agotado. & Enc. cocina/Admin & Alta \\ \hline
-RF-21 & Gestionar combos o menús del día con precios especiales. & Admin & Media \\ \hline
+RF-15 & Gestionar el catálogo de productos del menú: crear, editar y eliminar ítems. & Admin & Alta \\ \hline
+RF-16 & Gestionar categorías del menú (bebidas calientes, jugos, almuerzos, \emph{snacks}, postres). & Admin & Media \\ \hline
+RF-17 & Controlar la disponibilidad de productos según el estado del inventario de insumos. & Admin & Media \\ \hline
 \caption{Requerimientos funcionales — Gestión de Menú y Productos}
 \label{tab:rf_menu}
 \end{longtable}
 \endgroup
 
-**4.4 Reportes y Apoyo a la Toma de Decisiones**
+**Reportes y Apoyo a la Toma de Decisiones**
 
 \begingroup\small
 \begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
 \hline
 \rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
 \endhead
-RF-04 & Reporte de productos más vendidos para identificar los artículos estrella del menú. & Admin & Media \\ \hline
-RF-22 & Generar reporte de ingresos diarios, semanales y mensuales con comparativos históricos. & Admin & Alta \\ \hline
-RF-23 & Analizar horas pico para optimizar la asignación de personal por turno. & Admin & Media \\ \hline
-RF-24 & Comparar costos versus ingresos por producto y por categoría. & Admin & Alta \\ \hline
-RF-25 & Mostrar un panel de control (\emph{dashboard}) con indicadores clave en tiempo real. & Admin & Alta \\ \hline
+RF-18 & Visualizar reportes de ventas e ingresos filtrados por período (día, semana, mes). & Admin & Media \\ \hline
 \caption{Requerimientos funcionales — Reportes y Toma de Decisiones}
 \label{tab:rf_reportes}
-\end{longtable}
-\endgroup
-
-**4.5 Gestión de Proveedores y Compras**
-
-\begingroup\small
-\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
-\endhead
-RF-02 & Registrar proveedores con sus datos de contacto y condiciones comerciales. & Admin & Media \\ \hline
-RF-26 & Generar y registrar órdenes de compra vinculadas automáticamente al inventario. & Admin & Alta \\ \hline
-RF-27 & Mantener historial de compras por proveedor para evaluación y negociación. & Admin & Media \\ \hline
-RF-28 & Registrar precios de compra históricos para analizar variaciones de costo. & Admin & Media \\ \hline
-\caption{Requerimientos funcionales — Gestión de Proveedores y Compras}
-\label{tab:rf_proveedores}
-\end{longtable}
-\endgroup
-
-**4.6 Gestión de Personal y Turnos**
-
-\begingroup\small
-\begin{longtable}{|p{1.2cm}|p{7.5cm}|p{2.5cm}|p{1.8cm}|}
-\hline
-\rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Actor & \bfseries \color{white} Prioridad \\ \hline
-\endhead
-RF-29 & Registrar datos básicos de empleados: nombre, cargo y turno asignado. & Admin & Media \\ \hline
-RF-30 & Asociar cada venta al empleado que la realizó para garantizar trazabilidad y control. & Admin & Alta \\ \hline
-RF-31 & Registrar asistencia y puntualidad por turno. & Admin & Baja \\ \hline
-RF-32 & Gestionar permisos de acceso diferenciados por rol: administrador y cajero/operario. & Admin & Alta \\ \hline
-\caption{Requerimientos funcionales — Gestión de Personal y Turnos}
-\label{tab:rf_personal}
 \end{longtable}
 \endgroup
 
@@ -499,19 +480,20 @@ Establecen las restricciones y la forma en cómo debe operar y comportarse estru
 \hline
 \rowcolor{headerblue} \bfseries \color{white} ID & \bfseries \color{white} Descripción del Requerimiento & \bfseries \color{white} Categoría & \bfseries \color{white} Prioridad \\ \hline
 \endhead
-RNF-01 & El registro de cada venta no debe superar los 5 segundos de respuesta. & Rendimiento & Media \\ \hline
-RNF-02 & Cada registro de venta se realizará con un \emph{token} para verificación e historial del administrador. & Confiabilidad & Alta \\ \hline
-RNF-03 & Control de acceso mediante usuario y contraseña con roles diferenciados. & Seguridad & Alta \\ \hline
-RNF-04 & Adición de claves únicas para reservas o llegadas de pedidos, evitando valores duplicados. & Disponibilidad & Media \\ \hline
-RNF-05 & Arquitectura que permita incorporar nuevos productos, usuarios o sucursales sin rediseño del sistema. & Escalabilidad & Alta \\ \hline
-RNF-06 & Interfaz intuitiva que permita operar al personal sin capacitación técnica avanzada. & Usabilidad & Alta \\ \hline
-RNF-07 & Diseño adaptado para uso en pantallas de mostrador. & Usabilidad & Media \\ \hline
-RNF-08 & El sistema debe estar disponible durante todo el horario de operación sin interrupciones no planificadas. & Disponibilidad & Alta \\ \hline
-RNF-09 & Las consultas de reportes deben completarse en menos de 10 segundos. & Rendimiento & Media \\ \hline
-RNF-10 & Protección de datos sensibles frente a accesos no autorizados. & Seguridad & Alta \\ \hline
-RNF-11 & Respaldo automático de datos para evitar pérdida de información. & Confiabilidad & Alta \\ \hline
-RNF-12 & Posibilidad de recuperar datos de los últimos 30 días. & Confiabilidad & Alta \\ \hline
-RNF-13 & El sistema debe contar con documentación técnica para facilitar mantenimiento. & Mantenibilidad & Media \\ \hline
+RNF-01 & El sistema debe cifrar las contraseñas de los usuarios mediante \emph{hashing} irreversible con Bcrypt (factor de coste: 10). & Seguridad & Alta \\ \hline
+RNF-02 & El sistema debe implementar autenticación segura sin estado mediante JSON Web Tokens (JWT). & Seguridad & Alta \\ \hline
+RNF-03 & El sistema debe controlar el acceso a cada recurso y ruta según el rol del usuario autenticado. & Seguridad & Alta \\ \hline
+RNF-04 & El sistema debe responder a las solicitudes del usuario en menos de 2 segundos bajo condiciones normales de operación. & Rendimiento & Alta \\ \hline
+RNF-05 & El sistema debe soportar múltiples usuarios concurrentes sin degradación del rendimiento durante el horario de operación. & Rendimiento & Alta \\ \hline
+RNF-06 & El sistema debe actualizar el estado de pedidos y mesas en tiempo real sin necesidad de recargar la página. & Rendimiento & Media \\ \hline
+RNF-07 & La interfaz de usuario debe ser intuitiva, permitiendo operar al personal sin capacitación técnica avanzada. & Usabilidad & Alta \\ \hline
+RNF-08 & El sistema debe ser \emph{responsive} y adaptado para uso en pantallas de mostrador y dispositivos táctiles. & Usabilidad & Media \\ \hline
+RNF-09 & El sistema debe permitir una navegación fluida entre módulos sin interrupciones ni tiempos de espera perceptibles. & Usabilidad & Media \\ \hline
+RNF-10 & El sistema debe tener una arquitectura modular que facilite el mantenimiento y la incorporación de nuevas funcionalidades. & Mantenibilidad & Alta \\ \hline
+RNF-11 & El sistema debe ser escalable para incorporar nuevos productos, usuarios o sucursales sin rediseño de la arquitectura base. & Mantenibilidad & Media \\ \hline
+RNF-12 & El sistema debe estar disponible durante todo el horario de operación del establecimiento, sin interrupciones no planificadas. & Disponibilidad & Alta \\ \hline
+RNF-13 & El sistema debe manejar errores de forma controlada, informando al usuario con mensajes descriptivos sin exponer detalles internos del sistema. & Confiabilidad & Alta \\ \hline
+RNF-14 & El sistema debe garantizar la integridad de los datos transaccionales mediante propiedades ACID en las operaciones de escritura críticas. & Datos & Alta \\ \hline
 \caption{Requerimientos no funcionales del Sistema POS}
 \label{tab:rnf}
 \end{longtable}

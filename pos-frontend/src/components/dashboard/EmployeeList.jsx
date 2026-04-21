@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUsers, deleteUser } from "../../https";
 import { enqueueSnackbar } from "notistack";
@@ -22,19 +22,19 @@ const EmployeeList = ({ onAdd }) => {
     if(window.confirm("¿Estás seguro de eliminar este empleado?")) delMutation.mutate(id);
   };
 
-  if (isLoading) return <div className="text-white p-6 justify-center flex">Cargando empleados...</div>;
+  if (isLoading) return <div className="text-theme-text p-6 justify-center flex">Cargando empleados...</div>;
 
   return (
     <div className="container mx-auto py-2 px-6 md:px-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-[#f5f5f5] text-xl font-semibold">Listado de Empleados</h2>
-        <button onClick={onAdd} className="bg-[#1a1a1a] hover:bg-[#262626] px-4 py-2 rounded-lg text-[#f5f5f5] font-semibold text-sm flex items-center gap-2">
+        <h2 className="text-theme-text text-xl font-semibold">Listado de Empleados</h2>
+        <button onClick={onAdd} className="bg-theme-surface hover:bg-theme-card px-4 py-2 rounded-lg text-theme-text font-semibold text-sm flex items-center gap-2">
           Añadir Empleado +
         </button>
       </div>
-      <div className="bg-[#1a1a1a] rounded-lg overflow-hidden">
-        <table className="w-full text-left text-[#ababab]">
-          <thead className="bg-[#1f1f1f] text-[#f5f5f5]">
+      <div className="bg-theme-surface rounded-lg overflow-hidden">
+        <table className="w-full text-left text-theme-muted">
+          <thead className="bg-theme-base text-theme-text">
             <tr>
               <th className="py-3 px-4">Nombre</th>
               <th className="py-3 px-4">Email</th>
@@ -45,8 +45,8 @@ const EmployeeList = ({ onAdd }) => {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user._id} className="border-b border-[#333] hover:bg-[#262626]">
-                <td className="py-3 px-4 text-white font-medium">{user.name}</td>
+              <tr key={user._id} className="border-b border-theme-border hover:bg-theme-card">
+                <td className="py-3 px-4 text-theme-text font-medium">{user.name}</td>
                 <td className="py-3 px-4">{user.email}</td>
                 <td className="py-3 px-4">{user.phone}</td>
                 <td className="py-3 px-4 capitalize">

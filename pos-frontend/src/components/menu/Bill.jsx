@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getTotalPrice } from "../../redux/slices/cartSlice";
 import {
@@ -192,38 +192,38 @@ const Bill = () => {
   return (
     <>
       <div className="flex items-center justify-between px-5 mt-2">
-        <p className="text-xs text-[#ababab] font-medium mt-2">
+        <p className="text-xs text-theme-muted font-medium mt-2">
           Artículos({cartData.length})
         </p>
-        <h1 className="text-[#f5f5f5] text-md font-bold">
+        <h1 className="text-theme-text text-md font-bold">
           Bs {total.toFixed(2)}
         </h1>
       </div>
       <div className="flex items-center justify-between px-5 mt-2">
-        <p className="text-xs text-[#ababab] font-medium mt-2">Impuesto(5.25%)</p>
-        <h1 className="text-[#f5f5f5] text-md font-bold">Bs {tax.toFixed(2)}</h1>
+        <p className="text-xs text-theme-muted font-medium mt-2">Impuesto(5.25%)</p>
+        <h1 className="text-theme-text text-md font-bold">Bs {tax.toFixed(2)}</h1>
       </div>
       <div className="flex items-center justify-between px-5 mt-2">
-        <p className="text-xs text-[#ababab] font-medium mt-2">
+        <p className="text-xs text-theme-muted font-medium mt-2">
           Total con Impuesto
         </p>
-        <h1 className="text-[#f5f5f5] text-md font-bold">
+        <h1 className="text-theme-text text-md font-bold">
           Bs {totalPriceWithTax.toFixed(2)}
         </h1>
       </div>
       <div className="flex items-center gap-3 px-5 mt-4">
         <button
           onClick={() => setPaymentMethod("Cash")}
-          className={`bg-[#1f1f1f] px-4 py-3 w-full rounded-lg text-[#ababab] font-semibold ${
-            paymentMethod === "Cash" ? "bg-[#383737]" : ""
+          className={`bg-theme-base px-4 py-3 w-full rounded-lg text-theme-muted font-semibold ${
+            paymentMethod === "Cash" ? "bg-theme-elevated" : ""
           }`}
         >
           Efectivo
         </button>
         <button
           onClick={() => setPaymentMethod("Online")}
-          className={`bg-[#1f1f1f] px-4 py-3 w-full rounded-lg text-[#ababab] font-semibold ${
-            paymentMethod === "Online" ? "bg-[#383737]" : ""
+          className={`bg-theme-base px-4 py-3 w-full rounded-lg text-theme-muted font-semibold ${
+            paymentMethod === "Online" ? "bg-theme-elevated" : ""
           }`}
         >
           En Línea
@@ -231,7 +231,7 @@ const Bill = () => {
       </div>
 
       <div className="flex items-center gap-3 px-5 mt-4">
-        <button className="bg-[#025cca] px-4 py-3 w-full rounded-lg text-[#f5f5f5] font-semibold text-lg">
+        <button className="bg-[#025cca] px-4 py-3 w-full rounded-lg text-white font-semibold text-lg">
           Imprimir Recibo
         </button>
         <button

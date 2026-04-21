@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { orders } from "../../constants";
 import { GrUpdate } from "react-icons/gr";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -39,13 +39,13 @@ const RecentOrders = () => {
   console.log(resData.data.data);
 
   return (
-    <div className="container mx-auto bg-[#262626] p-4 rounded-lg">
-      <h2 className="text-[#f5f5f5] text-xl font-semibold mb-4">
+    <div className="container mx-auto bg-theme-card p-4 rounded-lg">
+      <h2 className="text-theme-text text-xl font-semibold mb-4">
         Pedidos Recientes
       </h2>
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-[#f5f5f5]">
-          <thead className="bg-[#333] text-[#ababab]">
+        <table className="w-full text-left text-theme-text">
+          <thead className="bg-theme-elevated text-theme-muted">
             <tr>
               <th className="p-3">ID del Pedido</th>
               <th className="p-3">Cliente</th>
@@ -61,13 +61,13 @@ const RecentOrders = () => {
             {resData?.data.data.map((order, index) => (
               <tr
                 key={index}
-                className="border-b border-gray-600 hover:bg-[#333]"
+                className="border-b border-theme-border hover:bg-theme-elevated"
               >
                 <td className="p-4">#{Math.floor(new Date(order.orderDate).getTime())}</td>
                 <td className="p-4">{order.customerDetails.name}</td>
                 <td className="p-4">
                   <select
-                    className={`bg-[#1a1a1a] text-[#f5f5f5] border border-gray-500 p-2 rounded-lg focus:outline-none ${
+                    className={`bg-theme-surface text-theme-text border border-theme-border p-2 rounded-lg focus:outline-none ${
                       order.orderStatus === "Ready"
                         ? "text-green-500"
                         : "text-yellow-500"

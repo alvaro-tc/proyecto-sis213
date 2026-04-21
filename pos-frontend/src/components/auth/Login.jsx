@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query"
 import { login } from "../../https/index"
 import { enqueueSnackbar } from "notistack";
@@ -43,33 +43,33 @@ const Login = () => {
     <div>
       <form onSubmit={handleSubmit}>
         <div>
-          <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">
+          <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
             Correo de Empleado
           </label>
-          <div className="flex item-center rounded-lg p-5 px-4 bg-[#1f1f1f]">
+          <div className="flex item-center rounded-lg p-5 px-4 bg-theme-base">
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               placeholder="Ingrese el correo de empleado"
-              className="bg-transparent flex-1 text-white focus:outline-none"
+              className="bg-transparent flex-1 text-theme-text focus:outline-none"
               required
             />
           </div>
         </div>
         <div>
-          <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">
+          <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
             Contraseña
           </label>
-          <div className="flex item-center rounded-lg p-5 px-4 bg-[#1f1f1f]">
+          <div className="flex item-center rounded-lg p-5 px-4 bg-theme-base">
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="Ingrese la contraseña"
-              className="bg-transparent flex-1 text-white focus:outline-none"
+              className="bg-transparent flex-1 text-theme-text focus:outline-none"
               required
             />
           </div>

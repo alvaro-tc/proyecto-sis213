@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { MdTableBar, MdCategory } from "react-icons/md";
 import { BiSolidDish } from "react-icons/bi";
 import Metrics from "../components/dashboard/Metrics";
@@ -12,7 +12,7 @@ import DishList from "../components/dashboard/DishList";
 import EmployeeList from "../components/dashboard/EmployeeList";
 import EmployeeModal from "../components/dashboard/EmployeeModal";
 
-const tabs = ["Métricas", "Pedidos", "Mesas", "Categorías", "Platos", "Empleados"];
+const tabs = ["Métricas", "Pedidos", "Mesas", "Categorías", "Productos", "Empleados"];
 
 const Dashboard = () => {
 
@@ -38,7 +38,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="bg-[#1f1f1f] h-[calc(100vh-5rem)] overflow-y-auto">
+    <div className="bg-theme-base h-[calc(100vh-5rem)] overflow-y-auto">
       <div className="container mx-auto flex items-center py-8 px-6 md:px-4">
         <div className="flex flex-wrap items-center gap-3">
           {tabs.map((tab) => {
@@ -46,10 +46,10 @@ const Dashboard = () => {
               <button
                 key={tab}
                 className={`
-                px-8 py-3 rounded-lg text-[#f5f5f5] font-semibold text-md flex items-center gap-2 ${
+                px-8 py-3 rounded-lg text-theme-text font-semibold text-md flex items-center gap-2 ${
                   activeTab === tab
-                    ? "bg-[#262626]"
-                    : "bg-[#1a1a1a] hover:bg-[#262626]"
+                    ? "bg-theme-card"
+                    : "bg-theme-surface hover:bg-theme-card"
                 }`}
                 onClick={() => setActiveTab(tab)}
               >
@@ -64,7 +64,7 @@ const Dashboard = () => {
       {activeTab === "Pedidos" && <RecentOrders />}
       {activeTab === "Mesas" && <TableList onEdit={(t) => handleOpenModal('table', t)} onAdd={() => handleOpenModal('table')} />}
       {activeTab === "Categorías" && <CategoryList onEdit={(c) => handleOpenModal('category', c)} onAdd={() => handleOpenModal('category')} />}
-      {activeTab === "Platos" && <DishList onEdit={(d) => handleOpenModal('dishes', d)} onAdd={() => handleOpenModal('dishes')} />}
+      {activeTab === "Productos" && <DishList onEdit={(d) => handleOpenModal('dishes', d)} onAdd={() => handleOpenModal('dishes')} />}
       {activeTab === "Empleados" && <EmployeeList onAdd={() => handleOpenModal('employee')} />}
 
       {isTableModalOpen && <Modal setIsTableModalOpen={setIsTableModalOpen} dataToEdit={dataToEdit} />}

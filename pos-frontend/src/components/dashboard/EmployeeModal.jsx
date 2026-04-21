@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -45,11 +45,11 @@ const EmployeeModal = ({ setIsEmployeeModalOpen }) => {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="bg-[#262626] p-6 rounded-lg shadow-lg w-96 relative flex flex-col max-h-[90vh]"
+        className="bg-theme-card p-6 rounded-lg shadow-lg w-96 relative flex flex-col max-h-[90vh]"
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-[#f5f5f5] text-xl font-semibold">Añadir Empleado</h2>
-          <button onClick={() => setIsEmployeeModalOpen(false)} className="text-[#f5f5f5] hover:text-red-500">
+          <h2 className="text-theme-text text-xl font-semibold">Añadir Empleado</h2>
+          <button onClick={() => setIsEmployeeModalOpen(false)} className="text-theme-text hover:text-red-500">
             <IoMdClose size={24} />
           </button>
         </div>
@@ -57,56 +57,56 @@ const EmployeeModal = ({ setIsEmployeeModalOpen }) => {
         <div className="overflow-y-auto pr-2 custom-scrollbar">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-[#ababab] mb-2 text-sm font-medium">Nombre</label>
+              <label className="block text-theme-muted mb-2 text-sm font-medium">Nombre</label>
               <input
                 type="text"
                 name="name"
                 value={employeeData.name}
                 onChange={handleInputChange}
-                className="w-full bg-[#1f1f1f] text-white rounded-lg p-3 focus:outline-none"
+                className="w-full bg-theme-base text-theme-text rounded-lg p-3 focus:outline-none"
                 required
               />
             </div>
             <div>
-              <label className="block text-[#ababab] mb-2 text-sm font-medium">Email</label>
+              <label className="block text-theme-muted mb-2 text-sm font-medium">Email</label>
               <input
                 type="email"
                 name="email"
                 value={employeeData.email}
                 onChange={handleInputChange}
-                className="w-full bg-[#1f1f1f] text-white rounded-lg p-3 focus:outline-none"
+                className="w-full bg-theme-base text-theme-text rounded-lg p-3 focus:outline-none"
                 required
               />
             </div>
             <div>
-              <label className="block text-[#ababab] mb-2 text-sm font-medium">Teléfono</label>
+              <label className="block text-theme-muted mb-2 text-sm font-medium">Teléfono</label>
               <input
                 type="text"
                 name="phone"
                 value={employeeData.phone}
                 onChange={handleInputChange}
-                className="w-full bg-[#1f1f1f] text-white rounded-lg p-3 focus:outline-none"
+                className="w-full bg-theme-base text-theme-text rounded-lg p-3 focus:outline-none"
                 required
               />
             </div>
             <div>
-              <label className="block text-[#ababab] mb-2 text-sm font-medium">Contraseña Inicial</label>
+              <label className="block text-theme-muted mb-2 text-sm font-medium">Contraseña Inicial</label>
               <input
                 type="text"
                 name="password"
                 value={employeeData.password}
                 onChange={handleInputChange}
-                className="w-full bg-[#1f1f1f] text-white rounded-lg p-3 focus:outline-none"
+                className="w-full bg-theme-base text-theme-text rounded-lg p-3 focus:outline-none"
                 required
               />
             </div>
             <div>
-              <label className="block text-[#ababab] mb-2 text-sm font-medium">Rol</label>
+              <label className="block text-theme-muted mb-2 text-sm font-medium">Rol</label>
               <select
                 name="role"
                 value={employeeData.role}
                 onChange={handleInputChange}
-                className="w-full bg-[#1f1f1f] text-white rounded-lg p-3 focus:outline-none"
+                className="w-full bg-theme-base text-theme-text rounded-lg p-3 focus:outline-none"
               >
                 <option value="admin">Administrador / Cajero</option>
                 <option value="waiter">Mesero</option>

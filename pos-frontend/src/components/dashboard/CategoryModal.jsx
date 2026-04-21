@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -68,29 +68,29 @@ const CategoryModal = ({ setIsCategoryModalOpen, dataToEdit }) => {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         transition={{ duration: 0.3 }}
-        className="bg-[#262626] p-6 rounded-lg shadow-lg w-96"
+        className="bg-theme-card p-6 rounded-lg shadow-lg w-96"
       >
         <div className="flex justify-between item-center mb-4">
-          <h2 className="text-[#f5f5f5] text-xl font-semibold">
+          <h2 className="text-theme-text text-xl font-semibold">
             {dataToEdit ? "Editar Categoría" : "Añadir Categoría"}
           </h2>
-          <button onClick={() => setIsCategoryModalOpen(false)} className="text-[#f5f5f5] hover:text-red-500">
+          <button onClick={() => setIsCategoryModalOpen(false)} className="text-theme-text hover:text-red-500">
             <IoMdClose size={24} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-6">
           <div>
-            <label className="block text-[#ababab] mb-2 text-sm font-medium">Nombre</label>
-            <input type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full rounded-lg p-3 bg-[#1f1f1f] text-white focus:outline-none" required />
+            <label className="block text-theme-muted mb-2 text-sm font-medium">Nombre</label>
+            <input type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full rounded-lg p-3 bg-theme-base text-theme-text focus:outline-none" required />
           </div>
           <div>
-            <label className="block text-[#ababab] mb-2 text-sm font-medium">Color de Fondo (Hex)</label>
-            <input type="color" name="bgColor" value={formData.bgColor} onChange={handleInputChange} className="w-full h-12 rounded-lg p-1 bg-[#1f1f1f] text-white focus:outline-none cursor-pointer" required />
+            <label className="block text-theme-muted mb-2 text-sm font-medium">Color de Fondo (Hex)</label>
+            <input type="color" name="bgColor" value={formData.bgColor} onChange={handleInputChange} className="w-full h-12 rounded-lg p-1 bg-theme-base text-theme-text focus:outline-none cursor-pointer" required />
           </div>
           <div>
-            <label className="block text-[#ababab] mb-2 text-sm font-medium">Icono (Emoji)</label>
-            <input type="text" name="icon" value={formData.icon} onChange={handleInputChange} className="w-full rounded-lg p-3 bg-[#1f1f1f] text-white focus:outline-none" required />
+            <label className="block text-theme-muted mb-2 text-sm font-medium">Icono (Emoji)</label>
+            <input type="text" name="icon" value={formData.icon} onChange={handleInputChange} className="w-full rounded-lg p-3 bg-theme-base text-theme-text focus:outline-none" required />
           </div>
           <button type="submit" className="w-full rounded-lg mt-6 py-3 text-lg bg-yellow-400 text-gray-900 font-bold">
             {dataToEdit ? "Guardar Cambios" : "Añadir Categoría"}

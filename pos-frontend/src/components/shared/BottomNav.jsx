@@ -1,13 +1,11 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { FaHome } from "react-icons/fa";
-import { MdOutlineReorder, MdTableBar } from "react-icons/md";
-import { CiCircleMore } from "react-icons/ci";
+import { MdOutlineReorder, MdTableBar, MdInventory } from "react-icons/md";
 import { BiSolidDish } from "react-icons/bi";
 import { useNavigate, useLocation } from "react-router-dom";
 import Modal from "./Modal";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setCustomer } from "../../redux/slices/customerSlice";
-import { addProduct } from "../../redux/slices/menuSlice";
 
 const BottomNav = () => {
   const navigate = useNavigate();
@@ -20,15 +18,6 @@ const BottomNav = () => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
-  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
-  const openProductModal = () => setIsProductModalOpen(true);
-  const closeProductModal = () => setIsProductModalOpen(false);
-
-  const menus = useSelector((state) => state.menu);
-  const [productName, setProductName] = useState("");
-  const [productPrice, setProductPrice] = useState("");
-  const [productCategory, setProductCategory] = useState(menus?.[0]?.id || 1);
 
   const increment = () => {
     if(guestCount >= 6) return;
@@ -47,27 +36,12 @@ const BottomNav = () => {
     navigate("/tables");
   }
 
-  const handleAddProduct = () => {
-    if (!productName || !productPrice) return alert("Por favor completa los campos");
-    dispatch(addProduct({
-      categoryId: parseInt(productCategory),
-      product: {
-        id: new Date().getTime(),
-        name: productName,
-        price: parseFloat(productPrice)
-      }
-    }));
-    setProductName("");
-    setProductPrice("");
-    closeProductModal();
-  }
-
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-[#262626] p-2 h-16 flex justify-around z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-theme-card p-2 h-16 flex justify-around z-50">
       <button
         onClick={() => navigate("/")}
         className={`flex items-center justify-center font-bold ${
-          isActive("/") ? "text-[#f5f5f5] bg-[#343434]" : "text-[#ababab]"
+          isActive("/") ? "text-theme-text bg-theme-elevated" : "text-theme-muted"
         } w-[300px] rounded-[20px]`}
       >
         <FaHome className="inline mr-2" size={20} /> <p>Inicio</p>
@@ -75,7 +49,7 @@ const BottomNav = () => {
       <button
         onClick={() => navigate("/orders")}
         className={`flex items-center justify-center font-bold ${
-          isActive("/orders") ? "text-[#f5f5f5] bg-[#343434]" : "text-[#ababab]"
+          isActive("/orders") ? "text-theme-text bg-theme-elevated" : "text-theme-muted"
         } w-[300px] rounded-[20px]`}
       >
         <MdOutlineReorder className="inline mr-2" size={20} /> <p>Pedidos</p>
@@ -83,76 +57,54 @@ const BottomNav = () => {
       <button
         onClick={() => navigate("/tables")}
         className={`flex items-center justify-center font-bold ${
-          isActive("/tables") ? "text-[#f5f5f5] bg-[#343434]" : "text-[#ababab]"
+          isActive("/tables") ? "text-theme-text bg-theme-elevated" : "text-theme-muted"
         } w-[300px] rounded-[20px]`}
       >
         <MdTableBar className="inline mr-2" size={20} /> <p>Mesas</p>
       </button>
-      <button onClick={openProductModal} className="flex items-center justify-center font-bold text-[#ababab] w-[300px]">
-        <CiCircleMore className="inline mr-2" size={20} /> <p>Agregar Producto</p>
+      <button
+        onClick={() => navigate("/insumos")}
+        className={`flex items-center justify-center font-bold ${
+          isActive("/insumos") ? "text-theme-text bg-theme-elevated" : "text-theme-muted"
+        } w-[300px] rounded-[20px]`}
+      >
+        <MdInventory className="inline mr-2" size={20} /> <p>Insumos</p>
       </button>
 
       <button
         disabled={isActive("/tables") || isActive("/menu")}
         onClick={openModal}
-        className="absolute bottom-6 bg-[#F6B100] text-[#f5f5f5] rounded-full p-4 items-center"
+        className="absolute bottom-6 bg-[#F6B100] text-theme-text rounded-full p-4 items-center"
       >
         <BiSolidDish size={40} />
       </button>
 
       <Modal isOpen={isModalOpen} onClose={closeModal} title="Crear Pedido">
         <div>
-          <label className="block text-[#ababab] mb-2 text-sm font-medium">Nombre del Cliente</label>
-          <div className="flex items-center rounded-lg p-3 px-4 bg-[#1f1f1f]">
-            <input value={name} onChange={(e) => setName(e.target.value)} type="text" name="" placeholder="Ingrese el nombre del cliente" id="" className="bg-transparent flex-1 text-white focus:outline-none"  />
+          <label className="block text-theme-muted mb-2 text-sm font-medium">Nombre del Cliente</label>
+          <div className="flex items-center rounded-lg p-3 px-4 bg-theme-base">
+            <input value={name} onChange={(e) => setName(e.target.value)} type="text" name="" placeholder="Ingrese el nombre del cliente" id="" className="bg-transparent flex-1 text-theme-text focus:outline-none"  />
           </div>
         </div>
         <div>
-          <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">Teléfono del Cliente</label>
-          <div className="flex items-center rounded-lg p-3 px-4 bg-[#1f1f1f]">
-            <input value={phone} onChange={(e) => setPhone(e.target.value)} type="number" name="" placeholder="+91-9999999999" id="" className="bg-transparent flex-1 text-white focus:outline-none"  />
+          <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">Teléfono del Cliente</label>
+          <div className="flex items-center rounded-lg p-3 px-4 bg-theme-base">
+            <input value={phone} onChange={(e) => setPhone(e.target.value)} type="number" name="" placeholder="+91-9999999999" id="" className="bg-transparent flex-1 text-theme-text focus:outline-none"  />
           </div>
         </div>
         <div>
-          <label className="block mb-2 mt-3 text-sm font-medium text-[#ababab]">Invitados</label>
-          <div className="flex items-center justify-between bg-[#1f1f1f] px-4 py-3 rounded-lg">
+          <label className="block mb-2 mt-3 text-sm font-medium text-theme-muted">Invitados</label>
+          <div className="flex items-center justify-between bg-theme-base px-4 py-3 rounded-lg">
             <button onClick={decrement} className="text-yellow-500 text-2xl">&minus;</button>
-            <span className="text-white">{guestCount} Persona(s)</span>
+            <span className="text-theme-text">{guestCount} Persona(s)</span>
             <button onClick={increment} className="text-yellow-500 text-2xl">&#43;</button>
           </div>
         </div>
-        <button onClick={handleCreateOrder} className="w-full bg-[#F6B100] text-[#f5f5f5] rounded-lg py-3 mt-8 hover:bg-yellow-700">
+        <button onClick={handleCreateOrder} className="w-full bg-[#F6B100] text-theme-text rounded-lg py-3 mt-8 hover:bg-yellow-700">
           Crear Pedido
         </button>
       </Modal>
 
-      <Modal isOpen={isProductModalOpen} onClose={closeProductModal} title="Agregar Nuevo Producto">
-        <div>
-          <label className="block text-[#ababab] mb-2 text-sm font-medium">Nombre del Producto</label>
-          <div className="flex items-center rounded-lg p-3 px-4 bg-[#1f1f1f]">
-            <input value={productName} onChange={(e) => setProductName(e.target.value)} type="text" placeholder="Ej. Café Moka" className="bg-transparent flex-1 text-white focus:outline-none"  />
-          </div>
-        </div>
-        <div>
-          <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">Precio (Bs )</label>
-          <div className="flex items-center rounded-lg p-3 px-4 bg-[#1f1f1f]">
-            <input value={productPrice} onChange={(e) => setProductPrice(e.target.value)} type="number" placeholder="Ej. 150" className="bg-transparent flex-1 text-white focus:outline-none"  />
-          </div>
-        </div>
-        <div>
-          <label className="block mb-2 mt-3 text-sm font-medium text-[#ababab]">Categoría</label>
-          <div className="flex items-center rounded-lg p-3 px-4 bg-[#1f1f1f]">
-            <select value={productCategory} onChange={(e) => setProductCategory(e.target.value)} className="bg-transparent flex-1 text-white focus:outline-none">
-              {menus?.map(cat => (
-                <option key={cat.id} value={cat.id} className="bg-[#1f1f1f] text-white">{cat.name}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <button onClick={handleAddProduct} className="w-full bg-[#02ca3a] text-[#f5f5f5] font-bold rounded-lg py-3 mt-8 hover:bg-green-700">
-          Guardar Producto
-        </button>
-      </Modal>
     </div>
   );
 };

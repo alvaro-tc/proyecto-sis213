@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { register } from "../../https";
 import { useMutation } from "@tanstack/react-query";
 import { enqueueSnackbar } from "notistack";
@@ -53,71 +53,71 @@ const Register = ({setIsRegister}) => {
     <div>
       <form onSubmit={handleSubmit}>
         <div>
-          <label className="block text-[#ababab] mb-2 text-sm font-medium">
+          <label className="block text-theme-muted mb-2 text-sm font-medium">
             Nombre del Empleado
           </label>
-          <div className="flex item-center rounded-lg p-5 px-4 bg-[#1f1f1f]">
+          <div className="flex item-center rounded-lg p-5 px-4 bg-theme-base">
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
               placeholder="Ingrese el nombre del empleado"
-              className="bg-transparent flex-1 text-white focus:outline-none"
+              className="bg-transparent flex-1 text-theme-text focus:outline-none"
               required
             />
           </div>
         </div>
         <div>
-          <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">
+          <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
             Correo del Empleado
           </label>
-          <div className="flex item-center rounded-lg p-5 px-4 bg-[#1f1f1f]">
+          <div className="flex item-center rounded-lg p-5 px-4 bg-theme-base">
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               placeholder="Ingrese el correo del empleado"
-              className="bg-transparent flex-1 text-white focus:outline-none"
+              className="bg-transparent flex-1 text-theme-text focus:outline-none"
               required
             />
           </div>
         </div>
         <div>
-          <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">
+          <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
             Teléfono del Empleado
           </label>
-          <div className="flex item-center rounded-lg p-5 px-4 bg-[#1f1f1f]">
+          <div className="flex item-center rounded-lg p-5 px-4 bg-theme-base">
             <input
               type="number"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
               placeholder="Ingrese el teléfono del empleado"
-              className="bg-transparent flex-1 text-white focus:outline-none"
+              className="bg-transparent flex-1 text-theme-text focus:outline-none"
               required
             />
           </div>
         </div>
         <div>
-          <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">
+          <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
             Contraseña
           </label>
-          <div className="flex item-center rounded-lg p-5 px-4 bg-[#1f1f1f]">
+          <div className="flex item-center rounded-lg p-5 px-4 bg-theme-base">
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="Ingrese la contraseña"
-              className="bg-transparent flex-1 text-white focus:outline-none"
+              className="bg-transparent flex-1 text-theme-text focus:outline-none"
               required
             />
           </div>
         </div>
         <div>
-          <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">
+          <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
             Elija su rol
           </label>
 
@@ -128,7 +128,7 @@ const Register = ({setIsRegister}) => {
                   key={role}
                   type="button"
                   onClick={() => handleRoleSelection(role)}
-                  className={`bg-[#1f1f1f] px-4 py-3 w-full rounded-lg text-[#ababab] ${
+                  className={`bg-theme-base px-4 py-3 w-full rounded-lg text-theme-muted ${
                     formData.role === role ? "bg-indigo-700" : ""
                   }`}
                 >

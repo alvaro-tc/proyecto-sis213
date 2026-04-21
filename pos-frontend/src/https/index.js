@@ -38,6 +38,15 @@ export const createOrderRazorpay = (data) =>
 export const verifyPaymentRazorpay = (data) =>
   axiosWrapper.post("/api/payment//verify-payment", data);
 
+// Insumo Endpoints
+export const addInsumo = (data) => axiosWrapper.post("/api/insumo/", data);
+export const getInsumos = () => axiosWrapper.get("/api/insumo");
+export const getMetricasInsumos = () => axiosWrapper.get("/api/insumo/metricas");
+export const updateInsumo = ({ insumoId, ...data }) => axiosWrapper.put(`/api/insumo/${insumoId}`, data);
+export const deleteInsumo = (insumoId) => axiosWrapper.delete(`/api/insumo/${insumoId}`);
+export const registrarConsumo = ({ insumoId, ...data }) => axiosWrapper.post(`/api/insumo/${insumoId}/consumo`, data);
+export const reponerStock = ({ insumoId, cantidad }) => axiosWrapper.post(`/api/insumo/${insumoId}/reponer`, { cantidad });
+
 // Order Endpoints
 export const addOrder = (data) => axiosWrapper.post("/api/order/", data);
 export const getOrders = () => axiosWrapper.get("/api/order");

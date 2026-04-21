@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import BottomNav from "../components/shared/BottomNav";
 import OrderCard from "../components/orders/OrderCard";
 import BackButton from "../components/shared/BackButton";
@@ -36,25 +36,25 @@ const Orders = () => {
   });
 
   return (
-    <section className="bg-[#1f1f1f] h-[calc(100vh-5rem)] overflow-hidden flex flex-col">
+    <section className="bg-theme-base h-[calc(100vh-5rem)] overflow-hidden flex flex-col">
       <div className="flex flex-col md:flex-row items-center justify-between px-4 sm:px-10 lg:px-16 py-4 gap-4">
         <div className="flex items-center gap-4">
           <BackButton />
-          <h1 className="text-[#f5f5f5] text-2xl font-bold tracking-wider">
+          <h1 className="text-theme-text text-2xl font-bold tracking-wider">
             Pedidos
           </h1>
         </div>
         <div className="flex flex-wrap items-center justify-center md:justify-end gap-2 md:gap-3">
-          <button onClick={() => setStatus("all")} className={`transition-all duration-200 px-5 py-2 rounded-full font-semibold text-sm md:text-base ${status === "all" ? "bg-[#f6b100] text-gray-900 shadow-md" : "text-[#ababab] hover:text-white hover:bg-[#2a2a2a]"}`}>
+          <button onClick={() => setStatus("all")} className={`transition-all duration-200 px-5 py-2 rounded-full font-semibold text-sm md:text-base ${status === "all" ? "bg-[#f6b100] text-gray-900 shadow-md" : "text-theme-muted hover:text-theme-text hover:bg-theme-elevated"}`}>
             Todos
           </button>
-          <button onClick={() => setStatus("progress")} className={`transition-all duration-200 px-5 py-2 rounded-full font-semibold text-sm md:text-base ${status === "progress" ? "bg-[#f6b100] text-gray-900 shadow-md" : "text-[#ababab] hover:text-white hover:bg-[#2a2a2a]"}`}>
+          <button onClick={() => setStatus("progress")} className={`transition-all duration-200 px-5 py-2 rounded-full font-semibold text-sm md:text-base ${status === "progress" ? "bg-[#f6b100] text-gray-900 shadow-md" : "text-theme-muted hover:text-theme-text hover:bg-theme-elevated"}`}>
             En Progreso
           </button>
-          <button onClick={() => setStatus("ready")} className={`transition-all duration-200 px-5 py-2 rounded-full font-semibold text-sm md:text-base ${status === "ready" ? "bg-[#f6b100] text-gray-900 shadow-md" : "text-[#ababab] hover:text-white hover:bg-[#2a2a2a]"}`}>
+          <button onClick={() => setStatus("ready")} className={`transition-all duration-200 px-5 py-2 rounded-full font-semibold text-sm md:text-base ${status === "ready" ? "bg-[#f6b100] text-gray-900 shadow-md" : "text-theme-muted hover:text-theme-text hover:bg-theme-elevated"}`}>
             Listo
           </button>
-          <button onClick={() => setStatus("completed")} className={`transition-all duration-200 px-5 py-2 rounded-full font-semibold text-sm md:text-base ${status === "completed" ? "bg-[#f6b100] text-gray-900 shadow-md" : "text-[#ababab] hover:text-white hover:bg-[#2a2a2a]"}`}>
+          <button onClick={() => setStatus("completed")} className={`transition-all duration-200 px-5 py-2 rounded-full font-semibold text-sm md:text-base ${status === "completed" ? "bg-[#f6b100] text-gray-900 shadow-md" : "text-theme-muted hover:text-theme-text hover:bg-theme-elevated"}`}>
             Completado
           </button>
         </div>

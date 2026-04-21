@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getAvatarName } from "../../utils";
 import { useDispatch } from "react-redux";
@@ -23,8 +23,8 @@ const TableCard = ({ id, name, status, initials, seats, bgColor }) => {
   return (
     <div
       onClick={() => handleClick(name)}
-      className={`relative w-full bg-[#262626] rounded-2xl overflow-hidden cursor-pointer shadow-md transition-all duration-200 border-2 
-                  ${isBooked ? "border-transparent opacity-90 cursor-not-allowed" : "border-[#333] hover:-translate-y-1 hover:shadow-xl"}`}
+      className={`relative w-full bg-theme-card rounded-2xl overflow-hidden cursor-pointer shadow-md transition-all duration-200 border-2 
+                  ${isBooked ? "border-transparent opacity-90 cursor-not-allowed" : "border-theme-border hover:-translate-y-1 hover:shadow-xl"}`}
     >
       {/* Strip of Custom Color */}
       <div className="h-3 w-full" style={{ backgroundColor: color }}></div>
@@ -59,13 +59,13 @@ const TableCard = ({ id, name, status, initials, seats, bgColor }) => {
           )}
         </div>
 
-        <h1 className="text-white text-lg font-bold mt-1">Mesa {name}</h1>
-        <p className="text-[#ababab] text-xs font-medium mt-1 flex items-center justify-center gap-1">
+        <h1 className="text-theme-text text-lg font-bold mt-1">Mesa {name}</h1>
+        <p className="text-theme-muted text-xs font-medium mt-1 flex items-center justify-center gap-1">
            <FaUserCircle className="text-yellow-500" /> {seats} Asientos
         </p>
 
         {isBooked && initials && (
-          <p className="text-[#ababab] text-[11px] font-semibold mt-3 text-center truncate w-full px-2">
+          <p className="text-theme-muted text-[11px] font-semibold mt-3 text-center truncate w-full px-2">
              {"Resp: " + initials}
           </p>
         )}

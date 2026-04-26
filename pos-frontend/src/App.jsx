@@ -98,7 +98,6 @@ function ProtectedRoutes({ children, allowedRoles }) {
      }
   }
 
-  // Default redirect for root trying to be accessed by a barista
   if (!allowedRoles && role === "barista") {
      return <Navigate to="/barista" />
   }

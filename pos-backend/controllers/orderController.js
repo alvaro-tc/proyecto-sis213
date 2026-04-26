@@ -70,8 +70,17 @@ const getOrderById = async (req, res, next) => {
 
 const getOrders = async (req, res, next) => {
   try {
+    // Agregamos el populate (ya lo tenías, bien ahí)
     const orders = await Order.find().populate("table");
-    res.status(200).json({ data: orders });
+
+    // IMPORTANTE: Envolvé la data en un objeto que tenga 'success' y 'data'
+    // para que coincida con el mapeo del frontend: resData.data.data
+    res.status(200).json({ 
+      success: true, 
+      data: {
+        data: orders  // Esto hace que en el front sea resData.data.data
+      } 
+    });
   } catch (error) {
     next(error);
   }

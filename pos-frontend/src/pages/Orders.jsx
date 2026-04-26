@@ -17,7 +17,11 @@ const Orders = () => {
   const { data: resData, isError } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
-      return await getOrders();
+      //return await getOrders();
+      const response = await getOrders();
+      // TIP: Poné un console.log acá para ver qué llega exactamente de la API
+      console.log("Response de la API:", response);
+      return response;
     },
     placeholderData: keepPreviousData
   })
@@ -26,7 +30,7 @@ const Orders = () => {
     enqueueSnackbar("¡Algo salió mal!", {variant: "error"})
   }
 
-  const orders = resData?.data?.data || [];
+  const orders = resData?.data?.data?.data || []; // se agrego un nivel mas ( ultimo .data?)
   const filteredOrders = orders.filter((order) => {
     if (status === "all") return true;
     if (status === "progress" && order.orderStatus === "In Progress") return true;

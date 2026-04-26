@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import BottomNav from "../components/shared/BottomNav";
 import BackButton from "../components/shared/BackButton";
 import TableCard from "../components/tables/TableCard";
@@ -34,11 +34,11 @@ const Tables = () => {
   });
 
   return (
-    <section className="bg-[#1f1f1f] h-[calc(100vh-5rem)] overflow-hidden flex flex-col">
+    <section className="bg-theme-base h-[calc(100vh-5rem)] overflow-hidden flex flex-col">
       <div className="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-10 lg:px-16 py-4 gap-4">
         <div className="flex items-center gap-4">
           <BackButton />
-          <h1 className="text-[#f5f5f5] text-2xl font-bold tracking-wider">
+          <h1 className="text-theme-text text-2xl font-bold tracking-wider">
             Mesas
           </h1>
         </div>
@@ -46,7 +46,7 @@ const Tables = () => {
           <button
             onClick={() => setStatus("all")}
             className={`transition-all duration-200 px-5 py-2 rounded-full font-semibold text-sm md:text-base ${
-              status === "all" ? "bg-[#f6b100] text-gray-900 shadow-md" : "text-[#ababab] hover:text-white hover:bg-[#2a2a2a]"
+              status === "all" ? "bg-[#f6b100] text-gray-900 shadow-md" : "text-theme-muted hover:text-theme-text hover:bg-theme-elevated"
             }`}
           >
             Todas
@@ -54,7 +54,7 @@ const Tables = () => {
           <button
             onClick={() => setStatus("booked")}
             className={`transition-all duration-200 px-5 py-2 rounded-full font-semibold text-sm md:text-base ${
-              status === "booked" ? "bg-[#f6b100] text-gray-900 shadow-md" : "text-[#ababab] hover:text-white hover:bg-[#2a2a2a]"
+              status === "booked" ? "bg-[#f6b100] text-gray-900 shadow-md" : "text-theme-muted hover:text-theme-text hover:bg-theme-elevated"
             }`}
           >
             En Uso

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 const Greetings = () => {
@@ -26,16 +26,16 @@ const Greetings = () => {
   return (
     <div className="flex justify-between items-center px-8 mt-5">
       <div>
-        <h1 className="text-[#f5f5f5] text-2xl font-semibold tracking-wide">
+        <h1 className="text-theme-text text-2xl font-semibold tracking-wide">
           Buenos días, {userData.name || "USUARIO DE PRUEBA"}
         </h1>
-        <p className="text-[#ababab] text-sm">
+        <p className="text-theme-muted text-sm">
           Brinde el mejor servicio a sus clientes 😀
         </p>
       </div>
       <div>
-        <h1 className="text-[#f5f5f5] text-3xl font-bold tracking-wide w-[130px]">{formatTime(dateTime)}</h1>
-        <p className="text-[#ababab] text-sm">{formatDate(dateTime)}</p>
+        <h1 className="text-theme-text text-3xl font-bold tracking-wide w-[130px]">{formatTime(dateTime)}</h1>
+        <p className="text-theme-muted text-sm">{formatDate(dateTime)}</p>
       </div>
     </div>
   );

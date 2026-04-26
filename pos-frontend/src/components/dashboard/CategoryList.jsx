@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getCategories, deleteCategory } from "../../https";
 import { enqueueSnackbar } from "notistack";
@@ -22,19 +22,19 @@ const CategoryList = ({ onEdit, onAdd }) => {
     if(window.confirm("¿Estás seguro de eliminar esta categoría?")) delMutation.mutate(id);
   };
 
-  if (isLoading) return <div className="text-white p-6 justify-center flex">Cargando categorías...</div>;
+  if (isLoading) return <div className="text-theme-text p-6 justify-center flex">Cargando categorías...</div>;
 
   return (
     <div className="container mx-auto py-2 px-6 md:px-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-[#f5f5f5] text-xl font-semibold">Listado de Categorías</h2>
-        <button onClick={onAdd} className="bg-[#1a1a1a] hover:bg-[#262626] px-4 py-2 rounded-lg text-[#f5f5f5] font-semibold text-sm flex items-center gap-2">
+        <h2 className="text-theme-text text-xl font-semibold">Listado de Categorías</h2>
+        <button onClick={onAdd} className="bg-theme-surface hover:bg-theme-card px-4 py-2 rounded-lg text-theme-text font-semibold text-sm flex items-center gap-2">
           Añadir Categoría +
         </button>
       </div>
-      <div className="bg-[#1a1a1a] rounded-lg overflow-hidden">
-        <table className="w-full text-left text-[#ababab]">
-          <thead className="bg-[#1f1f1f] text-[#f5f5f5]">
+      <div className="bg-theme-surface rounded-lg overflow-hidden">
+        <table className="w-full text-left text-theme-muted">
+          <thead className="bg-theme-base text-theme-text">
             <tr>
               <th className="p-4">Ícono</th>
               <th className="p-4">Nombre</th>
@@ -44,11 +44,11 @@ const CategoryList = ({ onEdit, onAdd }) => {
           </thead>
           <tbody>
             {categories.map((c) => (
-              <tr key={c._id} className="border-b border-[#262626] hover:bg-[#262626]">
+              <tr key={c._id} className="border-b border-theme-border hover:bg-theme-card">
                 <td className="p-4 text-2xl">{c.icon}</td>
-                <td className="p-4 font-semibold text-white">{c.name}</td>
+                <td className="p-4 font-semibold text-theme-text">{c.name}</td>
                 <td className="p-4">
-                    <span className="w-6 h-6 inline-block rounded-full border border-gray-600 align-middle" style={{backgroundColor: c.bgColor}}></span> {c.bgColor}
+                    <span className="w-6 h-6 inline-block rounded-full border border-theme-border align-middle" style={{backgroundColor: c.bgColor}}></span> {c.bgColor}
                 </td>
                 <td className="p-4 text-center">
                   <button onClick={() => onEdit(c)} className="text-blue-400 hover:text-blue-300 mr-4"><FaEdit size={18} /></button>

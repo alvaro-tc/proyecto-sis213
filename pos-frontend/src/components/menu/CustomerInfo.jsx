@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { formatDate, getAvatarName } from "../../utils";
 
@@ -9,13 +9,13 @@ const CustomerInfo = () => {
   return (
     <div className="flex items-center justify-between px-4 py-3">
       <div className="flex flex-col items-start">
-        <h1 className="text-md text-[#f5f5f5] font-semibold tracking-wide">
+        <h1 className="text-md text-theme-text font-semibold tracking-wide">
           {customerData.customerName || "Nombre del Cliente"}
         </h1>
-        <p className="text-xs text-[#ababab] font-medium mt-1">
+        <p className="text-xs text-theme-muted font-medium mt-1">
           #{customerData.orderId || "N/A"} / Para servir
         </p>
-        <p className="text-xs text-[#ababab] font-medium mt-2">
+        <p className="text-xs text-theme-muted font-medium mt-2">
           {formatDate(dateTime)}
         </p>
       </div>

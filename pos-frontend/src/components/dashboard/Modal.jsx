@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -77,17 +77,17 @@ const Modal = ({ setIsTableModalOpen, dataToEdit }) => {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="bg-[#262626] p-6 rounded-lg shadow-lg w-96"
+        className="bg-theme-card p-6 rounded-lg shadow-lg w-96"
       >
         {/* Modal Header */}
 
         <div className="flex justify-between item-center mb-4">
-          <h2 className="text-[#f5f5f5] text-xl font-semibold">
+          <h2 className="text-theme-text text-xl font-semibold">
             {dataToEdit ? "Editar Mesa" : "Añadir Mesa"}
           </h2>
           <button
             onClick={handleCloseModal}
-            className="text-[#f5f5f5] hover:text-red-500"
+            className="text-theme-text hover:text-red-500"
           >
             <IoMdClose size={24} />
           </button>
@@ -97,41 +97,41 @@ const Modal = ({ setIsTableModalOpen, dataToEdit }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-10">
           <div>
-            <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">
+            <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
               Número de Mesa
             </label>
-            <div className="flex item-center rounded-lg p-5 px-4 bg-[#1f1f1f]">
+            <div className="flex item-center rounded-lg p-5 px-4 bg-theme-base">
               <input
                 type="number"
                 name="tableNo"
                 value={tableData.tableNo}
                 onChange={handleInputChange}
-                className="bg-transparent flex-1 text-white focus:outline-none"
+                className="bg-transparent flex-1 text-theme-text focus:outline-none"
                 required
               />
             </div>
           </div>
           <div>
-            <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">
+            <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
               Número de Asientos
             </label>
-            <div className="flex item-center rounded-lg p-5 px-4 bg-[#1f1f1f]">
+            <div className="flex item-center rounded-lg p-5 px-4 bg-theme-base">
               <input
                 type="number"
                 name="seats"
                 value={tableData.seats}
                 onChange={handleInputChange}
-                className="bg-transparent flex-1 text-white focus:outline-none"
+                className="bg-transparent flex-1 text-theme-text focus:outline-none"
                 required
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">
+            <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
               Color de Perfil de Mesa
             </label>
-            <div className="flex items-center gap-4 bg-[#1f1f1f] rounded-lg p-3">
+            <div className="flex items-center gap-4 bg-theme-base rounded-lg p-3">
               <input
                 type="color"
                 name="bgColor"
@@ -139,7 +139,7 @@ const Modal = ({ setIsTableModalOpen, dataToEdit }) => {
                 onChange={handleInputChange}
                 className="w-12 h-10 cursor-pointer bg-transparent border-none appearance-none p-0"
               />
-              <span className="text-white font-semibold">
+              <span className="text-theme-text font-semibold">
                 {tableData.bgColor?.toUpperCase() || "#262626"}
               </span>
             </div>

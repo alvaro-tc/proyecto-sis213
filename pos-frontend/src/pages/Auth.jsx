@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import restaurant from "../assets/images/restaurant-img.jpg"
 import { FaCoffee } from "react-icons/fa";
 import Register from "../components/auth/Register";
@@ -32,12 +32,12 @@ const Auth = () => {
       </div>
 
       {/* Right Section */}
-      <div className="w-1/2 min-h-screen bg-[#1a1a1a] p-10">
+      <div className="w-1/2 min-h-screen bg-theme-surface p-10">
         <div className="flex flex-col items-center gap-2">
-          <div className="flex items-center justify-center h-14 w-14 border-2 rounded-full p-1 text-[#f5f5f5]">
+          <div className="flex items-center justify-center h-14 w-14 border-2 rounded-full p-1 text-theme-text">
             <FaCoffee className="text-3xl" />
           </div>
-          <h1 className="text-lg font-semibold text-[#f5f5f5] tracking-wide">Cafeteria 5</h1>
+          <h1 className="text-lg font-semibold text-theme-text tracking-wide">Cafeteria 5</h1>
         </div>
 
         <h2 className="text-4xl text-center mt-10 font-semibold text-yellow-400 mb-10">
@@ -49,7 +49,7 @@ const Auth = () => {
 
 
         <div className="flex justify-center mt-6">
-          <p className="text-sm text-[#ababab]">
+          <p className="text-sm text-theme-muted">
             {isRegister ? "¿Ya tienes una cuenta?" : "¿No tienes una cuenta?"}
             <a onClick={() => setIsRegister(!isRegister)} className="text-yellow-400 font-semibold hover:underline ml-1" href="#">
               {isRegister ? "Iniciar sesión" : "Regístrate"}

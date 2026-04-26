@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { GrRadialSelected } from "react-icons/gr";
 import { FaShoppingCart } from "react-icons/fa";
@@ -54,15 +54,15 @@ const MenuContainer = () => {
   const handleAddToCart = (item) => {
     if(itemCount === 0) return;
 
-    const {name, price} = item;
-    const newObj = { id: new Date(), name, pricePerQuantity: price, quantity: itemCount, price: price * itemCount };
+    const {_id, name, price} = item;
+    const newObj = { id: new Date(), dishId: _id, name, pricePerQuantity: price, quantity: itemCount, price: price * itemCount };
 
     dispatch(addItems(newObj));
     setItemCount(0);
   }
 
 
-  if(isCatLoading || isDishLoading) return <div className="text-white flex justify-center py-10">Cargando menú...</div>;
+  if(isCatLoading || isDishLoading) return <div className="text-theme-text flex justify-center py-10">Cargando menú...</div>;
 
   return (
     <>
@@ -80,14 +80,14 @@ const MenuContainer = () => {
               }}
             >
               <div className="flex items-center justify-between w-full">
-                <h1 className="text-[#f5f5f5] text-lg font-semibold">
+                <h1 className="text-white text-lg font-semibold">
                   {menu.icon} {menu.name}
                 </h1>
                 {selected?.id === menu.id && (
                   <GrRadialSelected className="text-white" size={20} />
                 )}
               </div>
-              <p className="text-[#ababab] text-sm font-semibold">
+              <p className="text-white/70 text-sm font-semibold">
                 {menu.items.length} Artículos
               </p>
             </div>
@@ -95,33 +95,33 @@ const MenuContainer = () => {
         })}
       </div>
 
-      <hr className="border-[#2a2a2a] border-t-2 mt-4" />
+      <hr className="border-theme-border border-t-2 mt-4" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4 sm:px-10 py-4 w-full">
         {selected?.items?.map((item) => {
           return (
             <div
               key={item._id}
-              className="flex flex-col items-start justify-between p-4 rounded-lg h-[150px] cursor-pointer hover:bg-[#2a2a2a] bg-[#1a1a1a]"
+              className="flex flex-col items-start justify-between p-4 rounded-lg h-[150px] cursor-pointer hover:bg-theme-elevated bg-theme-surface"
             >
               <div className="flex items-start justify-between w-full">
-                <h1 className="text-[#f5f5f5] text-lg font-semibold">
+                <h1 className="text-theme-text text-lg font-semibold">
                   {item.name}
                 </h1>
                 <button onClick={() => handleAddToCart(item)} className="bg-[#2e4a40] text-[#02ca3a] p-2 rounded-lg"><FaShoppingCart size={20} /></button>
               </div>
               <div className="flex items-center justify-between w-full">
-                <p className="text-[#f5f5f5] text-xl font-bold">
+                <p className="text-theme-text text-xl font-bold">
                   Bs {item.price}
                 </p>
-                <div className="flex items-center justify-between bg-[#1f1f1f] px-4 py-3 rounded-lg gap-6 w-[50%]">
+                <div className="flex items-center justify-between bg-theme-base px-4 py-3 rounded-lg gap-6 w-[50%]">
                   <button
                     onClick={() => decrement(item._id)}
                     className="text-yellow-500 text-2xl"
                   >
                     &minus;
                   </button>
-                  <span className="text-white">
+                  <span className="text-theme-text">
                     {itemId == item._id ? itemCount : "0"}
                   </span>
                   <button

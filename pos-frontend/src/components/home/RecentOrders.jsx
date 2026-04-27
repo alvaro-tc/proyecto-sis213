@@ -6,7 +6,7 @@ import { enqueueSnackbar } from "notistack";
 import { getOrders } from "../../https/index";
 
 const RecentOrders = () => {
-  const { data: resData, isError } = useQuery({
+  const { data: resData, isError, isLoading } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
       return await getOrders();
@@ -18,6 +18,9 @@ const RecentOrders = () => {
     enqueueSnackbar("¡Algo salió mal!", { variant: "error" });
   }
 
+  // 1. Extraemos el array real bajando los 3 niveles de data
+  const orders = resData?.data?.data?.data || [];
+
   return (
     <div className="px-4 md:px-8 mt-6 flex-1 flex flex-col min-h-0 pb-4">
       <div className="bg-theme-surface w-full h-full rounded-lg flex flex-col min-h-0">
@@ -25,7 +28,7 @@ const RecentOrders = () => {
           <h1 className="text-theme-text text-lg font-semibold tracking-wide">
             Pedidos Recientes
           </h1>
-          <a href="" className="text-[#025cca] text-sm font-semibold">
+          <a href="/orders" className="text-[#025cca] text-sm font-semibold">
             Ver todos
           </a>
         </div>
@@ -35,20 +38,25 @@ const RecentOrders = () => {
           <input
             type="text"
             placeholder="Buscar pedidos recientes"
-            className="bg-theme-base outline-none text-theme-text"
+            className="bg-theme-base outline-none text-theme-text w-full"
           />
         </div>
 
-        {/* Order list */}
+        {/* 2. AQUÍ ESTÁ EL MOTOR: El contenedor que recorre las órdenes */}
         <div className="mt-4 px-6 overflow-y-auto flex-1 scrollbar-hide pb-4">
-          {resData?.data.data.length > 0 ? (
-            resData.data.data.map((order) => {
-              return <OrderList key={order._id} order={order} />;
-            })
+          {isLoading ? (
+            <p className="text-theme-text text-center mt-10 italic">Cargando pedidos...</p>
+          ) : orders.length > 0 ? (
+            orders.map((order) => (
+              <OrderList key={order._id} order={order} />
+            ))
           ) : (
-            <p className="col-span-3 text-gray-500">No hay pedidos disponibles</p>
+            <div className="flex flex-col items-center justify-center mt-10">
+               <p className="text-theme-muted">No hay pedidos disponibles hoy.</p>
+            </div>
           )}
         </div>
+        
       </div>
     </div>
   );

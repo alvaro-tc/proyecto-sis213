@@ -36,7 +36,8 @@ const RecentOrders = () => {
     enqueueSnackbar("¡Algo salió mal!", { variant: "error" });
   }
 
-  console.log(resData.data.data);
+  console.log(resData?.data?.data);
+  const ordersList = resData?.data?.data?.data || [];
 
   return (
     <div className="container mx-auto bg-theme-card p-4 rounded-lg">
@@ -58,41 +59,42 @@ const RecentOrders = () => {
             </tr>
           </thead>
           <tbody>
-            {resData?.data.data.map((order, index) => (
-              <tr
-                key={index}
-                className="border-b border-theme-border hover:bg-theme-elevated"
-              >
-                <td className="p-4">#{Math.floor(new Date(order.orderDate).getTime())}</td>
-                <td className="p-4">{order.customerDetails.name}</td>
-                <td className="p-4">
-                  <select
-                    className={`bg-theme-surface text-theme-text border border-theme-border p-2 rounded-lg focus:outline-none ${
-                      order.orderStatus === "Ready"
-                        ? "text-green-500"
-                        : "text-yellow-500"
-                    }`}
-                    value={order.orderStatus}
-                    onChange={(e) => handleStatusChange({orderId: order._id, orderStatus: e.target.value})}
-                  >
-                    <option className="text-yellow-500" value="In Progress">
-                      En Progreso
-                    </option>
-                    <option className="text-green-500" value="Ready">
-                      Listo
-                    </option>
-                  </select>
-                </td>
-                <td className="p-4">{formatDateAndTime(order.orderDate)}</td>
-                <td className="p-4">{order.items.length} Artículos</td>
-                <td className="p-4">Mesa - {order.table.tableNo}</td>
-                <td className="p-4">Bs {order.bills.totalWithTax}</td>
-                <td className="p-4">
-                  {order.paymentMethod}
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {ordersList.length > 0 ? (
+    ordersList.map((order, index) => (
+      <tr key={order._id || index} className="border-b border-theme-border hover:bg-theme-elevated">
+        <td className="p-4">#{order._id?.slice(-6) || "N/A"}</td>
+        <td className="p-4">{order?.customerDetails?.name || "Cliente"}</td>
+        <td className="p-4">
+          <select
+            className={`bg-theme-surface text-theme-text border border-theme-border p-2 rounded-lg focus:outline-none ${
+              order.orderStatus === "Ready" ? "text-green-500" : "text-yellow-500"
+            }`}
+            value={order.orderStatus}
+            onChange={(e) => handleStatusChange({orderId: order._id, orderStatus: e.target.value})}
+          >
+            <option value="In Progress">En Progreso</option>
+            <option value="Ready">Listo</option>
+            <option value="Completed">Completado</option>
+          </select>
+        </td>
+        <td className="p-4">{formatDateAndTime(order.orderDate)}</td>
+        <td className="p-4">{order?.items?.length || 0} Artículos</td>
+        
+        {/* PROTECCIÓN PARA LA MESA AQUÍ */}
+        <td className="p-4">Mesa - {order?.table?.tableNo || "S/N"}</td>
+        
+        <td className="p-4">Bs {order?.bills?.totalWithTax || 0}</td>
+        <td className="p-4">{order?.paymentMethod || "Efectivo"}</td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="8" className="p-10 text-center text-theme-muted">
+        No hay pedidos recientes.
+      </td>
+    </tr>
+  )}
+</tbody>
         </table>
       </div>
     </div>

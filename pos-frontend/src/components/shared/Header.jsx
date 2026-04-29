@@ -30,7 +30,7 @@ const Header = () => {
       <div onClick={() => navigate("/")} className="flex items-center gap-2 cursor-pointer">
         <FaCoffee className="text-[#f6b100] text-3xl" />
         <h1 className="text-lg font-semibold text-theme-text tracking-wide">
-          Cafeteria 5
+          Cafeteria Sin Palabras
         </h1>
       </div>
 

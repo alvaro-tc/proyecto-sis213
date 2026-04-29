@@ -221,7 +221,7 @@ const Bill = () => {
           Efectivo
         </button>
         <button
-          onClick={() => setPaymentMethod("Online")}
+          //onClick={() => setPaymentMethod("Online")}
           className={`bg-theme-base px-4 py-3 w-full rounded-lg text-theme-muted font-semibold ${
             paymentMethod === "Online" ? "bg-theme-elevated" : ""
           }`}

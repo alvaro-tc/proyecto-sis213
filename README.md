@@ -1,83 +1,74 @@
-# 🍽️ **Restaurant POS System**  
+# Sistema POS para Cafetería - Grupo 5 ☕
 
-A full-featured **Restaurant POS System** built using the **MERN Stack** to streamline restaurant operations, enhance customer experience, and manage orders, payments, and inventory with ease.
+Este es el proyecto final del **Grupo 5** para la materia de **Ingeniería de Software** de la **Universidad Católica Boliviana (UCB)**. 
 
-## ✨ **Features**
-
-- 🍽️ **Order Management**  
-  Efficiently manage customer orders with real-time updates and status tracking.
-
-- 🪑 **Table Reservations**  
-  Simplify table bookings and manage reservations directly from the POS.
-
-- 🔐 **Authentication**  
-  Secure login and role-based access control for admins, staff, and users.
-
-- 💸 **Payment Integration**  
-  Integrated with **Binance Pay** for seamless crypto QR payments.
-
-- 🧾 **Billing & Invoicing**  
-  Automatically generate detailed bills and invoices for every order.
-
-
-## 🏗️ **Tech Stack**
-
-| **Category**             | **Technology**                |
-|--------------------------|-------------------------------|
-| 🖥️ **Frontend**          | React.js, Redux, Tailwind CSS  |
-| 🔙 **Backend**           | Node.js, Express.js           |
-| 🗄️ **Database**          | MongoDB                       |
-| 🔐 **Authentication**    | JWT, bcrypt                   |
-| 💳 **Payment Integration**| Binance Pay (QR)    |
-| 📊 **State Management**   | Redux Toolkit                 |
-| ⚡ **Data Fetching & Caching** | React Query            |
-| 🔗 **APIs**              | RESTful APIs                   |
-
----
-<br>
-
-## 📺 **YouTube Playlist**
-
-🎬 Follow the complete tutorial series on building this Restaurant POS System on YouTube:  
-👉 [Watch the Playlist](https://www.youtube.com/playlist?list=PL9OdiypqS7Nk0DHnSNFIi8RgEFJCIWB6X)  
-
-## 📁 **Assets**
-
-- 📦 **Project Assets:** [Google Drive](https://drive.google.com/drive/folders/193N-F1jpzyfPCRCLc9wCyaxjYu2K6PC_)
+Se trata de un sistema de Punto de Venta (POS - Point of Sale) diseñado específicamente para la gestión de una **cafetería**. El proyecto está dividido en dos partes principales: un backend desarrollado con Node.js y Express, y un frontend moderno desarrollado con React y Vite.
 
 ---
 
-## 📋 **Flow Chart for Project Structure**
 
-- 🗺️ **Visualize the Project Structure:** [View Flow Chart](https://app.eraser.io/workspace/IcU1b6EHu9ZyS9JKi0aY?origin=share)
+## Configuración e Instalación del Backend
+
+El backend es una API RESTful construida con **Node.js, Express y Mongoose**.
+
+1. Abre una terminal y navega a la carpeta del backend:
+   ```bash
+   cd pos-backend
+   ```
+
+2. Instala las dependencias del proyecto:
+   ```bash
+   npm install
+   ```
+
+3. Configura las variables de entorno. Crea un archivo `.env` en la raíz de `pos-backend` basado en tus configuraciones locales (puerto, URI de MongoDB, secreto de JWT, etc.).
+
+4. Inicia el servidor en modo desarrollo:
+   ```bash
+   npm run dev
+   ```
+
 
 ---
 
-## 🎨 **Design Inspiration**
+## Configuración e Instalación del Frontend
 
-- 💡 **UI/UX Design Reference:** [Behance Design](https://www.behance.net/gallery/210280099/Restaurant-POS-System-Point-of-Sale-UIUX-Design)
+El frontend es una aplicación web interactiva desarrollada con **React, Vite, Tailwind CSS, Redux Toolkit y React Query**.
+
+1. Abre una nueva terminal y navega a la carpeta del frontend:
+   ```bash
+   cd pos-frontend
+   ```
+
+2. Instala las dependencias del proyecto:
+   ```bash
+   npm install
+   ```
+
+3. Inicia el servidor de desarrollo:
+   ```bash
+   npm run dev
+   ```
+
+4. Abre tu navegador y accede a la URL local que muestra la consola (generalmente `http://localhost:5173`).
 
 ---
 
-## 🖼️ **Project Screenshots**
+## Tecnologías Utilizadas
 
-<table>
-  <tr>
-    <td><img src="https://res.cloudinary.com/amritrajmaurya/image/upload/v1740502772/ibjxvy5o1ikbsdebrjky.png" alt="Screenshot 1" width="300"/></td>
-    <td><img src="https://res.cloudinary.com/amritrajmaurya/image/upload/v1740502773/ietao6dnw6yjsh4f71zn.png" alt="Screenshot 2" width="300"/></td>
-  </tr>
-  <tr>
-    <td><img src="https://res.cloudinary.com/amritrajmaurya/image/upload/v1740502772/vesokdfpa1jb7ytm9abi.png" alt="Screenshot 3" width="300"/></td>
-    <td><img src="https://res.cloudinary.com/amritrajmaurya/image/upload/v1740502772/setoqzhzbwbp9udpri1f.png" alt="Screenshot 4" width="300"/></td>
-  </tr>
-  <tr>
-    <td><img src="https://res.cloudinary.com/amritrajmaurya/image/upload/v1740502772/fc4tiwzdoisqwac1j01y.png" alt="Screenshot 5" width="300"/></td>
-  </tr>
-</table>
+### Backend (`pos-backend`):
+- Node.js & Express
+- MongoDB & Mongoose
+- JSON Web Tokens (JWT) & bcrypt para autenticación
+- Zod para validación de datos
 
+### Frontend (`pos-frontend`):
+- React 18 & Vite
+- Tailwind CSS & Radix UI para los componentes visuales
+- Redux Toolkit & React Query para el manejo del estado y peticiones
+- React Router DOM para la navegación
+- Framer Motion para animaciones
 
-✨ Feel free to explore, contribute, and enhance the project! 🚀
+---
 
-💡 To contribute, please check out the **CONTRIBUTING.md** for guidelines.
-
-⭐ If you find this project helpful, don't forget to **star** the repository! 🌟
+**© 2026 Universidad Católica Boliviana** - Proyecto de Ingeniería de Software (Grupo 5)

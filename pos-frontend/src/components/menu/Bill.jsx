@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { getTotalPrice } from "../../redux/slices/cartSlice";
 import {
   addOrder,
@@ -7,7 +8,7 @@ import {
   updateTable,
 } from "../../https/index";
 import { enqueueSnackbar } from "notistack";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { removeAllItems } from "../../redux/slices/cartSlice";
 import { removeCustomer } from "../../redux/slices/customerSlice";
 import Invoice from "../invoice/Invoice";
@@ -15,13 +16,14 @@ import BinancePayModal from "./BinancePayModal";
 
 const Bill = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const customerData = useSelector((state) => state.customer);
   const cartData = useSelector((state) => state.cart);
   const total = useSelector(getTotalPrice);
-  const taxRate = 5.25;
-  const tax = (total * taxRate) / 100;
-  const totalPriceWithTax = total + tax;
+  const tax = 0;
+  const totalPriceWithTax = total;
 
   const [paymentMethod, setPaymentMethod] = useState();
   const [showInvoice, setShowInvoice] = useState(false);
@@ -47,11 +49,16 @@ const Bill = () => {
   });
 
   const handlePlaceOrder = async () => {
-    if (!paymentMethod) {
-      enqueueSnackbar("¡Por favor seleccione un método de pago!", {
+    if (!customerData.table?.tableId) {
+      enqueueSnackbar("Selecciona una mesa antes de enviar el pedido.", {
         variant: "warning",
       });
-
+      return;
+    }
+    if (cartData.length === 0) {
+      enqueueSnackbar("Agrega al menos un artículo al pedido.", {
+        variant: "warning",
+      });
       return;
     }
 
@@ -78,40 +85,43 @@ const Bill = () => {
     mutationFn: (reqData) => addOrder(reqData),
     onSuccess: (resData) => {
       const { data } = resData.data;
-      console.log(data);
-
       setOrderInfo(data);
 
-      // Update Table
       const tableData = {
         status: "Booked",
         orderId: data._id,
         tableId: data.table,
       };
 
-      setTimeout(() => {
-        tableUpdateMutation.mutate(tableData);
-      }, 1500);
+      tableUpdateMutation.mutate(tableData);
 
-      enqueueSnackbar("¡Pedido Realizado!", {
-        variant: "success",
-      });
-      setShowInvoice(true);
+      enqueueSnackbar("¡Pedido enviado a cocina!", { variant: "success" });
+
+      if (paymentMethod) {
+        setShowInvoice(true);
+      } else {
+        dispatch(removeCustomer());
+        dispatch(removeAllItems());
+        navigate("/home");
+      }
     },
-    onError: (error) => {
-      console.log(error);
+    onError: () => {
+      enqueueSnackbar("No se pudo crear el pedido. Intenta de nuevo.", {
+        variant: "error",
+      });
     },
   });
 
   const tableUpdateMutation = useMutation({
     mutationFn: (reqData) => updateTable(reqData),
-    onSuccess: (resData) => {
-      console.log(resData);
-      dispatch(removeCustomer());
-      dispatch(removeAllItems());
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tables"] });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
-    onError: (error) => {
-      console.log(error);
+    onError: () => {
+      enqueueSnackbar("Pedido creado pero no se pudo actualizar la mesa.", {
+        variant: "warning",
+      });
     },
   });
 
@@ -126,30 +136,33 @@ const Bill = () => {
         </h1>
       </div>
       <div className="flex items-center justify-between px-5 mt-2">
-        <p className="text-xs text-theme-muted font-medium mt-2">Impuesto(5.25%)</p>
-        <h1 className="text-theme-text text-md font-bold">Bs {tax.toFixed(2)}</h1>
-      </div>
-      <div className="flex items-center justify-between px-5 mt-2">
         <p className="text-xs text-theme-muted font-medium mt-2">
-          Total con Impuesto
+          Total
         </p>
         <h1 className="text-theme-text text-md font-bold">
           Bs {totalPriceWithTax.toFixed(2)}
         </h1>
       </div>
-      <div className="flex items-center gap-3 px-5 mt-4">
+      <p className="text-[11px] text-theme-muted px-5 mt-4 uppercase tracking-wider font-semibold">
+        Pago (opcional — se puede cobrar al entregar)
+      </p>
+      <div className="flex items-center gap-2 sm:gap-3 px-5 mt-2">
         <button
-          onClick={() => setPaymentMethod("Cash")}
-          className={`bg-theme-base px-4 py-3 w-full rounded-lg text-theme-muted font-semibold ${
-            paymentMethod === "Cash" ? "bg-theme-elevated" : ""
+          onClick={() => setPaymentMethod(paymentMethod === "Cash" ? undefined : "Cash")}
+          className={`px-3 sm:px-4 py-2.5 w-full rounded-lg font-semibold text-sm border transition-colors ${
+            paymentMethod === "Cash"
+              ? "bg-theme-brand text-theme-brand-fg border-theme-brand"
+              : "bg-theme-base text-theme-muted border-theme-border hover:border-theme-brand/40"
           }`}
         >
           Efectivo
         </button>
         <button
-          onClick={() => setPaymentMethod("Binance")}
-          className={`bg-theme-base px-4 py-3 w-full rounded-lg text-theme-muted font-semibold flex items-center justify-center gap-2 ${
-            paymentMethod === "Binance" ? "bg-theme-elevated" : ""
+          onClick={() => setPaymentMethod(paymentMethod === "Binance" ? undefined : "Binance")}
+          className={`px-3 sm:px-4 py-2.5 w-full rounded-lg font-semibold text-sm border flex items-center justify-center gap-2 transition-colors ${
+            paymentMethod === "Binance"
+              ? "bg-theme-brand text-theme-brand-fg border-theme-brand"
+              : "bg-theme-base text-theme-muted border-theme-border hover:border-theme-brand/40"
           }`}
         >
           <span className="grid h-5 w-5 place-items-center rounded bg-yellow-400 text-black text-xs font-bold">
@@ -159,15 +172,17 @@ const Bill = () => {
         </button>
       </div>
 
-      <div className="flex items-center gap-3 px-5 mt-4">
-        <button className="bg-[#025cca] px-4 py-3 w-full rounded-lg text-white font-semibold text-lg">
-          Imprimir Recibo
-        </button>
+      <div className="flex items-center gap-2 sm:gap-3 px-5 mt-4">
         <button
           onClick={handlePlaceOrder}
-          className="bg-theme-accent px-4 py-3 w-full rounded-lg text-[#1f1f1f] font-semibold text-lg"
+          disabled={orderMutation.isPending || cartData.length === 0}
+          className="bg-theme-brand hover:opacity-90 px-4 py-3 w-full rounded-lg text-theme-brand-fg font-bold text-base sm:text-lg shadow-md transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Realizar Pedido
+          {orderMutation.isPending
+            ? "Enviando…"
+            : paymentMethod
+            ? "Realizar Pedido"
+            : "Enviar a Cocina"}
         </button>
       </div>
 

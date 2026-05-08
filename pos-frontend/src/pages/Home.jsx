@@ -12,6 +12,7 @@ import {
 
 import BottomNav from "../components/shared/BottomNav";
 import HomeBentoOverview from "../components/dashboard-bento/HomeBentoOverview";
+import WaiterOverview from "../components/home/WaiterOverview";
 
 import Metrics from "../components/dashboard/Metrics";
 import TableList from "../components/dashboard/TableList";
@@ -85,7 +86,7 @@ const Home = () => {
       <div className="flex-1 overflow-y-auto scrollbar-hide pb-24 md:pb-8">
         {activeTab === "inicio" && (
           <React.Suspense fallback={<div className="p-6 text-theme-muted">Cargando…</div>}>
-            <HomeBentoOverview />
+            {isAdmin ? <HomeBentoOverview /> : <WaiterOverview />}
           </React.Suspense>
         )}
 

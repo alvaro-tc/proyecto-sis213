@@ -60,7 +60,7 @@ const orderSchema = z.object({
     guests: z.number().int().nonnegative(),
   }),
   orderStatus: z
-    .enum(["In Progress", "Ready", "Completed", "Cancelled"])
+    .enum(["In Progress", "Preparing", "Ready", "Completed", "Cancelled"])
     .optional(),
   bills: z.object({
     total: z.number().nonnegative(),
@@ -74,7 +74,7 @@ const orderSchema = z.object({
 });
 
 const orderUpdateSchema = z.object({
-  orderStatus: z.enum(["In Progress", "Ready", "Completed", "Cancelled"]),
+  orderStatus: z.enum(["In Progress", "Preparing", "Ready", "Completed", "Cancelled"]),
 });
 
 const insumoSchema = z.object({

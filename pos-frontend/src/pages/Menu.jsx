@@ -20,24 +20,22 @@ const Menu = () => {
     <section className="bg-theme-base h-[calc(100vh-5rem)] overflow-y-auto scrollbar-hide flex flex-col lg:flex-row gap-3 pb-24">
       {/* Left Div */}
       <div className="flex-1 lg:flex-[3] flex flex-col">
-        <div className="flex items-center justify-between px-10 py-4">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-6 lg:px-10 py-4">
+          <div className="flex items-center gap-3">
             <BackButton />
-            <h1 className="text-theme-text text-2xl font-bold tracking-wider">
+            <h1 className="text-theme-text text-xl sm:text-2xl font-bold tracking-wider">
               Menú
             </h1>
           </div>
-          <div className="flex items-center justify-around gap-4">
-            <div className="flex items-center gap-3 cursor-pointer">
-              <MdRestaurantMenu className="text-theme-text text-4xl" />
-              <div className="flex flex-col items-start">
-                <h1 className="text-md text-theme-text font-semibold tracking-wide">
-                  {customerData.customerName || "Nombre del Cliente"}
-                </h1>
-                <p className="text-xs text-theme-muted font-medium">
-                  Mesa : {customerData.table?.tableNo || "N/A"}
-                </p>
-              </div>
+          <div className="flex items-center gap-3 bg-theme-card border border-theme-border rounded-xl px-3 py-2">
+            <MdRestaurantMenu className="text-theme-accent text-2xl sm:text-3xl shrink-0" />
+            <div className="flex flex-col items-start min-w-0">
+              <h1 className="text-sm text-theme-text font-semibold tracking-wide truncate max-w-[160px] sm:max-w-none">
+                {customerData.customerName || "Nombre del Cliente"}
+              </h1>
+              <p className="text-xs text-theme-muted font-medium">
+                Mesa : {customerData.table?.tableNo || "N/A"}
+              </p>
             </div>
           </div>
         </div>

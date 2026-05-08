@@ -27,6 +27,7 @@ const STATUS_STYLES = {
 const TableCard = ({ table, role, onEdit }) => {
   const { _id: id, tableNo: name, status, seats, bgColor, currentOrder } = table;
   const initials = currentOrder?.customerDetails?.name;
+  const guests = currentOrder?.customerDetails?.guests;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -138,7 +139,14 @@ const TableCard = ({ table, role, onEdit }) => {
 
         <h2 className="text-theme-text text-lg font-bold mt-1">Mesa {name}</h2>
         <p className="text-theme-muted text-xs font-medium mt-1 flex items-center justify-center gap-1.5">
-          <FaUsers className="text-theme-accent" /> {seats} asientos
+          <FaUsers className="text-theme-accent" />
+          {isBooked && guests > 0 ? (
+            <span>
+              <span className="text-theme-text font-bold">{guests}</span>/{seats} ocupando
+            </span>
+          ) : (
+            <span>{seats} asientos</span>
+          )}
         </p>
 
         {isBooked && initials && (

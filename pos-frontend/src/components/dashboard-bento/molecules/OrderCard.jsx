@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Clock, User, Hash } from "lucide-react";
+import { Clock, User, Hash } from 'lucide-react';
 import { Badge } from "../../ui/shadcn/badge";
 import StatusDot from "../atoms/StatusDot";
 import GlassCard from "../atoms/GlassCard";

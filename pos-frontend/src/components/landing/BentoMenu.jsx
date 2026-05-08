@@ -4,39 +4,39 @@ import { LandingButton } from "../ui";
 
 const CARDS = [
   {
-    title: "Café de especialidad",
-    tag: "Single Origin",
+    title: "Café de la casa",
+    tag: "Energía pura",
     description:
-      "Métodos V60, Chemex y espresso preparados por baristas certificados. Cada cosecha cuenta una historia distinta.",
+      "Tostado local y preparado al momento. El empujón que necesitas para aguantar esa clase de dos horas.",
     image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1400&q=80",
-    alt: "Barista preparando café filtrado",
+    alt: "Barista preparando café",
     span: "lg:col-span-7 lg:row-span-2 aspect-[4/5] lg:aspect-auto",
     tone: "dark",
   },
   {
-    title: "Pastelería artesanal",
-    tag: "Recién horneado",
-    description: "Croissants de mantequilla francesa, cinnamon rolls y tartas de temporada.",
+    title: "Meriendas y snacks",
+    tag: "Para el recreo",
+    description: "Empanadas calientes, galletas con chips de chocolate y sándwiches clásicos para calmar el hambre.",
     image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80",
-    alt: "Bandeja de croissants recién horneados",
+    alt: "Variedad de bocadillos rápidos",
     span: "lg:col-span-5 aspect-[4/3]",
     tone: "light",
   },
   {
-    title: "Brunch lento",
-    tag: "Todos los días",
-    description: "Huevos de campo, pan de masa madre y mermeladas de la casa.",
+    title: "Desayunos rápidos",
+    tag: "Sin retrasos",
+    description: "Jugos naturales, ensalada de frutas y tostados. Ideal para cuando llegas con el tiempo justo.",
     image: "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=1200&q=80",
-    alt: "Plato de brunch con huevos y pan tostado",
+    alt: "Desayuno sencillo con jugo y pan",
     span: "lg:col-span-3 aspect-square",
     tone: "light",
   },
   {
-    title: "Cata mensual",
-    tag: "Experiencia",
-    description: "Reserva tu lugar en nuestras catas guiadas y descubre nuevos perfiles.",
-    image: "https://images.unsplash.com/photo-1442550528053-c431ecb55509?auto=format&fit=crop&w=1200&q=80",
-    alt: "Tazas de cata de café alineadas",
+    title: "Promos del mes",
+    tag: "Ahorro",
+    description: "Combos pensados para tu bolsillo. Pregunta por nuestra oferta especial de café + algo dulce.",
+    image: "https://images.unsplash.com/photo-442550528053-c431ecb55509?auto=format&fit=crop&w=1200&q=80",
+    alt: "Ofertas especiales en pizarra",
     span: "lg:col-span-2 aspect-square",
     tone: "dark",
   },
@@ -54,13 +54,13 @@ const BentoMenu = () => {
           className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end"
         >
           <div className="max-w-2xl">
-            <p className="text-sm font-medium uppercase tracking-widest text-orange-950">Nuestra carta</p>
+            <p className="text-sm font-medium uppercase tracking-widest text-orange-950">Nuestras opciones</p>
             <h2 id="menu-title" className="mt-3 text-4xl tracking-tight text-stone-900 sm:text-5xl font-semibold">
-              Sabores que se quedan contigo.
+              Lo que necesitas para tu día.
             </h2>
           </div>
           <LandingButton as="a" href="#contacto" variant="secondary" size="md">
-            Ver carta completa
+            Ver menú completo
             <LuArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </LandingButton>
         </motion.div>

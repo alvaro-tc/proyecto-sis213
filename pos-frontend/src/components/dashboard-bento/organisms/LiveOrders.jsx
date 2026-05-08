@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Activity } from "lucide-react";
+import { Activity } from 'lucide-react';
 import { getOrders } from "../../../https";
 import OrderCard from "../molecules/OrderCard";
 import GlassCard from "../atoms/GlassCard";

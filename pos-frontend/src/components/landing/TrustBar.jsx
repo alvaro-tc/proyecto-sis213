@@ -2,10 +2,26 @@ import { motion } from "framer-motion";
 import { LuLeaf, LuAward, LuMapPin, LuHeartHandshake } from "react-icons/lu";
 
 const ITEMS = [
-  { icon: LuLeaf, title: "Sostenibilidad", description: "Cultivo orgánico y empaques compostables." },
-  { icon: LuAward, title: "Calidad SCA", description: "Granos puntuados por encima de 85." },
-  { icon: LuMapPin, title: "Origen único", description: "Trazabilidad desde la finca hasta tu taza." },
-  { icon: LuHeartHandshake, title: "Comercio justo", description: "Pago directo a productores aliados." },
+  { 
+    icon: LuHeartHandshake, 
+    title: "Empatía Estudiantil", 
+    description: "Sabemos lo que es un examen final; por eso te atendemos con la mejor onda para recargar tus energías." 
+  },
+  { 
+    icon: LuAward, 
+    title: "Calidad que rinde", 
+    description: "Café real para ideas reales. Te damos la cafeína necesaria para que tus neuronas no vayan a explotar." 
+  },
+  { 
+    icon: LuLeaf, 
+    title: "Consumo Consciente", 
+    description: "Promovemos el uso de tazas reutilizables y procesos limpios dentro de nuestro campus." 
+  },
+  { 
+    icon: LuMapPin, 
+    title: "Punto de Encuentro", 
+    description: "Más que una barra, somos el lugar donde nacen los grupos de estudio y las mejores amistades." 
+  },
 ];
 
 const TrustBar = () => {
@@ -24,7 +40,7 @@ const TrustBar = () => {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="max-w-2xl text-3xl tracking-tight text-stone-900 sm:text-4xl font-semibold"
         >
-          Cada taza nace de una promesa.
+          Con calidad y cariño nosotros nos sostenemos a nuestros valores...
         </motion.h2>
 
         <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">

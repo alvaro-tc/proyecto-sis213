@@ -10,7 +10,7 @@ import {
   Clock4,
   ArrowRight,
   Bean,
-} from "lucide-react";
+} from 'lucide-react';
 
 import { getMetrics } from "../../https";
 import {

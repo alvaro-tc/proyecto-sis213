@@ -23,7 +23,7 @@ const Contact = () => {
             Te esperamos con la cafetera lista.
           </h2>
           <p className="mt-5 max-w-md text-base leading-relaxed text-stone-600">
-            Encuéntranos en el centro histórico, a dos cuadras de la plaza principal. Estacionamiento gratuito para clientes.
+            Encuéntranos en la UCB.
           </p>
 
           <div className="mt-10 space-y-6">
@@ -33,8 +33,8 @@ const Contact = () => {
               </span>
               <div>
                 <p className="text-sm font-medium uppercase tracking-wider text-stone-500">Dirección</p>
-                <p className="mt-1 text-lg text-stone-900 font-semibold">Calle de los Aromas 245</p>
-                <p className="text-sm text-stone-600">Centro histórico, Cochabamba</p>
+                <p className="mt-1 text-lg text-stone-900 font-semibold">Universidad Católica Boliviana San Pablo</p>
+                <p className="text-sm text-stone-600">La Paz Bolivia</p>
               </div>
             </div>
 
@@ -114,7 +114,7 @@ const Contact = () => {
             <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between rounded-2xl bg-stone-50/95 p-4 shadow-lg backdrop-blur">
               <div>
                 <p className="text-base text-stone-900 font-semibold">Cafeteria 5</p>
-                <p className="text-xs text-stone-600">Calle de los Aromas 245</p>
+                <p className="text-xs text-stone-600">Universidad Católica Boliviana</p>
               </div>
               <LandingButton
                 as="a"

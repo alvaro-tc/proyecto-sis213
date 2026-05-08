@@ -9,7 +9,7 @@ import {
   CartesianGrid,
   ReferenceDot,
 } from "recharts";
-import { Coffee } from "lucide-react";
+import { Coffee } from 'lucide-react';
 import GlassCard from "../atoms/GlassCard";
 import { Badge } from "../../ui/shadcn/badge";
 

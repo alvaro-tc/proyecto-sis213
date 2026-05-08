@@ -89,8 +89,8 @@ const Footer = () => {
             <div>
               <h3 className="text-base text-stone-50 font-semibold">Contacto</h3>
               <ul className="mt-4 space-y-3 text-sm text-stone-400">
-                <li>Calle de los Aromas 245</li>
-                <li>Cochabamba, Bolivia</li>
+                <li>UCB</li>
+                <li>La Paz, Bolivia</li>
                 <li>+591 4 444 5566</li>
                 <li>hola@cafeteria5.com</li>
               </ul>

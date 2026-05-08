@@ -22,24 +22,22 @@ const Hero = ({ onCta }) => {
         >
           <span className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-stone-50/70 px-4 py-1.5 text-xs font-medium text-stone-700 backdrop-blur">
             <LuSparkles size={14} className="text-orange-950" />
-            Tueste artesanal · Cosecha 2026
+            Cafeteria UCB
           </span>
 
           <h1
             id="hero-title"
             className="mt-6 text-5xl leading-[1.05] tracking-tight text-stone-900 sm:text-6xl lg:text-7xl font-semibold"
           >
-            El café que{" "}
+            Cafetería que{" "}
             <span className="bg-gradient-to-br from-orange-950 via-stone-800 to-stone-500 bg-clip-text text-transparent">
-              despierta tus sentidos
+              cumple con tus expectativas
             </span>
             .
           </h1>
 
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-stone-600">
-            Granos de origen único cuidadosamente seleccionados, tostados en casa y
-            servidos en un espacio donde el tiempo se sirve lento, como debe ser
-            una buena taza.
+            Somos una cafeteria que cumple con una atencion cálida con el cliente, comprendiendo las necesidades del estudiante...
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -77,8 +75,8 @@ const Hero = ({ onCta }) => {
             className="absolute -bottom-6 -left-6 hidden rounded-3xl bg-stone-50/95 p-5 shadow-lg ring-1 ring-stone-200 backdrop-blur sm:block"
           >
             <p className="text-xs uppercase tracking-widest text-stone-500">Especial del mes</p>
-            <p className="mt-1 text-xl text-stone-900 font-semibold">Geisha · Boquete</p>
-            <p className="mt-1 text-sm text-stone-600">Notas de jazmín y miel</p>
+            <p className="mt-1 text-xl text-stone-900 font-semibold">Producto · Producto</p>
+            <p className="mt-1 text-sm text-stone-600">Descripción del producto</p>
           </motion.div>
         </motion.div>
       </div>

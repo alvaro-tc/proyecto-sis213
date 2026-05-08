@@ -12,9 +12,7 @@ export const registerSchema = z.object({
     .string()
     .regex(/^\d{7,15}$/, "Teléfono inválido (solo dígitos, 7-15)"),
   password: z.string().min(6, "Mínimo 6 caracteres"),
-  role: z.enum(["waiter", "barista", "admin"], {
-    errorMap: () => ({ message: "Seleccione un rol válido" }),
-  }),
+  role: z.enum(["customer"]).default("customer"),
 });
 
 export const flattenZodErrors = (error) => {

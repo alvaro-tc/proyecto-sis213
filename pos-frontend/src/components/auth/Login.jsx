@@ -26,7 +26,8 @@ const Login = () => {
     onSuccess: (res) => {
       const { _id, name, email, phone, role } = res.data.data;
       dispatch(setUser({ _id, name, email, phone, role }));
-      navigate("/home");
+      const target = role?.toLowerCase() === "customer" ? "/cliente" : "/home";
+      navigate(target);
     },
     onError: (error) => {
       const message =

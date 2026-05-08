@@ -141,7 +141,7 @@ const Auth = () => {
             </h3>
             <p className="mt-2 text-center text-sm text-theme-muted">
               {isRegister
-                ? "Crea tu cuenta para empezar a servir."
+                ? "Crea tu cuenta de cliente y haz tu pedido en línea."
                 : "Tu próxima taza te está esperando."}
             </p>
 

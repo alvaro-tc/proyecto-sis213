@@ -23,7 +23,18 @@ const orderSchema = new mongoose.Schema({
     },
     items: [],
     table: { type: mongoose.Schema.Types.ObjectId, ref: "Table" },
+    orderType: {
+        type: String,
+        enum: ["dine-in", "takeaway"],
+        default: "dine-in"
+    },
+    customer: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     paymentMethod: String,
+    paymentStatus: {
+        type: String,
+        enum: ["pending", "paid", "failed"],
+        default: "pending"
+    },
     paymentData: {
         binance_merchant_trade_no: String,
         binance_prepay_id: String,

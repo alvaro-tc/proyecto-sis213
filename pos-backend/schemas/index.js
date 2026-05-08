@@ -10,7 +10,7 @@ const registerSchema = z.object({
     z.number().int().positive(),
   ]),
   password: z.string().min(6),
-  role: z.enum(["waiter", "barista", "admin"]),
+  role: z.enum(["waiter", "barista", "admin", "customer"]),
 });
 
 const loginSchema = z.object({
@@ -68,9 +68,12 @@ const orderSchema = z.object({
     totalWithTax: z.number().nonnegative(),
   }),
   items: z.array(z.any()).default([]),
-  table: objectId.optional(),
+  table: z.union([objectId, z.null()]).optional(),
+  orderType: z.enum(["dine-in", "takeaway"]).optional(),
   paymentMethod: z.string().optional(),
+  paymentStatus: z.enum(["pending", "paid", "failed"]).optional(),
   paymentData: z.any().optional(),
+  customer: z.union([objectId, z.null()]).optional(),
 });
 
 const orderUpdateSchema = z.object({

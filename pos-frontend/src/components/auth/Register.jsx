@@ -1,23 +1,23 @@
 import React, { useState } from "react";
-import { register } from "../../https";
+import { register, login } from "../../https";
 import { useMutation } from "@tanstack/react-query";
 import { enqueueSnackbar } from "notistack";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setUser } from "../../redux/slices/userSlice";
 import { Button, Input } from "../ui";
 import { registerSchema, flattenZodErrors } from "../../schemas/auth";
 
-const ROLES = [
-  { value: "waiter", label: "Mesero" },
-  { value: "barista", label: "Barista" },
-  { value: "admin", label: "Admin" },
-];
-
+// El registro público sólo permite crear cuentas de cliente.
+// Los empleados (mesero, barista, admin) son creados desde el panel admin.
 const Register = ({ setIsRegister }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     password: "",
-    role: "",
   });
   const [errors, setErrors] = useState({});
 
@@ -30,10 +30,22 @@ const Register = ({ setIsRegister }) => {
 
   const registerMutation = useMutation({
     mutationFn: (reqData) => register(reqData),
-    onSuccess: (res) => {
-      enqueueSnackbar(res.data.message, { variant: "success" });
-      setFormData({ name: "", email: "", phone: "", password: "", role: "" });
-      setTimeout(() => setIsRegister(false), 1500);
+    onSuccess: async (res, variables) => {
+      enqueueSnackbar("¡Cuenta creada! Iniciando sesión…", {
+        variant: "success",
+      });
+      try {
+        const loginRes = await login({
+          email: variables.email,
+          password: variables.password,
+        });
+        const { _id, name, email, phone, role } = loginRes.data.data;
+        dispatch(setUser({ _id, name, email, phone, role }));
+        navigate("/cliente");
+      } catch (e) {
+        // Si el auto-login falla, vuelve al formulario de login.
+        setTimeout(() => setIsRegister(false), 800);
+      }
     },
     onError: (error) => {
       const message =
@@ -44,7 +56,7 @@ const Register = ({ setIsRegister }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const result = registerSchema.safeParse(formData);
+    const result = registerSchema.safeParse({ ...formData, role: "customer" });
     if (!result.success) {
       setErrors(flattenZodErrors(result.error));
       return;
@@ -55,22 +67,25 @@ const Register = ({ setIsRegister }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      <div className="rounded-lg border border-theme-border bg-theme-base/60 px-3 py-2 text-xs text-theme-muted">
+        El registro público es exclusivo para clientes. Los empleados son dados de alta por administración.
+      </div>
       <Input
-        label="Nombre del Empleado"
+        label="Nombre completo"
         type="text"
         name="name"
         value={formData.name}
         onChange={handleChange}
-        placeholder="Nombre completo"
+        placeholder="¿Cómo te llamas?"
         error={errors.name}
       />
       <Input
-        label="Correo del Empleado"
+        label="Correo"
         type="email"
         name="email"
         value={formData.email}
         onChange={handleChange}
-        placeholder="empleado@cafeteria5.com"
+        placeholder="tucorreo@ejemplo.com"
         error={errors.email}
       />
       <Input
@@ -91,33 +106,6 @@ const Register = ({ setIsRegister }) => {
         placeholder="Mínimo 6 caracteres"
         error={errors.password}
       />
-      <div>
-        <label className="block text-theme-muted mb-2 text-sm font-medium">
-          Elija su rol
-        </label>
-        <div className="flex gap-3">
-          {ROLES.map(({ value, label }) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() =>
-                setFormData({ ...formData, role: value }) ||
-                setErrors({ ...errors, role: undefined })
-              }
-              className={`flex-1 px-4 py-3 rounded-lg border text-sm font-medium transition-colors ${
-                formData.role === value
-                  ? "bg-theme-brand text-theme-brand-fg border-theme-brand shadow-sm"
-                  : "bg-theme-base text-theme-muted border-theme-border hover:bg-theme-elevated hover:text-theme-text"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        {errors.role && (
-          <p className="text-red-500 text-xs mt-1">{errors.role}</p>
-        )}
-      </div>
       <Button
         type="submit"
         fullWidth
@@ -125,7 +113,7 @@ const Register = ({ setIsRegister }) => {
         disabled={registerMutation.isPending}
         className="mt-2"
       >
-        {registerMutation.isPending ? "Registrando…" : "Registrarse"}
+        {registerMutation.isPending ? "Creando cuenta…" : "Crear cuenta de cliente"}
       </Button>
     </form>
   );

@@ -50,5 +50,8 @@ export const reponerStock = ({ insumoId, cantidad }) => axiosWrapper.post(`/api/
 // Order Endpoints
 export const addOrder = (data) => axiosWrapper.post("/api/order/", data);
 export const getOrders = () => axiosWrapper.get("/api/order");
+export const getMyOrders = () => axiosWrapper.get("/api/order/my");
 export const updateOrderStatus = ({ orderId, orderStatus }) =>
   axiosWrapper.put(`/api/order/${orderId}`, { orderStatus });
+export const confirmOrderPayment = ({ orderId, merchantTradeNo }) =>
+  axiosWrapper.post(`/api/order/${orderId}/confirm-payment`, { merchantTradeNo });

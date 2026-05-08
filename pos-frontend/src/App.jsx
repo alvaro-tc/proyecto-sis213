@@ -15,13 +15,14 @@ import {
   Insumos,
   Landing,
   NotFound,
+  Customer,
 } from "./pages";
 import Header from "./components/shared/Header";
 import { useSelector } from "react-redux";
 import useLoadData from "./hooks/useLoadData";
 import FullScreenLoader from "./components/shared/FullScreenLoader";
 
-const ROUTES_WITHOUT_HEADER = ["/", "/auth"];
+const ROUTES_WITHOUT_HEADER = ["/", "/auth", "/cliente"];
 
 function Layout() {
   const isLoading = useLoadData();
@@ -32,14 +33,38 @@ function Layout() {
 
   const normalizedRole = role?.toLowerCase();
   const isBarista = isAuth && normalizedRole === "barista";
-  const hideHeader = ROUTES_WITHOUT_HEADER.includes(location.pathname) || isBarista;
+  const isCustomer = isAuth && normalizedRole === "customer";
+  const hideHeader =
+    ROUTES_WITHOUT_HEADER.includes(location.pathname) ||
+    location.pathname.startsWith("/cliente") ||
+    isBarista ||
+    isCustomer;
 
   return (
     <>
       {!hideHeader && <Header />}
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/auth" element={isAuth ? <Navigate to="/home" /> : <Auth />} />
+        <Route
+          path="/auth"
+          element={
+            isAuth ? (
+              <Navigate
+                to={normalizedRole === "customer" ? "/cliente" : "/home"}
+              />
+            ) : (
+              <Auth />
+            )
+          }
+        />
+        <Route
+          path="/cliente"
+          element={
+            <ProtectedRoutes allowedRoles={["customer"]}>
+              <Customer />
+            </ProtectedRoutes>
+          }
+        />
         <Route
           path="/home"
           element={
@@ -105,6 +130,7 @@ function ProtectedRoutes({ children, allowedRoles }) {
 
   if (allowedRoles && normalizedRole && !allowedRoles.includes(normalizedRole)) {
     if (normalizedRole === "barista") return <Navigate to="/barista" />;
+    if (normalizedRole === "customer") return <Navigate to="/cliente" />;
     return <Navigate to="/home" />;
   }
 

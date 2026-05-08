@@ -1,4 +1,4 @@
-﻿import React from 'react'
+import React from 'react'
 import { IoArrowBackOutline } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
 

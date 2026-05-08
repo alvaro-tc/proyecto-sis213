@@ -1,5 +1,5 @@
 import React from "react";
-import { FaSearch, FaUserCircle, FaBell, FaCoffee } from "react-icons/fa";
+import { FaUserCircle, FaCoffee } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { IoLogOut } from "react-icons/io5";
 import { MdDashboard } from "react-icons/md";
@@ -9,12 +9,16 @@ import { logout } from "../../https";
 import { removeUser } from "../../redux/slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
+import { IconButton } from "../ui";
+import { useTranslation } from "react-i18next";
+import { setLanguage } from "../../i18n";
 
 const Header = () => {
   const userData = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isDark, toggleTheme } = useTheme();
+  const { i18n, t } = useTranslation();
 
   const logoutMutation = useMutation({
     mutationFn: () => logout(),
@@ -24,69 +28,66 @@ const Header = () => {
     },
   });
 
+  const isAdmin = userData.role?.toLowerCase() === "admin";
+
   return (
     <header className="flex justify-between items-center py-4 px-8 bg-theme-surface border-b border-theme-border">
-      {/* LOGO */}
-      <div onClick={() => navigate("/")} className="flex items-center gap-2 cursor-pointer">
-        <FaCoffee className="text-[#f6b100] text-3xl" />
+      <button
+        onClick={() => navigate("/home")}
+        className="flex items-center gap-2 cursor-pointer"
+        aria-label="Ir al inicio"
+      >
+        <FaCoffee className="text-theme-accent text-3xl" />
         <h1 className="text-lg font-semibold text-theme-text tracking-wide">
           Cafeteria 5
         </h1>
-      </div>
+      </button>
 
-      {/* SEARCH */}
-      <div className="flex items-center gap-4 bg-theme-base rounded-[15px] px-5 py-2 w-[500px] border border-theme-border">
-        <FaSearch className="text-theme-muted" />
-        <input
-          type="text"
-          placeholder="Buscar"
-          className="bg-transparent outline-none text-theme-text placeholder:text-theme-muted flex-1"
-        />
-      </div>
-
-      {/* RIGHT ACTIONS */}
       <div className="flex items-center gap-3">
-        {/* Theme toggle */}
         <button
-          onClick={toggleTheme}
-          title={isDark ? "Cambiar a tema claro" : "Cambiar a tema oscuro"}
-          className="bg-theme-base rounded-[15px] p-3 cursor-pointer hover:bg-theme-elevated transition-colors border border-theme-border"
+          onClick={() => setLanguage(i18n.language === "es" ? "en" : "es")}
+          title="Cambiar idioma"
+          aria-label="Cambiar idioma"
+          className="bg-theme-base rounded-[15px] px-3 py-2 text-sm font-semibold uppercase border border-theme-border text-theme-text hover:bg-theme-elevated transition-colors"
         >
-          {isDark ? (
-            <HiSun className="text-[#f6b100] text-2xl" />
-          ) : (
-            <HiMoon className="text-theme-muted text-2xl" />
-          )}
+          {i18n.language === "es" ? "EN" : "ES"}
         </button>
 
-        {userData.role === "Admin" && (
-          <div
-            onClick={() => navigate("/dashboard")}
-            className="bg-theme-base rounded-[15px] p-3 cursor-pointer hover:bg-theme-elevated transition-colors border border-theme-border"
-          >
-            <MdDashboard className="text-theme-text text-2xl" />
-          </div>
+        <IconButton
+          onClick={toggleTheme}
+          icon={isDark ? HiSun : HiMoon}
+          label={isDark ? "Cambiar a tema claro" : "Cambiar a tema oscuro"}
+          className={isDark ? "text-theme-accent" : "text-theme-muted"}
+        />
+
+        {isAdmin && (
+          <IconButton
+            onClick={() => navigate("/home?tab=metricas")}
+            icon={MdDashboard}
+            label="Panel de administración"
+            className="text-theme-text"
+          />
         )}
 
-        <div className="bg-theme-base rounded-[15px] p-3 cursor-pointer hover:bg-theme-elevated transition-colors border border-theme-border">
-          <FaBell className="text-theme-text text-2xl" />
-        </div>
-
-        <div className="flex items-center gap-3 cursor-pointer">
+        <div className="flex items-center gap-3">
           <FaUserCircle className="text-theme-muted text-4xl" />
           <div className="flex flex-col items-start">
             <h1 className="text-md text-theme-text font-semibold tracking-wide">
-              {userData.name || "USUARIO DE PRUEBA"}
+              {userData.name || t("app.guest")}
             </h1>
-            <p className="text-xs text-theme-muted font-medium">
-              {userData.role || "Rol"}
+            <p className="text-xs text-theme-muted font-medium capitalize">
+              {userData.role || "—"}
             </p>
           </div>
-          <IoLogOut
+          <button
             onClick={() => logoutMutation.mutate()}
-            className="text-theme-muted hover:text-red-500 transition-colors ml-2 cursor-pointer"
-            size={38}
-          />
+            title={t("auth.logout")}
+            aria-label={t("auth.logout")}
+            disabled={logoutMutation.isPending}
+            className="text-theme-muted hover:text-red-500 transition-colors ml-2 cursor-pointer disabled:opacity-50"
+          >
+            <IoLogOut size={38} />
+          </button>
         </div>
       </div>
     </header>

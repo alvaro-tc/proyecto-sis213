@@ -15,12 +15,16 @@ export default {
           text:     'var(--color-text)',
           muted:    'var(--color-muted)',
           border:   'var(--color-border)',
+          accent:   'var(--color-accent)',
+          brand:    'var(--color-brand)',
+          'brand-fg': 'var(--color-brand-fg)',
         },
       },
     },
   },
   plugins: [
-    require('tailwind-scrollbar-hide')
+    require('tailwind-scrollbar-hide'),
+    require('tailwindcss-animate'),
   ],
 }
 

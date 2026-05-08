@@ -1,5 +1,6 @@
 const createHttpError = require("http-errors");
 const Order = require("../models/orderModel");
+const Table = require("../models/tableModel");
 const Dish = require("../models/dishModel");
 const Insumo = require("../models/insumoModel");
 const { default: mongoose } = require("mongoose");
@@ -96,6 +97,14 @@ const updateOrder = async (req, res, next) => {
     if (!order) {
       const error = createHttpError(404, "Order not found!");
       return next(error);
+    }
+
+    // Liberar la mesa automáticamente cuando el pedido se entrega o cancela.
+    if (order.table && (orderStatus === "Completed" || orderStatus === "Cancelled")) {
+      await Table.findByIdAndUpdate(order.table, {
+        status: "Available",
+        currentOrder: null,
+      });
     }
 
     res

@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { menus } from "../../constants/index";
 
-const initialState = menus;
+const initialState = [];
 
 const menuSlice = createSlice({
   name: "menu",

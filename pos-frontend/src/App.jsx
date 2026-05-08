@@ -5,36 +5,49 @@ import {
   useLocation,
   Navigate,
 } from "react-router-dom";
-import { Home, Auth, Orders, Tables, Menu, Dashboard, Barista, Insumos } from "./pages";
+import {
+  Home,
+  Auth,
+  Orders,
+  Tables,
+  Menu,
+  Barista,
+  Insumos,
+  Landing,
+  NotFound,
+} from "./pages";
 import Header from "./components/shared/Header";
 import { useSelector } from "react-redux";
 import useLoadData from "./hooks/useLoadData";
-import FullScreenLoader from "./components/shared/FullScreenLoader"
+import FullScreenLoader from "./components/shared/FullScreenLoader";
+
+const ROUTES_WITHOUT_HEADER = ["/", "/auth"];
 
 function Layout() {
   const isLoading = useLoadData();
   const location = useLocation();
-  const hideHeaderRoutes = ["/auth"];
-  const { isAuth, role } = useSelector(state => state.user);
+  const { isAuth, role } = useSelector((state) => state.user);
 
-  if(isLoading) return <FullScreenLoader />
+  if (isLoading) return <FullScreenLoader />;
 
-  // Don't show regular Header for barista since they have their own screen
-  const isBarista = isAuth && role === "barista";
+  const normalizedRole = role?.toLowerCase();
+  const isBarista = isAuth && normalizedRole === "barista";
+  const hideHeader = ROUTES_WITHOUT_HEADER.includes(location.pathname) || isBarista;
 
   return (
     <>
-      {!hideHeaderRoutes.includes(location.pathname) && !isBarista && <Header />}
+      {!hideHeader && <Header />}
       <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/auth" element={isAuth ? <Navigate to="/home" /> : <Auth />} />
         <Route
-          path="/"
+          path="/home"
           element={
             <ProtectedRoutes allowedRoles={["admin", "waiter"]}>
               <Home />
             </ProtectedRoutes>
           }
         />
-        <Route path="/auth" element={isAuth ? <Navigate to="/" /> : <Auth />} />
         <Route
           path="/orders"
           element={
@@ -59,14 +72,7 @@ function Layout() {
             </ProtectedRoutes>
           }
         />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoutes allowedRoles={["admin", "waiter"]}>
-              <Dashboard />
-            </ProtectedRoutes>
-          }
-        />
+        <Route path="/dashboard" element={<Navigate to="/home?tab=metricas" replace />} />
         <Route
           path="/barista"
           element={
@@ -83,7 +89,7 @@ function Layout() {
             </ProtectedRoutes>
           }
         />
-        <Route path="*" element={<div>No Encontrado</div>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
@@ -91,24 +97,15 @@ function Layout() {
 
 function ProtectedRoutes({ children, allowedRoles }) {
   const { isAuth, role } = useSelector((state) => state.user);
-  
+  const normalizedRole = role?.toLowerCase();
+
   if (!isAuth) {
     return <Navigate to="/auth" />;
   }
 
-  // RBAC control
-  if (allowedRoles && role && !allowedRoles.includes(role)) {
-     if (role === "barista") {
-        return <Navigate to="/barista" />
-     }
-     if (role === "waiter" || role === "admin") {
-        return <Navigate to="/" />
-     }
-  }
-
-  // Default redirect for root trying to be accessed by a barista
-  if (!allowedRoles && role === "barista") {
-     return <Navigate to="/barista" />
+  if (allowedRoles && normalizedRole && !allowedRoles.includes(normalizedRole)) {
+    if (normalizedRole === "barista") return <Navigate to="/barista" />;
+    return <Navigate to="/home" />;
   }
 
   return children;

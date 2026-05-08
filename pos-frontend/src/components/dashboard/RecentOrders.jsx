@@ -1,6 +1,4 @@
-﻿import React from "react";
-import { orders } from "../../constants";
-import { GrUpdate } from "react-icons/gr";
+import React from "react";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { enqueueSnackbar } from "notistack";
 import { getOrders, updateOrderStatus } from "../../https/index";

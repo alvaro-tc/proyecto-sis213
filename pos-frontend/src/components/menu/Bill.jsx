@@ -1,31 +1,17 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getTotalPrice } from "../../redux/slices/cartSlice";
 import {
   addOrder,
-  createOrderRazorpay,
+  createBinancePayOrder,
   updateTable,
-  verifyPaymentRazorpay,
 } from "../../https/index";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "@tanstack/react-query";
 import { removeAllItems } from "../../redux/slices/cartSlice";
 import { removeCustomer } from "../../redux/slices/customerSlice";
 import Invoice from "../invoice/Invoice";
-
-function loadScript(src) {
-  return new Promise((resolve) => {
-    const script = document.createElement("script");
-    script.src = src;
-    script.onload = () => {
-      resolve(true);
-    };
-    script.onerror = () => {
-      resolve(false);
-    };
-    document.body.appendChild(script);
-  });
-}
+import BinancePayModal from "./BinancePayModal";
 
 const Bill = () => {
   const dispatch = useDispatch();
@@ -40,6 +26,25 @@ const Bill = () => {
   const [paymentMethod, setPaymentMethod] = useState();
   const [showInvoice, setShowInvoice] = useState(false);
   const [orderInfo, setOrderInfo] = useState();
+  const [binanceOrder, setBinanceOrder] = useState(null);
+
+  const buildOrderData = (extraPaymentData = {}) => ({
+    customerDetails: {
+      name: customerData.customerName,
+      phone: customerData.customerPhone,
+      guests: customerData.guests,
+    },
+    orderStatus: "In Progress",
+    bills: {
+      total: total,
+      tax: tax,
+      totalWithTax: totalPriceWithTax,
+    },
+    items: cartData,
+    table: customerData.table.tableId,
+    paymentMethod: paymentMethod,
+    ...extraPaymentData,
+  });
 
   const handlePlaceOrder = async () => {
     if (!paymentMethod) {
@@ -50,102 +55,23 @@ const Bill = () => {
       return;
     }
 
-    if (paymentMethod === "Online") {
-      // load the script
+    if (paymentMethod === "Binance") {
       try {
-        const res = await loadScript(
-          "https://checkout.razorpay.com/v1/checkout.js"
-        );
-
-        if (!res) {
-          enqueueSnackbar("Falló la carga de Razorpay SDK. ¿Está conectado a internet?", {
-            variant: "warning",
-          });
-          return;
-        }
-
-        // create order
-
-        const reqData = {
+        const { data } = await createBinancePayOrder({
           amount: totalPriceWithTax.toFixed(2),
-        };
-
-        const { data } = await createOrderRazorpay(reqData);
-
-        const options = {
-          key: `${import.meta.env.VITE_RAZORPAY_KEY_ID}`,
-          amount: data.order.amount,
-          currency: data.order.currency,
-          name: "CAFETERIA 5",
-          description: "Pago Seguro",
-          order_id: data.order.id,
-          handler: async function (response) {
-            const verification = await verifyPaymentRazorpay(response);
-            console.log(verification);
-            enqueueSnackbar(verification.data.message, { variant: "success" });
-
-            // Place the order
-            const orderData = {
-              customerDetails: {
-                name: customerData.customerName,
-                phone: customerData.customerPhone,
-                guests: customerData.guests,
-              },
-              orderStatus: "In Progress",
-              bills: {
-                total: total,
-                tax: tax,
-                totalWithTax: totalPriceWithTax,
-              },
-              items: cartData,
-              table: customerData.table.tableId,
-              paymentMethod: paymentMethod,
-              paymentData: {
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-              },
-            };
-
-            setTimeout(() => {
-              orderMutation.mutate(orderData);
-            }, 1500);
-          },
-          prefill: {
-            name: customerData.name,
-            email: "",
-            contact: customerData.phone,
-          },
-          theme: { color: "#025cca" },
-        };
-
-        const rzp = new window.Razorpay(options);
-        rzp.open();
+          description: `Pedido mesa ${customerData.table?.tableNo || ""}`,
+        });
+        setBinanceOrder(data.order);
       } catch (error) {
         console.log(error);
-        enqueueSnackbar("¡Pago Fallido!", {
+        enqueueSnackbar("No se pudo generar el QR de Binance Pay", {
           variant: "error",
         });
       }
-    } else {
-      // Place the order
-      const orderData = {
-        customerDetails: {
-          name: customerData.customerName,
-          phone: customerData.customerPhone,
-          guests: customerData.guests,
-        },
-        orderStatus: "In Progress",
-        bills: {
-          total: total,
-          tax: tax,
-          totalWithTax: totalPriceWithTax,
-        },
-        items: cartData,
-        table: customerData.table.tableId,
-        paymentMethod: paymentMethod,
-      };
-      orderMutation.mutate(orderData);
+      return;
     }
+
+    orderMutation.mutate(buildOrderData());
   };
 
   const orderMutation = useMutation({
@@ -221,12 +147,15 @@ const Bill = () => {
           Efectivo
         </button>
         <button
-          onClick={() => setPaymentMethod("Online")}
-          className={`bg-theme-base px-4 py-3 w-full rounded-lg text-theme-muted font-semibold ${
-            paymentMethod === "Online" ? "bg-theme-elevated" : ""
+          onClick={() => setPaymentMethod("Binance")}
+          className={`bg-theme-base px-4 py-3 w-full rounded-lg text-theme-muted font-semibold flex items-center justify-center gap-2 ${
+            paymentMethod === "Binance" ? "bg-theme-elevated" : ""
           }`}
         >
-          En Línea
+          <span className="grid h-5 w-5 place-items-center rounded bg-yellow-400 text-black text-xs font-bold">
+            B
+          </span>
+          Binance
         </button>
       </div>
 
@@ -236,7 +165,7 @@ const Bill = () => {
         </button>
         <button
           onClick={handlePlaceOrder}
-          className="bg-[#f6b100] px-4 py-3 w-full rounded-lg text-[#1f1f1f] font-semibold text-lg"
+          className="bg-theme-accent px-4 py-3 w-full rounded-lg text-[#1f1f1f] font-semibold text-lg"
         >
           Realizar Pedido
         </button>
@@ -244,6 +173,27 @@ const Bill = () => {
 
       {showInvoice && (
         <Invoice orderInfo={orderInfo} setShowInvoice={setShowInvoice} />
+      )}
+
+      {binanceOrder && (
+        <BinancePayModal
+          binanceOrder={binanceOrder}
+          totalBs={totalPriceWithTax}
+          onClose={() => setBinanceOrder(null)}
+          onPaid={(order) => {
+            enqueueSnackbar("¡Pago Binance recibido!", { variant: "success" });
+            const orderData = buildOrderData({
+              paymentData: {
+                binance_merchant_trade_no: order.merchantTradeNo,
+                binance_prepay_id: order.prepayId,
+                binance_amount: order.orderAmount,
+                binance_currency: order.currency,
+              },
+            });
+            setBinanceOrder(null);
+            setTimeout(() => orderMutation.mutate(orderData), 800);
+          }}
+        />
       )}
     </>
   );

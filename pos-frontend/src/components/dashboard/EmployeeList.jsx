@@ -1,11 +1,13 @@
-﻿import React from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUsers, deleteUser } from "../../https";
 import { enqueueSnackbar } from "notistack";
 import { FaTrash } from "react-icons/fa";
+import { ConfirmDialog } from "../ui";
 
 const EmployeeList = ({ onAdd }) => {
   const queryClient = useQueryClient();
+  const [target, setTarget] = useState(null);
   const { data: res, isLoading } = useQuery({ queryKey: ["users"], queryFn: getUsers });
   const users = res?.data?.data || [];
 
@@ -14,13 +16,10 @@ const EmployeeList = ({ onAdd }) => {
     onSuccess: () => {
       enqueueSnackbar("Empleado eliminado", { variant: "success" });
       queryClient.invalidateQueries(["users"]);
+      setTarget(null);
     },
     onError: () => enqueueSnackbar("Error al eliminar", { variant: "error" })
   });
-
-  const handleDelete = (id) => {
-    if(window.confirm("¿Estás seguro de eliminar este empleado?")) delMutation.mutate(id);
-  };
 
   if (isLoading) return <div className="text-theme-text p-6 justify-center flex">Cargando empleados...</div>;
 
@@ -55,7 +54,7 @@ const EmployeeList = ({ onAdd }) => {
                    </span>
                 </td>
                 <td className="py-3 px-4 flex justify-center gap-3">
-                  <button onClick={() => handleDelete(user._id)} className="text-red-500 hover:text-red-400" title="Eliminar">
+                  <button onClick={() => setTarget(user)} className="text-red-500 hover:text-red-400" title="Eliminar">
                     <FaTrash />
                   </button>
                 </td>
@@ -64,6 +63,17 @@ const EmployeeList = ({ onAdd }) => {
           </tbody>
         </table>
       </div>
+
+      <ConfirmDialog
+        isOpen={!!target}
+        onClose={() => setTarget(null)}
+        onConfirm={() => target && delMutation.mutate(target._id)}
+        isLoading={delMutation.isPending}
+        title={`¿Eliminar a ${target?.name || "este empleado"}?`}
+        description="Se eliminará la cuenta del empleado de forma permanente."
+        confirmLabel="Eliminar empleado"
+        variant="danger"
+      />
     </div>
   );
 };

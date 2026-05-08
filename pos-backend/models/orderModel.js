@@ -3,16 +3,18 @@ const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema({
     customerDetails: {
         name: { type: String, required: true },
-        phone: { type: String, requried: true},
+        phone: { type: String, required: true},
         guests: { type: Number, required: true },
     },
     orderStatus: {
         type: String,
+        enum: ["In Progress", "Ready", "Completed", "Cancelled"],
+        default: "In Progress",
         required: true
     },
     orderDate: {
         type: Date,
-        default : Date.now()
+        default : Date.now
     },
     bills: {
         total: { type: Number, required: true },
@@ -23,8 +25,10 @@ const orderSchema = new mongoose.Schema({
     table: { type: mongoose.Schema.Types.ObjectId, ref: "Table" },
     paymentMethod: String,
     paymentData: {
-        razorpay_order_id: String,
-        razorpay_payment_id: String
+        binance_merchant_trade_no: String,
+        binance_prepay_id: String,
+        binance_amount: Number,
+        binance_currency: String
     }
 }, { timestamps : true } );
 

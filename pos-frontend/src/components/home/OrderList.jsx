@@ -1,12 +1,12 @@
-﻿import React from "react";
+import React from "react";
 import { FaCheckDouble, FaLongArrowAltRight } from "react-icons/fa";
 import { FaCircle } from "react-icons/fa";
 import { getAvatarName } from "../../utils/index";
 
-const OrderList = ({ key, order }) => {
+const OrderList = ({ order }) => {
   return (
     <div className="flex items-center gap-5 mb-3">
-      <button className="bg-[#f6b100] p-3 text-xl font-bold rounded-lg">
+      <button className="bg-theme-accent p-3 text-xl font-bold rounded-lg">
         {getAvatarName(order.customerDetails.name)}
       </button>
       <div className="flex items-center justify-between w-[100%]">
@@ -17,7 +17,7 @@ const OrderList = ({ key, order }) => {
           <p className="text-theme-muted text-sm">{order.items.length} Artículos</p>
         </div>
 
-        <h1 className="text-[#f6b100] font-semibold border border-[#f6b100] rounded-lg p-1">
+        <h1 className="text-theme-accent font-semibold border border-theme-accent rounded-lg p-1">
           Mesa <FaLongArrowAltRight className="text-theme-muted ml-2 inline" />{" "}
           {order.table.tableNo}
         </h1>

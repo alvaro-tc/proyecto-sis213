@@ -1,0 +1,50 @@
+{
+  "app": {
+    "name": "Cafeteria 5",
+    "guest": "Invitado"
+  },
+  "nav": {
+    "home": "Inicio",
+    "orders": "Pedidos",
+    "tables": "Mesas",
+    "supplies": "Insumos",
+    "menu": "Menú",
+    "dashboard": "Panel"
+  },
+  "auth": {
+    "loginTitle": "Inicio de Sesión",
+    "registerTitle": "Registro de Empleado",
+    "email": "Correo de Empleado",
+    "password": "Contraseña",
+    "name": "Nombre del Empleado",
+    "phone": "Teléfono",
+    "role": "Elija su rol",
+    "haveAccount": "¿Ya tienes una cuenta?",
+    "noAccount": "¿No tienes una cuenta?",
+    "login": "Iniciar sesión",
+    "loginPending": "Iniciando sesión…",
+    "register": "Registrarse",
+    "registerPending": "Registrando…",
+    "logout": "Cerrar sesión",
+    "sessionExpired": "Tu sesión expiró. Inicia sesión nuevamente."
+  },
+  "landing": {
+    "tagline": "Sistema POS para cafeterías",
+    "hero1": "Tu cafetería,",
+    "hero2": "bajo control total",
+    "subtitle": "Pedidos, mesas, insumos y métricas en una sola pantalla.",
+    "ctaStart": "Comenzar ahora",
+    "ctaOpen": "Abrir panel",
+    "ctaFeatures": "Ver funcionalidades",
+    "ctaLogin": "Iniciar sesión",
+    "featuresTitle": "Todo lo que necesitas para operar",
+    "featuresSubtitle": "Cuatro módulos integrados, sin instalaciones, listos para usar.",
+    "ctaFinal": "¿Listo para empezar?"
+  },
+  "common": {
+    "loading": "Cargando…",
+    "error": "Ocurrió un error",
+    "noResults": "Sin resultados",
+    "retry": "Reintentar"
+  }
+}

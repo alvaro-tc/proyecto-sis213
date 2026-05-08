@@ -25,7 +25,9 @@ const register = async (req, res, next) => {
         const newUser = User(user);
         await newUser.save();
 
-        res.status(201).json({success: true, message: "New user created!", data: newUser});
+        const safeUser = newUser.toObject();
+        delete safeUser.password;
+        res.status(201).json({success: true, message: "New user created!", data: safeUser});
 
 
     } catch (error) {
@@ -68,8 +70,10 @@ const login = async (req, res, next) => {
             secure: true
         })
 
-        res.status(200).json({success: true, message: "User login successfully!", 
-            data: isUserPresent
+        const safeUser = isUserPresent.toObject();
+        delete safeUser.password;
+        res.status(200).json({success: true, message: "User login successfully!",
+            data: safeUser
         });
 
 

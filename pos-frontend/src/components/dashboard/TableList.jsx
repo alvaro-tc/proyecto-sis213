@@ -1,26 +1,25 @@
-﻿import React from "react";
+import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getTables, deleteTable } from "../../https";
 import { enqueueSnackbar } from "notistack";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { ConfirmDialog } from "../ui";
 
 const TableList = ({ onEdit, onAdd }) => {
   const queryClient = useQueryClient();
+  const [target, setTarget] = useState(null);
   const { data: res, isLoading } = useQuery({ queryKey: ["tables"], queryFn: getTables });
   const tables = res?.data?.data || [];
 
   const delMutation = useMutation({
     mutationFn: (id) => deleteTable(id),
-    onSuccess: (res) => {
+    onSuccess: () => {
       enqueueSnackbar("Mesa eliminada", { variant: "success" });
       queryClient.invalidateQueries(["tables"]);
+      setTarget(null);
     },
-    onError: (error) => enqueueSnackbar("Error al eliminar", { variant: "error" })
+    onError: () => enqueueSnackbar("Error al eliminar", { variant: "error" })
   });
-
-  const handleDelete = (id) => {
-    if(window.confirm("¿Estás seguro de eliminar esta mesa?")) delMutation.mutate(id);
-  };
 
   if (isLoading) return <div className="text-theme-text p-6 justify-center flex">Cargando mesas...</div>;
 
@@ -54,7 +53,7 @@ const TableList = ({ onEdit, onAdd }) => {
                 </td>
                 <td className="p-4 text-center">
                   <button onClick={() => onEdit(t)} className="text-blue-400 hover:text-blue-300 mr-4"><FaEdit size={18} /></button>
-                  <button onClick={() => handleDelete(t._id)} className="text-red-400 hover:text-red-300"><FaTrash size={18} /></button>
+                  <button onClick={() => setTarget(t)} className="text-red-400 hover:text-red-300"><FaTrash size={18} /></button>
                 </td>
               </tr>
             ))}
@@ -64,6 +63,17 @@ const TableList = ({ onEdit, onAdd }) => {
           </tbody>
         </table>
       </div>
+
+      <ConfirmDialog
+        isOpen={!!target}
+        onClose={() => setTarget(null)}
+        onConfirm={() => target && delMutation.mutate(target._id)}
+        isLoading={delMutation.isPending}
+        title={`¿Eliminar la Mesa ${target?.tableNo ?? ""}?`}
+        description="Esta acción no se puede deshacer."
+        confirmLabel="Eliminar mesa"
+        variant="danger"
+      />
     </div>
   );
 };

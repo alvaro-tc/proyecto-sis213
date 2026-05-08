@@ -1,11 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const { isVerifiedUser } = require("../middlewares/tokenVerification");
-const { createOrder, verifyPayment, webHookVerification } = require("../controllers/paymentController");
- 
-router.route("/create-order").post(isVerifiedUser , createOrder);
-router.route("/verify-payment").post(isVerifiedUser , verifyPayment);
-router.route("/webhook-verification").post(webHookVerification);
+const {
+  createBinanceOrder,
+  queryBinanceOrder,
+  binanceWebhook,
+} = require("../controllers/paymentController");
+
+// Binance Pay
+router.route("/binance/create-order").post(isVerifiedUser, createBinanceOrder);
+router.route("/binance/query").post(isVerifiedUser, queryBinanceOrder);
+router.route("/binance/webhook").post(binanceWebhook);
 
 
 module.exports = router;

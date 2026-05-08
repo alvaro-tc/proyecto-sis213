@@ -1,9 +1,17 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { register } from "../../https";
 import { useMutation } from "@tanstack/react-query";
 import { enqueueSnackbar } from "notistack";
+import { Button, Input } from "../ui";
+import { registerSchema, flattenZodErrors } from "../../schemas/auth";
 
-const Register = ({setIsRegister}) => {
+const ROLES = [
+  { value: "waiter", label: "Mesero" },
+  { value: "barista", label: "Barista" },
+  { value: "admin", label: "Admin" },
+];
+
+const Register = ({ setIsRegister }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -11,142 +19,115 @@ const Register = ({setIsRegister}) => {
     password: "",
     role: "",
   });
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleRoleSelection = (selectedRole) => {
-    setFormData({ ...formData, role: selectedRole });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    registerMutation.mutate(formData);
+    if (errors[e.target.name]) {
+      setErrors({ ...errors, [e.target.name]: undefined });
+    }
   };
 
   const registerMutation = useMutation({
     mutationFn: (reqData) => register(reqData),
     onSuccess: (res) => {
-      const { data } = res;
-      enqueueSnackbar(data.message, { variant: "success" });
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        password: "",
-        role: "",
-      });
-      
-      setTimeout(() => {
-        setIsRegister(false);
-      }, 1500);
+      enqueueSnackbar(res.data.message, { variant: "success" });
+      setFormData({ name: "", email: "", phone: "", password: "", role: "" });
+      setTimeout(() => setIsRegister(false), 1500);
     },
     onError: (error) => {
-      const { response } = error;
-      const message = response.data.message;
+      const message =
+        error?.response?.data?.message || "No se pudo registrar el usuario.";
       enqueueSnackbar(message, { variant: "error" });
     },
   });
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const result = registerSchema.safeParse(formData);
+    if (!result.success) {
+      setErrors(flattenZodErrors(result.error));
+      return;
+    }
+    setErrors({});
+    registerMutation.mutate(result.data);
+  };
+
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label className="block text-theme-muted mb-2 text-sm font-medium">
-            Nombre del Empleado
-          </label>
-          <div className="flex item-center rounded-lg p-5 px-4 bg-theme-base">
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Ingrese el nombre del empleado"
-              className="bg-transparent flex-1 text-theme-text focus:outline-none"
-              required
-            />
-          </div>
+    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      <Input
+        label="Nombre del Empleado"
+        type="text"
+        name="name"
+        value={formData.name}
+        onChange={handleChange}
+        placeholder="Nombre completo"
+        error={errors.name}
+      />
+      <Input
+        label="Correo del Empleado"
+        type="email"
+        name="email"
+        value={formData.email}
+        onChange={handleChange}
+        placeholder="empleado@cafeteria5.com"
+        error={errors.email}
+      />
+      <Input
+        label="Teléfono"
+        type="tel"
+        name="phone"
+        value={formData.phone}
+        onChange={handleChange}
+        placeholder="71234567"
+        error={errors.phone}
+      />
+      <Input
+        label="Contraseña"
+        type="password"
+        name="password"
+        value={formData.password}
+        onChange={handleChange}
+        placeholder="Mínimo 6 caracteres"
+        error={errors.password}
+      />
+      <div>
+        <label className="block text-theme-muted mb-2 text-sm font-medium">
+          Elija su rol
+        </label>
+        <div className="flex gap-3">
+          {ROLES.map(({ value, label }) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() =>
+                setFormData({ ...formData, role: value }) ||
+                setErrors({ ...errors, role: undefined })
+              }
+              className={`flex-1 px-4 py-3 rounded-lg border text-sm font-medium transition-colors ${
+                formData.role === value
+                  ? "bg-theme-brand text-theme-brand-fg border-theme-brand shadow-sm"
+                  : "bg-theme-base text-theme-muted border-theme-border hover:bg-theme-elevated hover:text-theme-text"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
-        <div>
-          <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
-            Correo del Empleado
-          </label>
-          <div className="flex item-center rounded-lg p-5 px-4 bg-theme-base">
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Ingrese el correo del empleado"
-              className="bg-transparent flex-1 text-theme-text focus:outline-none"
-              required
-            />
-          </div>
-        </div>
-        <div>
-          <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
-            Teléfono del Empleado
-          </label>
-          <div className="flex item-center rounded-lg p-5 px-4 bg-theme-base">
-            <input
-              type="number"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Ingrese el teléfono del empleado"
-              className="bg-transparent flex-1 text-theme-text focus:outline-none"
-              required
-            />
-          </div>
-        </div>
-        <div>
-          <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
-            Contraseña
-          </label>
-          <div className="flex item-center rounded-lg p-5 px-4 bg-theme-base">
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Ingrese la contraseña"
-              className="bg-transparent flex-1 text-theme-text focus:outline-none"
-              required
-            />
-          </div>
-        </div>
-        <div>
-          <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
-            Elija su rol
-          </label>
-
-          <div className="flex item-center gap-3 mt-4">
-            {["Waiter", "Cashier", "Admin"].map((role) => {
-              return (
-                <button
-                  key={role}
-                  type="button"
-                  onClick={() => handleRoleSelection(role)}
-                  className={`bg-theme-base px-4 py-3 w-full rounded-lg text-theme-muted ${
-                    formData.role === role ? "bg-indigo-700" : ""
-                  }`}
-                >
-                  {role === "Waiter" ? "Mesero" : role === "Cashier" ? "Cajero" : "Admin"}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          className="w-full rounded-lg mt-6 py-3 text-lg bg-yellow-400 text-gray-900 font-bold"
-        >
-          Registrarse
-        </button>
-      </form>
-    </div>
+        {errors.role && (
+          <p className="text-red-500 text-xs mt-1">{errors.role}</p>
+        )}
+      </div>
+      <Button
+        type="submit"
+        fullWidth
+        size="lg"
+        disabled={registerMutation.isPending}
+        className="mt-2"
+      >
+        {registerMutation.isPending ? "Registrando…" : "Registrarse"}
+      </Button>
+    </form>
   );
 };
 

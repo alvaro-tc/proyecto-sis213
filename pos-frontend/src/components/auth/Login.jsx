@@ -1,88 +1,84 @@
-﻿import React, { useState } from "react";
-import { useMutation } from "@tanstack/react-query"
-import { login } from "../../https/index"
+import React, { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "../../https/index";
 import { enqueueSnackbar } from "notistack";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/slices/userSlice";
 import { useNavigate } from "react-router-dom";
- 
+import { Button, Input } from "../ui";
+import { loginSchema, flattenZodErrors } from "../../schemas/auth";
+
 const Login = () => {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const[formData, setFormData] = useState({
-      email: "",
-      password: "",
-    });
-  
-    const handleChange = (e) => {
-      setFormData({...formData, [e.target.name]: e.target.value});
-    }
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({});
 
-  
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      loginMutation.mutate(formData);
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (errors[e.target.name]) {
+      setErrors({ ...errors, [e.target.name]: undefined });
     }
+  };
 
-    const loginMutation = useMutation({
-      mutationFn: (reqData) => login(reqData),
-      onSuccess: (res) => {
-          const { data } = res;
-          console.log(data);
-          const { _id, name, email, phone, role } = data.data;
-          dispatch(setUser({ _id, name, email, phone, role }));
-          navigate("/");
-      },
-      onError: (error) => {
-        const { response } = error;
-        enqueueSnackbar(response.data.message, { variant: "error" });
-      }
-    })
+  const loginMutation = useMutation({
+    mutationFn: (reqData) => login(reqData),
+    onSuccess: (res) => {
+      const { _id, name, email, phone, role } = res.data.data;
+      dispatch(setUser({ _id, name, email, phone, role }));
+      navigate("/home");
+    },
+    onError: (error) => {
+      const message =
+        error?.response?.data?.message ||
+        "No se pudo iniciar sesión. Verifique su conexión.";
+      enqueueSnackbar(message, { variant: "error" });
+    },
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const result = loginSchema.safeParse(formData);
+    if (!result.success) {
+      setErrors(flattenZodErrors(result.error));
+      return;
+    }
+    setErrors({});
+    loginMutation.mutate(result.data);
+  };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
-            Correo de Empleado
-          </label>
-          <div className="flex item-center rounded-lg p-5 px-4 bg-theme-base">
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Ingrese el correo de empleado"
-              className="bg-transparent flex-1 text-theme-text focus:outline-none"
-              required
-            />
-          </div>
-        </div>
-        <div>
-          <label className="block text-theme-muted mb-2 mt-3 text-sm font-medium">
-            Contraseña
-          </label>
-          <div className="flex item-center rounded-lg p-5 px-4 bg-theme-base">
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Ingrese la contraseña"
-              className="bg-transparent flex-1 text-theme-text focus:outline-none"
-              required
-            />
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          className="w-full rounded-lg mt-6 py-3 text-lg bg-yellow-400 text-gray-900 font-bold"
-        >
-          Iniciar sesión
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      <Input
+        label="Correo de Empleado"
+        type="email"
+        name="email"
+        value={formData.email}
+        onChange={handleChange}
+        placeholder="empleado@cafeteria5.com"
+        error={errors.email}
+        autoComplete="email"
+      />
+      <Input
+        label="Contraseña"
+        type="password"
+        name="password"
+        value={formData.password}
+        onChange={handleChange}
+        placeholder="••••••••"
+        error={errors.password}
+        autoComplete="current-password"
+      />
+      <Button
+        type="submit"
+        fullWidth
+        size="lg"
+        disabled={loginMutation.isPending}
+        className="mt-2"
+      >
+        {loginMutation.isPending ? "Iniciando sesión…" : "Iniciar sesión"}
+      </Button>
+    </form>
   );
 };
 

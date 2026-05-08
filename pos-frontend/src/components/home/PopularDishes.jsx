@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getDishes } from "../../https";
 import DishIcon from "../../assets/images/logo.png"; // Placeholder icon

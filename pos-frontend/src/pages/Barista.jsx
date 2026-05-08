@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import BaristaOrderCard from "../components/orders/BaristaOrderCard";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getOrders } from "../https/index";
@@ -60,7 +60,7 @@ const Barista = () => {
       <div className="flex flex-col md:flex-row items-center justify-between px-6 sm:px-10 py-5 border-b border-theme-border shadow-md bg-theme-card">
         <div className="flex items-center gap-4 text-yellow-500">
            <div className="bg-theme-surface p-3 rounded-xl shadow-inner border border-theme-border">
-              <FaCoffee size={24} className="text-[#f6b100]" />
+              <FaCoffee size={24} className="text-theme-accent" />
            </div>
            <div>
              <h1 className="text-theme-text text-2xl font-black tracking-wider uppercase leading-none">
@@ -74,7 +74,7 @@ const Barista = () => {
         <div className="flex items-center gap-2 mt-4 md:mt-0 bg-theme-surface p-1.5 rounded-lg border border-theme-border">
            <button 
              onClick={() => setActiveTab("Entradas")}
-             className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all font-bold text-sm ${activeTab === "Entradas" ? "bg-[#f6b100] text-gray-900 shadow-md" : "text-theme-muted hover:text-theme-text"}`}
+             className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all font-bold text-sm ${activeTab === "Entradas" ? "bg-theme-accent text-gray-900 shadow-md" : "text-theme-muted hover:text-theme-text"}`}
            >
               <FaInbox /> Entradas ({incomingOrders.length})
            </button>
@@ -88,7 +88,7 @@ const Barista = () => {
              onClick={() => setActiveTab("Historial")}
              className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all font-bold text-sm ${activeTab === "Historial" ? "bg-white text-gray-900 shadow-md" : "text-theme-muted hover:text-theme-text"}`}
            >
-              <FaHistory /> Histérial
+              <FaHistory /> Historial
            </button>
         </div>
 
@@ -98,9 +98,9 @@ const Barista = () => {
              title={isDark ? "Cambiar a tema claro" : "Cambiar a tema oscuro"}
              className="p-2.5 rounded-lg bg-theme-surface border border-theme-border hover:bg-theme-elevated transition-colors"
            >
-             {isDark ? <HiSun className="text-[#f6b100] text-xl" /> : <HiMoon className="text-theme-muted text-xl" />}
+             {isDark ? <HiSun className="text-theme-accent text-xl" /> : <HiMoon className="text-theme-muted text-xl" />}
            </button>
-           <button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2.5 px-6 rounded-lg transition-colors shadow-md">
+           <button onClick={handleLogout} className="bg-theme-brand hover:opacity-90 text-theme-brand-fg font-bold py-2.5 px-6 rounded-lg transition-colors shadow-md">
               Salir
            </button>
         </div>

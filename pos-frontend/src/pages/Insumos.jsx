@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import BottomNav from "../components/shared/BottomNav";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
@@ -138,7 +138,7 @@ export default function Insumos() {
         </div>
         <button
           onClick={() => setModalAgregar(true)}
-          className="flex items-center gap-2 bg-[#F6B100] text-black font-bold px-4 py-2 rounded-xl hover:bg-yellow-500 transition"
+          className="flex items-center gap-2 bg-theme-accent text-black font-bold px-4 py-2 rounded-xl hover:bg-yellow-500 transition"
         >
           <MdAdd size={20} /> Agregar
         </button>
@@ -148,9 +148,9 @@ export default function Insumos() {
       <div className="grid grid-cols-2 gap-3 mb-6 md:grid-cols-4">
         <div className="bg-theme-card rounded-2xl p-4 flex flex-col gap-1">
           <div className="flex items-center gap-2 text-theme-muted text-xs font-medium">
-            <MdAttachMoney size={16} className="text-[#F6B100]" /> Gasto Hoy
+            <MdAttachMoney size={16} className="text-theme-accent" /> Gasto Hoy
           </div>
-          <p className="text-2xl font-bold text-[#F6B100]">Bs {metricas?.gastoHoy?.toFixed(2) || "0.00"}</p>
+          <p className="text-2xl font-bold text-theme-accent">Bs {metricas?.gastoHoy?.toFixed(2) || "0.00"}</p>
         </div>
         <div className="bg-theme-card rounded-2xl p-4 flex flex-col gap-1">
           <div className="flex items-center gap-2 text-theme-muted text-xs font-medium">
@@ -187,11 +187,11 @@ export default function Insumos() {
                   </span>
                   <div className="w-full flex items-end" style={{ height: "60px" }}>
                     <div
-                      className={`w-full rounded-t-md transition-all ${esHoy ? "bg-[#F6B100]" : "bg-theme-elevated"}`}
+                      className={`w-full rounded-t-md transition-all ${esHoy ? "bg-theme-accent" : "bg-theme-elevated"}`}
                       style={{ height: `${Math.max(altura, dia.gasto > 0 ? 8 : 3)}%` }}
                     />
                   </div>
-                  <span className={`text-[10px] font-medium ${esHoy ? "text-[#F6B100]" : "text-theme-muted"}`}>{dia.dia}</span>
+                  <span className={`text-[10px] font-medium ${esHoy ? "text-theme-accent" : "text-theme-muted"}`}>{dia.dia}</span>
                 </div>
               );
             })}
@@ -225,7 +225,7 @@ export default function Insumos() {
             key={f}
             onClick={() => setFiltro(f)}
             className={`text-xs px-3 py-1.5 rounded-full whitespace-nowrap font-medium transition ${
-              filtro === f ? "bg-[#F6B100] text-black" : "bg-theme-elevated text-theme-muted hover:bg-theme-elevated"
+              filtro === f ? "bg-theme-accent text-black" : "bg-theme-elevated text-theme-muted hover:bg-theme-elevated"
             }`}
           >
             {f === "todos" ? "Todos" : estadoConfig[f]?.label}
@@ -238,7 +238,7 @@ export default function Insumos() {
         value={busqueda}
         onChange={(e) => setBusqueda(e.target.value)}
         placeholder="Buscar insumo o categoría..."
-        className="w-full bg-theme-card text-theme-text rounded-xl px-4 py-2.5 mb-4 text-sm focus:outline-none focus:ring-1 focus:ring-[#F6B100] placeholder:text-[#555]"
+        className="w-full bg-theme-card text-theme-text rounded-xl px-4 py-2.5 mb-4 text-sm focus:outline-none focus:ring-1 focus:ring-theme-accent placeholder:text-[#555]"
       />
 
       {/* Lista de insumos */}
@@ -306,7 +306,7 @@ export default function Insumos() {
       {/* Modal Agregar */}
       <Modal isOpen={modalAgregar} onClose={() => setModalAgregar(false)} title="Agregar Insumo">
         <FormInsumo form={form} setForm={setForm} />
-        <button onClick={handleSubmitAgregar} disabled={mutAddInsumo.isPending} className="w-full bg-[#F6B100] text-black font-bold rounded-xl py-3 mt-4 hover:bg-yellow-500 disabled:opacity-50">
+        <button onClick={handleSubmitAgregar} disabled={mutAddInsumo.isPending} className="w-full bg-theme-accent text-black font-bold rounded-xl py-3 mt-4 hover:bg-yellow-500 disabled:opacity-50">
           {mutAddInsumo.isPending ? "Guardando..." : "Guardar Insumo"}
         </button>
       </Modal>
@@ -314,7 +314,7 @@ export default function Insumos() {
       {/* Modal Editar */}
       <Modal isOpen={!!modalEditar} onClose={() => setModalEditar(null)} title="Editar Insumo">
         <FormInsumo form={form} setForm={setForm} />
-        <button onClick={handleSubmitEditar} disabled={mutUpdateInsumo.isPending} className="w-full bg-[#F6B100] text-black font-bold rounded-xl py-3 mt-4 hover:bg-yellow-500 disabled:opacity-50">
+        <button onClick={handleSubmitEditar} disabled={mutUpdateInsumo.isPending} className="w-full bg-theme-accent text-black font-bold rounded-xl py-3 mt-4 hover:bg-yellow-500 disabled:opacity-50">
           {mutUpdateInsumo.isPending ? "Guardando..." : "Actualizar Insumo"}
         </button>
       </Modal>
@@ -331,7 +331,7 @@ export default function Insumos() {
         </div>
         {cantidadOp && modalConsumo && (
           <p className="text-theme-muted text-xs mt-2 mb-1">
-            Costo estimado: <span className="text-[#F6B100] font-semibold">Bs {(+cantidadOp * modalConsumo.costoUnitario).toFixed(2)}</span>
+            Costo estimado: <span className="text-theme-accent font-semibold">Bs {(+cantidadOp * modalConsumo.costoUnitario).toFixed(2)}</span>
           </p>
         )}
         <button onClick={() => mutConsumo.mutate({ insumoId: modalConsumo._id, cantidad: +cantidadOp, descripcion: descConsumo })} disabled={mutConsumo.isPending || !cantidadOp} className="w-full bg-red-500 text-white font-bold rounded-xl py-3 mt-4 hover:bg-red-600 disabled:opacity-50">

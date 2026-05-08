@@ -1,4 +1,4 @@
-﻿import React, { useRef } from "react";
+import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { FaCheck } from "react-icons/fa6";
 
@@ -115,25 +115,28 @@ const Invoice = ({ orderInfo, setShowInvoice }) => {
           {/* Payment Details */}
 
           <div className="mb-2 mt-2 text-xs">
-            {orderInfo.paymentMethod === "Cash" ? (
-              <p>
-                <strong>Método de Pago:</strong> {orderInfo.paymentMethod === "Cash" ? "Efectivo" : orderInfo.paymentMethod}
-              </p>
-            ) : (
-              <>
-                <p>
-                  <strong>Método de Pago:</strong> {orderInfo.paymentMethod === "Cash" ? "Efectivo" : orderInfo.paymentMethod}
-                </p>
-                <p>
-                  <strong>ID de Pedido Razorpay:</strong>{" "}
-                  {orderInfo.paymentData?.razorpay_order_id}
-                </p>
-                <p>
-                  <strong>ID de Pago Razorpay:</strong>{" "}
-                  {orderInfo.paymentData?.razorpay_payment_id}
-                </p>
-              </>
-            )}
+            <p>
+              <strong>Método de Pago:</strong>{" "}
+              {orderInfo.paymentMethod === "Cash"
+                ? "Efectivo"
+                : orderInfo.paymentMethod === "Binance"
+                ? "Binance Pay"
+                : orderInfo.paymentMethod}
+            </p>
+            {orderInfo.paymentMethod === "Binance" &&
+              orderInfo.paymentData?.binance_merchant_trade_no && (
+                <>
+                  <p>
+                    <strong>ID Binance Pay:</strong>{" "}
+                    {orderInfo.paymentData.binance_merchant_trade_no}
+                  </p>
+                  <p>
+                    <strong>Monto:</strong>{" "}
+                    {orderInfo.paymentData.binance_amount}{" "}
+                    {orderInfo.paymentData.binance_currency}
+                  </p>
+                </>
+              )}
           </div>
         </div>
 

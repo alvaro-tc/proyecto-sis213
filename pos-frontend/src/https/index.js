@@ -33,10 +33,10 @@ export const deleteDish = (dishId) => axiosWrapper.delete(`/api/dish/${dishId}`)
 export const getMetrics = () => axiosWrapper.get("/api/metric");
 
 // Payment Endpoints
-export const createOrderRazorpay = (data) =>
-  axiosWrapper.post("/api/payment/create-order", data);
-export const verifyPaymentRazorpay = (data) =>
-  axiosWrapper.post("/api/payment//verify-payment", data);
+export const createBinancePayOrder = (data) =>
+  axiosWrapper.post("/api/payment/binance/create-order", data);
+export const queryBinancePayOrder = (data) =>
+  axiosWrapper.post("/api/payment/binance/query", data);
 
 // Insumo Endpoints
 export const addInsumo = (data) => axiosWrapper.post("/api/insumo/", data);

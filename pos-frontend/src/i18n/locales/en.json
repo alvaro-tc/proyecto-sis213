@@ -1,0 +1,50 @@
+{
+  "app": {
+    "name": "Cafeteria 5",
+    "guest": "Guest"
+  },
+  "nav": {
+    "home": "Home",
+    "orders": "Orders",
+    "tables": "Tables",
+    "supplies": "Supplies",
+    "menu": "Menu",
+    "dashboard": "Dashboard"
+  },
+  "auth": {
+    "loginTitle": "Sign In",
+    "registerTitle": "Employee Registration",
+    "email": "Employee Email",
+    "password": "Password",
+    "name": "Employee Name",
+    "phone": "Phone",
+    "role": "Choose your role",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "login": "Sign in",
+    "loginPending": "Signing in…",
+    "register": "Sign up",
+    "registerPending": "Registering…",
+    "logout": "Sign out",
+    "sessionExpired": "Your session expired. Please sign in again."
+  },
+  "landing": {
+    "tagline": "POS system for coffee shops",
+    "hero1": "Your café,",
+    "hero2": "fully under control",
+    "subtitle": "Orders, tables, supplies and metrics in a single screen.",
+    "ctaStart": "Get started",
+    "ctaOpen": "Open dashboard",
+    "ctaFeatures": "See features",
+    "ctaLogin": "Sign in",
+    "featuresTitle": "Everything you need to operate",
+    "featuresSubtitle": "Four integrated modules, no install, ready to use.",
+    "ctaFinal": "Ready to start?"
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "An error occurred",
+    "noResults": "No results",
+    "retry": "Retry"
+  }
+}

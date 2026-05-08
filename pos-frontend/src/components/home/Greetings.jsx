@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 const Greetings = () => {
@@ -9,6 +9,13 @@ const Greetings = () => {
     const timer = setInterval(() => setDateTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const greeting = (() => {
+    const h = dateTime.getHours();
+    if (h < 12) return "Buenos días";
+    if (h < 19) return "Buenas tardes";
+    return "Buenas noches";
+  })();
 
   const formatDate = (date) => {
     const months = [
@@ -27,7 +34,7 @@ const Greetings = () => {
     <div className="flex justify-between items-center px-8 mt-5">
       <div>
         <h1 className="text-theme-text text-2xl font-semibold tracking-wide">
-          Buenos días, {userData.name || "USUARIO DE PRUEBA"}
+          {greeting}, {userData.name || "Invitado"}
         </h1>
         <p className="text-theme-muted text-sm">
           Brinde el mejor servicio a sus clientes 😀

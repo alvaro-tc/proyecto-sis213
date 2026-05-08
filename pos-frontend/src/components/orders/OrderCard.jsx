@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { FaCheckDouble, FaLongArrowAltRight } from "react-icons/fa";
 import { FaCircle } from "react-icons/fa";
 import { formatDateAndTime, getAvatarName } from "../../utils/index";
@@ -12,8 +12,9 @@ const OrderCard = ({ key, order }) => {
   const statusMutation = useMutation({
     mutationFn: (reqData) => updateOrderStatus(reqData),
     onSuccess: () => {
-      enqueueSnackbar("Pedido entregado a mesa", { variant: "success" });
+      enqueueSnackbar("Pedido entregado y mesa liberada", { variant: "success" });
       queryClient.invalidateQueries(["orders"]);
+      queryClient.invalidateQueries(["tables"]);
     },
     onError: () => {
       enqueueSnackbar("Error al actualizar la orden", { variant: "error" });
@@ -29,7 +30,7 @@ const OrderCard = ({ key, order }) => {
       {/* Encabezado: Info de Cliente y Estado */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#f6b100] text-gray-900 font-bold text-lg shrink-0">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-theme-accent text-gray-900 font-bold text-lg shrink-0">
             {getAvatarName(order.customerDetails.name)}
           </div>
           <div className="flex flex-col items-start min-w-0">
@@ -71,7 +72,7 @@ const OrderCard = ({ key, order }) => {
       {/* Footer Total */}
       <div className="flex items-end justify-between pt-1">
         <h1 className="text-theme-muted text-sm font-semibold">Total abonar:</h1>
-        <p className="text-[#f6b100] text-2xl font-black">Bs {order.bills.totalWithTax.toFixed(2)}</p>
+        <p className="text-theme-accent text-2xl font-black">Bs {order.bills.totalWithTax.toFixed(2)}</p>
       </div>
 
       {order.orderStatus === "Ready" && (

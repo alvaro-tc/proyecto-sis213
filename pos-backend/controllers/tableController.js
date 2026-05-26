@@ -6,7 +6,7 @@ const addTable = async (req, res, next) => {
   try {
     const { tableNo, seats, bgColor } = req.body;
     if (!tableNo) {
-      const error = createHttpError(400, "Please provide table No!");
+      const error = create1HttpError(400, "Please provide table No!");
       return next(error);
     }
     const isTablePresent = await Table.findOne({ tableNo });

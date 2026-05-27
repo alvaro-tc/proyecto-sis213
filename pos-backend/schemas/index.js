@@ -55,12 +55,12 @@ const dishSchema = z.object({
 
 const orderSchema = z.object({
   customerDetails: z.object({
-    name: z.string().min(1),
-    phone: z.string().min(1),
-    guests: z.number().int().nonnegative(),
+    name: z.string().optional().default(""),
+    phone: z.string().optional().default(""),
+    guests: z.number().int().nonnegative().optional().default(1),
   }),
   orderStatus: z
-    .enum(["In Progress", "Preparing", "Ready", "Completed", "Cancelled"])
+    .enum(["Pending Payment", "In Progress", "Preparing", "Ready", "Completed", "Cancelled"])
     .optional(),
   bills: z.object({
     total: z.number().nonnegative(),
@@ -77,7 +77,7 @@ const orderSchema = z.object({
 });
 
 const orderUpdateSchema = z.object({
-  orderStatus: z.enum(["In Progress", "Preparing", "Ready", "Completed", "Cancelled"]),
+  orderStatus: z.enum(["Pending Payment", "In Progress", "Preparing", "Ready", "Completed", "Cancelled"]),
 });
 
 const insumoSchema = z.object({

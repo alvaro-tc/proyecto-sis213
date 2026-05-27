@@ -1,0 +1,23 @@
+<div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+  <div class="rounded-lg border border-stone-800 bg-stone-900 p-4">
+    <div class="text-xs text-stone-400 uppercase tracking-wide">Activos</div>
+    <div class="text-3xl font-semibold mt-1">{{ kpis.active }}</div>
+    <div class="text-xs text-stone-500 mt-1">creating / pending</div>
+  </div>
+  <div class="rounded-lg border border-stone-800 bg-stone-900 p-4">
+    <div class="text-xs text-stone-400 uppercase tracking-wide">Pagados hoy</div>
+    <div class="text-3xl font-semibold mt-1 text-green-400">{{ kpis.paid_today }}</div>
+  </div>
+  <div class="rounded-lg border border-stone-800 bg-stone-900 p-4">
+    <div class="text-xs text-stone-400 uppercase tracking-wide">Expirados hoy</div>
+    <div class="text-3xl font-semibold mt-1 text-stone-300">{{ kpis.expired_today }}</div>
+  </div>
+  <div class="rounded-lg border border-stone-800 bg-stone-900 p-4">
+    <div class="text-xs text-stone-400 uppercase tracking-wide">Fallidos hoy</div>
+    <div class="text-3xl font-semibold mt-1 text-red-400">{{ kpis.failed_today }}</div>
+  </div>
+  <div class="rounded-lg border border-stone-800 bg-stone-900 p-4">
+    <div class="text-xs text-stone-400 uppercase tracking-wide">Total hoy</div>
+    <div class="text-3xl font-semibold mt-1">{{ kpis.total_today }}</div>
+  </div>
+</div>

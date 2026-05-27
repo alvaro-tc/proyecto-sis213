@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { getTotalPrice } from "../../redux/slices/cartSlice";
 import {
   addOrder,
-  createBinancePayOrder,
+  createYapePayment,
+  sendYapeQrToWhatsApp,
   updateTable,
 } from "../../https/index";
 import { enqueueSnackbar } from "notistack";
@@ -12,7 +13,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { removeAllItems } from "../../redux/slices/cartSlice";
 import { removeCustomer } from "../../redux/slices/customerSlice";
 import Invoice from "../invoice/Invoice";
-import BinancePayModal from "./BinancePayModal";
+import YapePayModal from "./YapePayModal";
 
 const Bill = () => {
   const dispatch = useDispatch();
@@ -28,7 +29,7 @@ const Bill = () => {
   const [paymentMethod, setPaymentMethod] = useState();
   const [showInvoice, setShowInvoice] = useState(false);
   const [orderInfo, setOrderInfo] = useState();
-  const [binanceOrder, setBinanceOrder] = useState(null);
+  const [yapePayment, setYapePayment] = useState(null);
 
   const buildOrderData = (extraPaymentData = {}) => ({
     customerDetails: {
@@ -43,13 +44,14 @@ const Bill = () => {
       totalWithTax: totalPriceWithTax,
     },
     items: cartData,
-    table: customerData.table.tableId,
+    table: customerData.table?.tableId || null,
+    orderType: customerData.orderType || "dine-in",
     paymentMethod: paymentMethod,
     ...extraPaymentData,
   });
 
   const handlePlaceOrder = async () => {
-    if (!customerData.table?.tableId) {
+    if (customerData.orderType !== "takeaway" && !customerData.table?.tableId) {
       enqueueSnackbar("Selecciona una mesa antes de enviar el pedido.", {
         variant: "warning",
       });
@@ -62,16 +64,33 @@ const Bill = () => {
       return;
     }
 
-    if (paymentMethod === "Binance") {
+    if (paymentMethod === "Yape") {
       try {
-        const { data } = await createBinancePayOrder({
-          amount: totalPriceWithTax.toFixed(2),
-          description: `Pedido mesa ${customerData.table?.tableNo || ""}`,
+        const { data } = await createYapePayment({
+          amount: Number(totalPriceWithTax.toFixed(2)),
+          description: `Mesa ${customerData.table?.tableNo || "T"}`,
+          expires_in: 600,
         });
-        setBinanceOrder(data.order);
+        setYapePayment(data.payment);
+
+        // Enviar QR al WhatsApp del cliente antes de confirmar el pedido
+        if (customerData.customerPhone && data.payment?.payment_id) {
+          sendYapeQrToWhatsApp(data.payment.payment_id, {
+            phone: customerData.customerPhone,
+            customerName: customerData.customerName || undefined,
+          })
+            .then(() => {
+              enqueueSnackbar("QR de Yape enviado a tu WhatsApp", { variant: "info" });
+            })
+            .catch(() => {
+              enqueueSnackbar("QR listo, pero no se pudo enviar por WhatsApp", {
+                variant: "warning",
+              });
+            });
+        }
       } catch (error) {
         console.log(error);
-        enqueueSnackbar("No se pudo generar el QR de Binance Pay", {
+        enqueueSnackbar("No se pudo generar el QR de Yape", {
           variant: "error",
         });
       }
@@ -87,13 +106,16 @@ const Bill = () => {
       const { data } = resData.data;
       setOrderInfo(data);
 
-      const tableData = {
-        status: "Booked",
-        orderId: data._id,
-        tableId: data.table,
-      };
-
-      tableUpdateMutation.mutate(tableData);
+      if (data.table) {
+        const tableData = {
+          status: "Booked",
+          orderId: data._id,
+          tableId: data.table,
+        };
+        tableUpdateMutation.mutate(tableData);
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["orders"] });
+      }
 
       enqueueSnackbar("¡Pedido enviado a cocina!", { variant: "success" });
 
@@ -158,17 +180,17 @@ const Bill = () => {
           Efectivo
         </button>
         <button
-          onClick={() => setPaymentMethod(paymentMethod === "Binance" ? undefined : "Binance")}
+          onClick={() => setPaymentMethod(paymentMethod === "Yape" ? undefined : "Yape")}
           className={`px-3 sm:px-4 py-2.5 w-full rounded-lg font-semibold text-sm border flex items-center justify-center gap-2 transition-colors ${
-            paymentMethod === "Binance"
+            paymentMethod === "Yape"
               ? "bg-theme-brand text-theme-brand-fg border-theme-brand"
               : "bg-theme-base text-theme-muted border-theme-border hover:border-theme-brand/40"
           }`}
         >
-          <span className="grid h-5 w-5 place-items-center rounded bg-yellow-400 text-black text-xs font-bold">
-            B
+          <span className="grid h-5 w-5 place-items-center rounded bg-violet-600 text-white text-xs font-bold">
+            Y
           </span>
-          Binance
+          Yape
         </button>
       </div>
 
@@ -190,23 +212,23 @@ const Bill = () => {
         <Invoice orderInfo={orderInfo} setShowInvoice={setShowInvoice} />
       )}
 
-      {binanceOrder && (
-        <BinancePayModal
-          binanceOrder={binanceOrder}
-          totalBs={totalPriceWithTax}
-          onClose={() => setBinanceOrder(null)}
-          onPaid={(order) => {
-            enqueueSnackbar("¡Pago Binance recibido!", { variant: "success" });
+      {yapePayment && (
+        <YapePayModal
+          yapePayment={yapePayment}
+          onClose={() => setYapePayment(null)}
+          onPaid={(p) => {
+            enqueueSnackbar("¡Pago Yape recibido!", { variant: "success" });
             const orderData = buildOrderData({
+              paymentStatus: "paid",
               paymentData: {
-                binance_merchant_trade_no: order.merchantTradeNo,
-                binance_prepay_id: order.prepayId,
-                binance_amount: order.orderAmount,
-                binance_currency: order.currency,
+                yape_payment_id: p.payment_id,
+                yape_code: p.code,
+                yape_amount: p.amount,
+                yape_paid_at: p.paid_at,
               },
             });
-            setBinanceOrder(null);
-            setTimeout(() => orderMutation.mutate(orderData), 800);
+            setYapePayment(null);
+            setTimeout(() => orderMutation.mutate(orderData), 600);
           }}
         />
       )}

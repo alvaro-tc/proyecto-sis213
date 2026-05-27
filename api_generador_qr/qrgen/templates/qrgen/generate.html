@@ -1,0 +1,35 @@
+{% extends "qrgen/base.html" %}
+{% block title %}Generar QR{% endblock %}
+{% block content %}
+<div class="max-w-lg mx-auto">
+  <h1 class="text-2xl font-semibold mb-2">Generar QR</h1>
+  <p class="text-stone-400 text-sm mb-6">El orquestador intenta primero el banco prioritario. Si falla, hace failover automatico al siguiente.</p>
+
+  {% if error %}<div class="mb-4 rounded bg-red-900/30 border border-red-800 px-4 py-2 text-red-200 text-sm">{{ error }}</div>{% endif %}
+
+  <form method="post" class="space-y-4 rounded-lg border border-stone-800 bg-stone-900 p-6">
+    {% csrf_token %}
+    <div>
+      <label class="block text-sm text-stone-300 mb-1">Monto (Bs)</label>
+      <input name="amount" type="number" step="0.01" min="0.01" required autofocus
+             class="w-full bg-stone-950 border border-stone-700 rounded-md px-3 py-2 text-lg font-semibold focus:border-amber-500 outline-none"
+             placeholder="50.00" />
+    </div>
+    <div>
+      <label class="block text-sm text-stone-300 mb-1">Descripcion <span class="text-stone-500">(opcional)</span></label>
+      <input name="description" type="text" maxlength="80"
+             class="w-full bg-stone-950 border border-stone-700 rounded-md px-3 py-2 focus:border-amber-500 outline-none"
+             placeholder="Mesa 4, pedido #123, ..." />
+    </div>
+    <div>
+      <label class="block text-sm text-stone-300 mb-1">Expira en (segundos)</label>
+      <input name="expires_in" type="number" min="30" max="3600" value="{{ default_ttl }}"
+             class="w-32 bg-stone-950 border border-stone-700 rounded-md px-3 py-2 focus:border-amber-500 outline-none" />
+      <span class="text-xs text-stone-500 ml-2">por defecto 15 min</span>
+    </div>
+    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-stone-900 font-semibold py-2.5 rounded-md">
+      Generar QR
+    </button>
+  </form>
+</div>
+{% endblock %}

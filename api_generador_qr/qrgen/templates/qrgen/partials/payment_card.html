@@ -1,0 +1,126 @@
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div class="rounded-xl border border-stone-800 bg-stone-900 p-6 flex flex-col items-center text-center">
+    {% if payment.qr_payload %}
+      <img src="{% url 'qrgen:qr_image' payment.id %}?v={{ payment.status }}"
+           alt="QR" class="w-72 h-72 bg-white rounded-md p-2" />
+      <div class="mt-3 text-sm text-stone-400">Escanea con la app del banco</div>
+    {% elif payment.status == "creating" %}
+      <div class="w-72 h-72 grid place-items-center bg-stone-950 rounded-md border border-dashed border-stone-700">
+        <div class="text-center">
+          <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-amber-500 mx-auto mb-3"></div>
+          <div class="text-sm text-stone-400">Generando QR...</div>
+          {% if payment.estimated_seconds %}<div class="text-xs text-stone-500 mt-1">~{{ payment.estimated_seconds }}s</div>{% endif %}
+        </div>
+      </div>
+    {% else %}
+      <div class="w-72 h-72 grid place-items-center bg-stone-950 rounded-md border border-stone-700 text-stone-500 text-sm">
+        Sin QR disponible
+      </div>
+    {% endif %}
+
+    <div class="mt-4">
+      <span class="pill pill-{{ payment.status }}">{{ payment.get_status_display }}</span>
+    </div>
+    {% if payment.status == "creating" or payment.status == "pending" %}
+      <button class="mt-4 text-xs text-red-400 hover:text-red-300 underline"
+              hx-post="{% url 'qrgen:api_cancel' payment.id %}"
+              hx-target="#payment-card" hx-swap="none"
+              hx-confirm="¿Cancelar este QR?">
+        Cancelar QR
+      </button>
+    {% endif %}
+  </div>
+
+  <div class="rounded-xl border border-stone-800 bg-stone-900 p-6 space-y-4 text-sm">
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <div class="text-xs text-stone-400 uppercase">Monto pedido</div>
+        <div class="text-2xl font-semibold">{{ payment.requested_amount }} Bs</div>
+      </div>
+      <div>
+        <div class="text-xs text-stone-400 uppercase">A pagar</div>
+        <div class="text-2xl font-semibold text-amber-300">{% if payment.amount_to_pay %}{{ payment.amount_to_pay }} Bs{% else %}—{% endif %}</div>
+        {% if payment.amount_to_pay and payment.amount_to_pay != payment.requested_amount %}
+          <div class="text-[10px] text-stone-500">+decimales como ID</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <hr class="border-stone-800" />
+
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <div class="text-xs text-stone-400 uppercase">Banco</div>
+        <div class="font-medium">{{ payment.provider|upper|default:"—" }}</div>
+      </div>
+      <div>
+        <div class="text-xs text-stone-400 uppercase">Metodo de validacion</div>
+        <div class="font-medium">{{ payment.validation_method|default:"—" }}</div>
+        <div class="text-[10px] text-stone-500">
+          {% if payment.validation_method == "token_concept" %}Notif debe contener el codigo<br>{% endif %}
+          {% if payment.validation_method == "amount_decimals" %}Notif debe traer el monto exacto{% endif %}
+        </div>
+      </div>
+      <div>
+        <div class="text-xs text-stone-400 uppercase">Codigo / motivo</div>
+        <div class="font-mono text-amber-300">{{ payment.code|default:"—" }}</div>
+      </div>
+      <div>
+        <div class="text-xs text-stone-400 uppercase">ID del banco</div>
+        <div class="font-mono text-xs">{{ payment.provider_payment_id|default:"—" }}</div>
+      </div>
+      <div>
+        <div class="text-xs text-stone-400 uppercase">Creado</div>
+        <div>{{ payment.created_at|date:"d/m/Y H:i:s" }}</div>
+      </div>
+      <div>
+        <div class="text-xs text-stone-400 uppercase">Expira</div>
+        <div>{% if payment.expires_at %}{{ payment.expires_at|date:"d/m/Y H:i:s" }}{% else %}—{% endif %}</div>
+      </div>
+      {% if payment.paid_at %}
+      <div>
+        <div class="text-xs text-stone-400 uppercase">Pagado</div>
+        <div class="text-green-400">{{ payment.paid_at|date:"d/m/Y H:i:s" }}</div>
+      </div>
+      {% endif %}
+      {% if payment.description %}
+      <div class="col-span-2">
+        <div class="text-xs text-stone-400 uppercase">Descripcion</div>
+        <div>{{ payment.description }}</div>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if payment.error %}
+    <div class="rounded bg-red-900/30 border border-red-800 px-3 py-2 text-red-200 text-xs">
+      <div class="font-semibold mb-1">Error</div>
+      {{ payment.error }}
+    </div>
+    {% endif %}
+
+    {% if payment.attempts %}
+    <details class="text-xs">
+      <summary class="cursor-pointer text-stone-400 hover:text-stone-200">Intentos ({{ payment.attempts|length }})</summary>
+      <ol class="mt-2 space-y-1">
+      {% for a in payment.attempts %}
+        <li class="flex gap-2">
+          <span class="dot {% if a.ok %}bg-green-400{% else %}bg-red-400{% endif %} mt-1.5"></span>
+          <div>
+            <span class="font-medium">{{ a.provider }}</span>
+            <span class="text-stone-500">{{ a.at }}</span>
+            <div class="text-stone-400">{{ a.detail }}</div>
+          </div>
+        </li>
+      {% endfor %}
+      </ol>
+    </details>
+    {% endif %}
+
+    {% if payment.qr_payload %}
+    <details class="text-xs">
+      <summary class="cursor-pointer text-stone-400 hover:text-stone-200">Payload del QR</summary>
+      <pre class="mt-2 break-all whitespace-pre-wrap font-mono text-[10px] text-stone-400 bg-stone-950 p-2 rounded">{{ payment.qr_payload }}</pre>
+    </details>
+    {% endif %}
+  </div>
+</div>

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getMetrics } from "../../https";
+import LiveOrders from "../dashboard-bento/organisms/LiveOrders";
 import {
   FaArrowTrendUp,
   FaArrowTrendDown,
@@ -54,47 +55,6 @@ const KpiCard = ({ icon: Icon, title, value, sub, accent, trend, onClick }) => (
   </button>
 );
 
-const Sparkline = ({ data, accent = "var(--color-accent)" }) => {
-  if (!data?.length) return null;
-  const w = 600,
-    h = 140,
-    pad = 24;
-  const max = Math.max(...data.map((d) => d.revenue), 1);
-  const stepX = (w - pad * 2) / Math.max(data.length - 1, 1);
-  const points = data.map((d, i) => {
-    const x = pad + i * stepX;
-    const y = h - pad - (d.revenue / max) * (h - pad * 2);
-    return [x, y];
-  });
-  const path = points.map((p, i) => (i === 0 ? `M${p[0]},${p[1]}` : `L${p[0]},${p[1]}`)).join(" ");
-  const area = `${path} L${points[points.length - 1][0]},${h - pad} L${points[0][0]},${h - pad} Z`;
-  return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-40">
-      <defs>
-        <linearGradient id="spark" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor={accent} stopOpacity="0.4" />
-          <stop offset="100%" stopColor={accent} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={area} fill="url(#spark)" />
-      <path d={path} fill="none" stroke={accent} strokeWidth="2.5" strokeLinejoin="round" />
-      {points.map((p, i) => (
-        <g key={i}>
-          <circle cx={p[0]} cy={p[1]} r="3" fill={accent} />
-          <text
-            x={p[0]}
-            y={h - 6}
-            textAnchor="middle"
-            className="fill-theme-muted"
-            style={{ fontSize: 10 }}
-          >
-            {data[i].date.slice(5)}
-          </text>
-        </g>
-      ))}
-    </svg>
-  );
-};
 
 const HourlyBars = ({ hourly, accent = "var(--color-brand)" }) => {
   const max = Math.max(...hourly.map((h) => h.orders), 1);
@@ -316,18 +276,8 @@ const Metrics = () => {
 
       {/* Sección 2: Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-theme-card border border-theme-border rounded-xl p-5 shadow-sm">
-          <div className="flex justify-between items-start mb-2">
-            <div>
-              <h3 className="font-semibold text-theme-text">Ingresos · últimos 7 días</h3>
-              <p className="text-xs text-theme-muted">Tendencia diaria de ventas</p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-theme-muted">Total semana</p>
-              <p className="text-lg font-bold text-theme-text">{fmtBs(m.weekRevenue)}</p>
-            </div>
-          </div>
-          <Sparkline data={m.dailySeries || []} accent={ACC.revenue} />
+        <div className="lg:col-span-2 flex flex-col min-h-[360px] lg:min-h-full">
+          <LiveOrders limit={6} />
         </div>
 
         <div className="bg-theme-card border border-theme-border rounded-xl p-5 shadow-sm">

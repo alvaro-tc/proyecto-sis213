@@ -96,7 +96,7 @@ const BaristaOrderCard = ({ order, refetch }) => {
       <div className={`${headerColor} p-4 flex justify-between items-center border-b border-theme-border transition-colors`}>
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-theme-text font-black text-2xl">Mesa {order.table?.tableNo || "?"}</h1>
+            <h1 className="text-theme-text font-black text-2xl">{order.orderType === "takeaway" ? "Para Llevar" : `Mesa ${order.table?.tableNo || "?"}`}</h1>
             {isHistory && <span className="bg-[#142636] text-blue-400 text-[10px] px-2 py-0.5 rounded-full font-bold">HISTORIAL</span>}
           </div>
           <p className="text-theme-muted text-sm truncate max-w-[120px]" title={order.customerDetails?.name}>

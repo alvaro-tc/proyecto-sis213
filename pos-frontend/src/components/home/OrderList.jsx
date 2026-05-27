@@ -18,8 +18,9 @@ const OrderList = ({ order }) => {
         </div>
 
         <h1 className="text-theme-accent font-semibold border border-theme-accent rounded-lg p-1">
-          Mesa <FaLongArrowAltRight className="text-theme-muted ml-2 inline" />{" "}
-          {order.table.tableNo}
+          {order.orderType === "takeaway" ? "Para Llevar" : (
+            <>Mesa <FaLongArrowAltRight className="text-theme-muted ml-2 inline" /> {order.table?.tableNo || "?"}</>
+          )}
         </h1>
 
         <div className="flex flex-col items-end gap-2">

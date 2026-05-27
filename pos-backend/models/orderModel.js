@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
     customerDetails: {
-        name: { type: String, required: true },
-        phone: { type: String, required: true},
-        guests: { type: Number, required: true },
+        name: { type: String, default: "Cliente" },
+        phone: { type: String, default: "" },
+        guests: { type: Number, default: 1 },
     },
     orderStatus: {
         type: String,
-        enum: ["In Progress", "Preparing", "Ready", "Completed", "Cancelled"],
+        enum: ["Pending Payment", "In Progress", "Preparing", "Ready", "Completed", "Cancelled"],
         default: "In Progress",
         required: true
     },
@@ -35,11 +35,15 @@ const orderSchema = new mongoose.Schema({
         enum: ["pending", "paid", "failed"],
         default: "pending"
     },
+    // paymentData es flexible — guarda los IDs/codigos que devuelve el
+    // orquestador QR (api_generador_qr) sin acoplarse a un banco especifico.
+    // Campos canonicos:
+    //   qr_payment_id, qr_code, qr_provider, qr_amount_to_pay, qr_amount_paid,
+    //   qr_paid_at, qr_status, qr_failover_count
+    // Se conservan los alias yape_* para compatibilidad con codigo antiguo.
     paymentData: {
-        binance_merchant_trade_no: String,
-        binance_prepay_id: String,
-        binance_amount: Number,
-        binance_currency: String
+        type: mongoose.Schema.Types.Mixed,
+        default: () => ({}),
     }
 }, { timestamps : true } );
 

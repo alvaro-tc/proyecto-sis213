@@ -1,0 +1,52 @@
+{
+  "msc_package": "bo.com.bmsc.bancamovil",
+  "msc_channel": "fcm_fallback_notification_channel",
+  "msc_qr_save_dir": "/sdcard/Pictures/BancaMovil",
+
+  "screen": { "width": 720, "height": 1650 },
+
+  "login": {
+    "password_input": [314, 852],
+    "acceder_button":  [360, 1312]
+  },
+
+  "flow": {
+    "qr_home_tile":         [360, 620],
+    "solicitud_cobro_qr":   [360, 464],
+    "cuenta_destino_row":   [360, 570],
+    "monto_tile":           [360, 711],
+    "monto_dialog_aceptar": [530, 460],
+    "monto_dialog_cancelar":[190, 460],
+    "concepto_input":       [360, 894],
+    "confirmar_button":     [360, 1039],
+    "scroll_from":          [360, 1300],
+    "scroll_to":            [360, 400],
+    "guardar_qr_button":    [360, 1048]
+  },
+
+  "wifi_reconnect_timeout_s": 30.0,
+
+  "estimate_overhead_s": 80,
+
+  "waits": {
+    "after_wifi_disable_s":  2.0,
+    "after_wifi_connect_s":  1.5,
+    "after_launch_s":        9.0,
+    "after_password_tap_s":  1.2,
+    "after_password_text_s": 1.2,
+    "after_back_keyboard_s": 1.0,
+    "after_acceder_s":       8.0,
+    "after_qr_home_s":       5.0,
+    "after_solicitud_s":     9.0,
+    "after_cuenta_s":        7.0,
+    "after_monto_tap_s":     2.5,
+    "after_monto_text_s":    1.5,
+    "after_monto_aceptar_s": 2.5,
+    "after_concepto_tap_s":  1.5,
+    "after_concepto_text_s": 1.5,
+    "after_confirmar_s":     9.0,
+    "after_scroll_s":        1.5,
+    "after_guardar_tap_s":   3.0,
+    "after_guardar_s":       5.0
+  }
+}

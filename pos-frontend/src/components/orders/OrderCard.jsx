@@ -37,7 +37,7 @@ const OrderCard = ({ key, order }) => {
             <h1 className="text-theme-text text-base md:text-lg font-bold truncate w-full">
               {order.customerDetails.name}
             </h1>
-            <p className="text-theme-muted text-xs font-medium">#{Math.floor(new Date(order.orderDate).getTime()).toString().slice(-6)} / Para servir</p>
+            <p className="text-theme-muted text-xs font-medium">#{Math.floor(new Date(order.orderDate).getTime()).toString().slice(-6)} / {order.orderType === "takeaway" ? "Para llevar" : "Para servir"}</p>
           </div>
         </div>
         <div className="shrink-0 mt-1">
@@ -54,8 +54,8 @@ const OrderCard = ({ key, order }) => {
       {/* Recuadro de Info y Tiempos */}
       <div className="bg-theme-base rounded-xl p-3 flex flex-col gap-2 mt-1">
         <div className="flex justify-between items-center">
-          <p className="text-theme-muted text-xs flex items-center"><FaLongArrowAltRight className="text-yellow-500 mr-2" /> Mesa</p>
-          <p className="font-bold text-theme-text text-sm">{order.table.tableNo}</p>
+          <p className="text-theme-muted text-xs flex items-center"><FaLongArrowAltRight className="text-yellow-500 mr-2" /> {order.orderType === "takeaway" ? "Pedido" : "Mesa"}</p>
+          <p className="font-bold text-theme-text text-sm">{order.orderType === "takeaway" ? "Para Llevar" : order.table?.tableNo}</p>
         </div>
         <hr className="border-theme-border" />
         <div className="flex justify-between items-center">
@@ -81,7 +81,7 @@ const OrderCard = ({ key, order }) => {
            disabled={statusMutation.isLoading}
            className="w-full mt-2 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-lg transition-colors text-sm shadow-md"
         >
-          {statusMutation.isLoading ? "Procesando..." : "Llevar a Mesa"}
+          {statusMutation.isLoading ? "Procesando..." : (order.orderType === "takeaway" ? "Entregar Pedido" : "Llevar a Mesa")}
         </button>
       )}
     </div>

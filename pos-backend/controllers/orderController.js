@@ -3,7 +3,10 @@ const Order = require("../models/orderModel");
 const Table = require("../models/tableModel");
 const Dish = require("../models/dishModel");
 const Insumo = require("../models/insumoModel");
+const config = require("../config/config");
 const { default: mongoose } = require("mongoose");
+const { notifyOrderStatus, notifyOrderPaid } = require("../services/whatsappService");
+const orchestrator = require("../services/qrOrchestratorService");
 
 const _descontarInsumos = async (items) => {
   for (const item of items) {
@@ -38,13 +41,17 @@ const addOrder = async (req, res, next) => {
 
     // Si quien crea el pedido es un cliente, forzar reglas de seguridad:
     // - asociar el pedido a su userId
-    // - obligar pago por Binance (no efectivo)
+    // - obligar pago por Yape (no efectivo)
     // - bloquear que pueda marcarlo como pagado sin la verificación del backend
     if (req.user && req.user.role && req.user.role.toLowerCase() === "customer") {
       payload.customer = req.user._id;
-      payload.paymentMethod = "Binance";
+      payload.paymentMethod = "Yape";
       payload.paymentStatus = payload.paymentStatus === "paid" ? "paid" : "pending";
       if (!payload.orderType) payload.orderType = "dine-in";
+    }
+
+    if (payload.paymentMethod === "Yape" && payload.paymentStatus !== "paid") {
+      payload.orderStatus = "Pending Payment";
     }
 
     const order = new Order(payload);
@@ -54,6 +61,12 @@ const addOrder = async (req, res, next) => {
     _descontarInsumos(req.body.items || []).catch((err) =>
       console.error("Error al descontar insumos:", err)
     );
+
+    if (order.paymentStatus === "paid") {
+      notifyOrderPaid(order);
+    } else {
+      notifyOrderStatus(order, order.orderStatus || "In Progress");
+    }
 
     res.status(201).json({ success: true, message: "Order created!", data: order });
   } catch (error) {
@@ -66,15 +79,11 @@ const getOrderById = async (req, res, next) => {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      const error = createHttpError(404, "Invalid id!");
-      return next(error);
+      return next(createHttpError(404, "Invalid id!"));
     }
 
     const order = await Order.findById(id);
-    if (!order) {
-      const error = createHttpError(404, "Order not found!");
-      return next(error);
-    }
+    if (!order) return next(createHttpError(404, "Order not found!"));
 
     res.status(200).json({ success: true, data: order });
   } catch (error) {
@@ -97,8 +106,7 @@ const updateOrder = async (req, res, next) => {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      const error = createHttpError(404, "Invalid id!");
-      return next(error);
+      return next(createHttpError(404, "Invalid id!"));
     }
 
     const order = await Order.findByIdAndUpdate(
@@ -107,12 +115,8 @@ const updateOrder = async (req, res, next) => {
       { new: true }
     );
 
-    if (!order) {
-      const error = createHttpError(404, "Order not found!");
-      return next(error);
-    }
+    if (!order) return next(createHttpError(404, "Order not found!"));
 
-    // Liberar la mesa automáticamente cuando el pedido se entrega o cancela.
     if (order.table && (orderStatus === "Completed" || orderStatus === "Cancelled")) {
       await Table.findByIdAndUpdate(order.table, {
         status: "Available",
@@ -120,9 +124,9 @@ const updateOrder = async (req, res, next) => {
       });
     }
 
-    res
-      .status(200)
-      .json({ success: true, message: "Order updated", data: order });
+    notifyOrderStatus(order, orderStatus);
+
+    res.status(200).json({ success: true, message: "Order updated", data: order });
   } catch (error) {
     next(error);
   }
@@ -142,7 +146,7 @@ const getMyOrders = async (req, res, next) => {
 const markOrderPaid = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { merchantTradeNo } = req.body || {};
+    const { yapePaymentId } = req.body || {};
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return next(createHttpError(404, "Invalid id!"));
     }
@@ -159,63 +163,92 @@ const markOrderPaid = async (req, res, next) => {
       return next(createHttpError(403, "Forbidden"));
     }
 
-    // Verificación real contra Binance Pay (igual que queryBinanceOrder)
-    const config = require("../config/config");
-    const crypto = require("crypto");
-    const tradeNo = merchantTradeNo || order.paymentData?.binance_merchant_trade_no;
-    if (!tradeNo) return next(createHttpError(400, "merchantTradeNo requerido"));
+    const paymentId =
+      yapePaymentId ||
+      order.paymentData?.qr_payment_id ||
+      order.paymentData?.yape_payment_id;
+    if (!paymentId) return next(createHttpError(400, "paymentId requerido"));
 
-    let paid = false;
-    if (!config.binancePayApiKey || !config.binancePaySecretKey) {
-      // Mock: marca como pagado luego de 5s del timestamp en el tradeNo
-      const ts = Number(String(tradeNo).slice(2, 15));
-      paid = !Number.isNaN(ts) && Date.now() - ts > 5000;
-    } else {
-      const body = JSON.stringify({ merchantTradeNo: tradeNo });
-      const timestamp = Date.now().toString();
-      const nonce = crypto.randomBytes(16).toString("hex").slice(0, 32);
-      const sigPayload = `${timestamp}\n${nonce}\n${body}\n`;
-      const signature = crypto
-        .createHmac("sha512", config.binancePaySecretKey)
-        .update(sigPayload)
-        .digest("hex")
-        .toUpperCase();
-      const url = `${config.binancePayBaseUrl}/binancepay/openapi/v2/order/query`;
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "BinancePay-Timestamp": timestamp,
-          "BinancePay-Nonce": nonce,
-          "BinancePay-Certificate-SN": config.binancePayApiKey,
-          "BinancePay-Signature": signature,
-        },
-        body,
-      });
-      const data = await response.json();
-      paid = data.status === "SUCCESS" && data.data?.status === "PAID";
+    const { ok, status, payment, raw } = await orchestrator.get(paymentId);
+    if (!ok || !payment) {
+      return next(createHttpError(status || 502, raw?.detail || "Cobro no encontrado"));
     }
 
-    if (!paid) {
-      return res
-        .status(200)
-        .json({ success: false, paid: false, message: "Pago aún no confirmado" });
+    if (payment.status !== "paid") {
+      return res.status(200).json({
+        success: false,
+        paid: false,
+        message: "Pago aun no confirmado",
+        status: payment.status,
+        estimated_seconds: payment.estimated_seconds,
+        provider: payment.provider,
+      });
     }
 
     order.paymentStatus = "paid";
-    order.paymentMethod = order.paymentMethod || "Binance";
+    order.paymentMethod = order.paymentMethod || "Yape";
+    if (order.orderStatus === "Pending Payment") {
+      order.orderStatus = "In Progress";
+    }
     order.paymentData = {
       ...(order.paymentData || {}),
-      binance_merchant_trade_no: tradeNo,
+      qr_payment_id: paymentId,
+      qr_code: payment.code,
+      qr_provider: payment.provider,
+      qr_amount_paid: payment.amount,
+      qr_paid_at: payment.paid_at ? new Date(payment.paid_at) : new Date(),
+      qr_status: "paid",
+      yape_payment_id: paymentId,
+      yape_code: payment.code,
+      yape_amount: payment.amount,
+      yape_paid_at: payment.paid_at ? new Date(payment.paid_at) : new Date(),
     };
     await order.save();
 
-    res
-      .status(200)
-      .json({ success: true, paid: true, message: "Pago confirmado", data: order });
+    notifyOrderPaid(order);
+
+    res.status(200).json({ success: true, paid: true, message: "Pago confirmado", data: order });
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = { addOrder, getOrderById, getOrders, updateOrder, getMyOrders, markOrderPaid };
+const getCustomers = async (req, res, next) => {
+  try {
+    const q = (req.query.q || "").toString().trim();
+    const match = {
+      "customerDetails.name": { $exists: true, $ne: "" },
+    };
+    if (q) {
+      const rx = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+      match.$or = [
+        { "customerDetails.name": rx },
+        { "customerDetails.phone": rx },
+      ];
+    }
+    const customers = await Order.aggregate([
+      { $match: match },
+      { $sort: { orderDate: -1 } },
+      {
+        $group: {
+          _id: {
+            name: { $toLower: "$customerDetails.name" },
+            phone: "$customerDetails.phone",
+          },
+          name: { $first: "$customerDetails.name" },
+          phone: { $first: "$customerDetails.phone" },
+          lastOrder: { $first: "$orderDate" },
+          orders: { $sum: 1 },
+        },
+      },
+      { $sort: { lastOrder: -1 } },
+      { $limit: 30 },
+      { $project: { _id: 0, name: 1, phone: 1, lastOrder: 1, orders: 1 } },
+    ]);
+    res.status(200).json({ success: true, data: customers });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { addOrder, getOrderById, getOrders, updateOrder, getMyOrders, markOrderPaid, getCustomers };

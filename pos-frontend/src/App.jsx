@@ -68,7 +68,7 @@ function Layout() {
         <Route
           path="/home"
           element={
-            <ProtectedRoutes allowedRoles={["admin", "waiter"]}>
+            <ProtectedRoutes allowedRoles={["admin", "waiter", "cajero", "cashier"]}>
               <Home />
             </ProtectedRoutes>
           }
@@ -76,7 +76,7 @@ function Layout() {
         <Route
           path="/orders"
           element={
-            <ProtectedRoutes allowedRoles={["admin", "waiter"]}>
+            <ProtectedRoutes allowedRoles={["admin", "waiter", "cajero", "cashier"]}>
               <Orders />
             </ProtectedRoutes>
           }
@@ -84,7 +84,7 @@ function Layout() {
         <Route
           path="/tables"
           element={
-            <ProtectedRoutes allowedRoles={["admin", "waiter"]}>
+            <ProtectedRoutes allowedRoles={["admin", "waiter", "cajero", "cashier"]}>
               <Tables />
             </ProtectedRoutes>
           }
@@ -92,7 +92,7 @@ function Layout() {
         <Route
           path="/menu"
           element={
-            <ProtectedRoutes allowedRoles={["admin", "waiter"]}>
+            <ProtectedRoutes allowedRoles={["admin", "waiter", "cajero", "cashier"]}>
               <Menu />
             </ProtectedRoutes>
           }
@@ -109,7 +109,7 @@ function Layout() {
         <Route
           path="/insumos"
           element={
-            <ProtectedRoutes allowedRoles={["admin", "waiter"]}>
+            <ProtectedRoutes allowedRoles={["admin", "waiter", "cajero", "cashier"]}>
               <Insumos />
             </ProtectedRoutes>
           }

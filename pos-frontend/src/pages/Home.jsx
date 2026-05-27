@@ -9,10 +9,12 @@ import {
   MdGroups,
   MdInsights,
 } from "react-icons/md";
+import { FaWhatsapp, FaBolt } from "react-icons/fa6";
 
 import BottomNav from "../components/shared/BottomNav";
-import HomeBentoOverview from "../components/dashboard-bento/HomeBentoOverview";
+
 import WaiterOverview from "../components/home/WaiterOverview";
+import CashierPOS from "../components/cashier/CashierPOS";
 
 import Metrics from "../components/dashboard/Metrics";
 import TableList from "../components/dashboard/TableList";
@@ -23,22 +25,27 @@ import Modal from "../components/dashboard/Modal";
 import CategoryModal from "../components/dashboard/CategoryModal";
 import DishModal from "../components/dashboard/DishModal";
 import EmployeeModal from "../components/dashboard/EmployeeModal";
+import WhatsappPanel from "../components/dashboard/WhatsappPanel";
+import GroqPanel from "../components/dashboard/GroqPanel";
 
 import { EmptyState } from "../components/ui";
 
 const ADMIN_TABS = [
   { id: "inicio",     label: "Inicio",     icon: MdSpaceDashboard },
-  { id: "metricas",   label: "Métricas",   icon: MdInsights },
   { id: "mesas",      label: "Mesas",      icon: MdTableBar },
   { id: "categorias", label: "Categorías", icon: MdCategory },
   { id: "productos",  label: "Productos",  icon: MdRestaurantMenu },
   { id: "empleados",  label: "Empleados",  icon: MdGroups },
+  { id: "whatsapp",   label: "WhatsApp",   icon: FaWhatsapp },
+  { id: "groq",       label: "Groq",       icon: FaBolt },
 ];
 
 const Home = () => {
   const location = useLocation();
   const { role } = useSelector((s) => s.user);
-  const isAdmin = role?.toLowerCase() === "admin";
+  const normalizedRole = role?.toLowerCase();
+  const isAdmin = normalizedRole === "admin";
+  const isCajero = normalizedRole === "cajero" || normalizedRole === "cashier";
 
   const tabs = useMemo(
     () => (isAdmin ? ADMIN_TABS : ADMIN_TABS.slice(0, 1)),
@@ -59,6 +66,17 @@ const Home = () => {
     const label = tabs.find((t) => t.id === activeTab)?.label || "Inicio";
     document.title = `POS | ${label}`;
   }, [activeTab, tabs]);
+
+  /* Cashier gets a full-screen POS terminal, no tabs needed */
+  if (isCajero) {
+    return (
+      <section className="bg-theme-base h-[calc(100vh-5rem)] overflow-hidden flex flex-col">
+        <React.Suspense fallback={<div className="p-6 text-theme-muted">Cargando…</div>}>
+          <CashierPOS />
+        </React.Suspense>
+      </section>
+    );
+  }
 
   return (
     <section className="bg-theme-base h-[calc(100vh-5rem)] overflow-hidden flex flex-col">
@@ -86,11 +104,9 @@ const Home = () => {
       <div className="flex-1 overflow-y-auto scrollbar-hide pb-24 md:pb-8">
         {activeTab === "inicio" && (
           <React.Suspense fallback={<div className="p-6 text-theme-muted">Cargando…</div>}>
-            {isAdmin ? <HomeBentoOverview /> : <WaiterOverview />}
+            {isAdmin ? <Metrics /> : <WaiterOverview isCajero={isCajero} />}
           </React.Suspense>
         )}
-
-        {activeTab === "metricas" && isAdmin && <Metrics />}
         {activeTab === "mesas" && isAdmin && (
           <TableList
             onEdit={(t) => setTableModal(t)}
@@ -112,6 +128,8 @@ const Home = () => {
         {activeTab === "empleados" && isAdmin && (
           <EmployeeList onAdd={() => setEmployeeModal(true)} />
         )}
+        {activeTab === "whatsapp" && isAdmin && <WhatsappPanel />}
+        {activeTab === "groq" && isAdmin && <GroqPanel />}
 
         {!tabs.some((t) => t.id === activeTab) && (
           <EmptyState title="Sección no disponible" description="Selecciona una pestaña." />

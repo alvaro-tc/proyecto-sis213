@@ -1,0 +1,18 @@
+{% extends "qrgen/base.html" %}
+{% block title %}QR {{ payment.code }}{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-semibold">QR <span class="font-mono text-amber-300">{{ payment.code|default:"..." }}</span></h1>
+    <div class="text-stone-400 text-sm">{{ payment.id }}</div>
+  </div>
+  <div class="flex gap-2">
+    <a href="{% url 'qrgen:history' %}" class="px-3 py-1.5 rounded-md bg-stone-800 hover:bg-stone-700 text-sm">← Historial</a>
+  </div>
+</div>
+
+<div id="payment-card" hx-get="{% url 'qrgen:partial_payment' payment.id %}"
+     hx-trigger="every 2s" hx-swap="innerHTML">
+  {% include "qrgen/partials/payment_card.html" with payment=payment %}
+</div>
+{% endblock %}

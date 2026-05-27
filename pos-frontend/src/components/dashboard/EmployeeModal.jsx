@@ -108,7 +108,8 @@ const EmployeeModal = ({ setIsEmployeeModalOpen }) => {
                 onChange={handleInputChange}
                 className="w-full bg-theme-base text-theme-text rounded-lg p-3 focus:outline-none"
               >
-                <option value="admin">Administrador / Cajero</option>
+                <option value="admin">Administrador</option>
+                <option value="cajero">Cajero</option>
                 <option value="waiter">Mesero</option>
                 <option value="barista">Barista / Cocina</option>
               </select>

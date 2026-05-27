@@ -1,0 +1,12 @@
+# Django orquestador — in-process (sin httpx, sin FastAPI)
+Django>=5.0,<6.0
+python-dotenv>=1.0.1
+
+# QR rendering (panel web)
+qrcode[pil]>=7.4.2
+
+# QR decoding (leer QR de screenshots ADB)
+pyzbar>=0.1.9
+Pillow>=10.0.0
+opencv-python>=4.9.0
+numpy>=1.26.0

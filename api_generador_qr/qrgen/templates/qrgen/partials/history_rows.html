@@ -1,0 +1,5 @@
+{% for p in payments %}
+  {% include "qrgen/partials/payment_row.html" with p=p %}
+{% empty %}
+  <tr><td colspan="7" class="px-4 py-6 text-center text-stone-500">Sin resultados con los filtros actuales.</td></tr>
+{% endfor %}

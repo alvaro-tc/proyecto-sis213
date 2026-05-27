@@ -83,7 +83,7 @@ const RecentOrders = () => {
                 </td>
                 <td className="p-4">{formatDateAndTime(order.orderDate)}</td>
                 <td className="p-4">{order.items.length} Artículos</td>
-                <td className="p-4">Mesa - {order.table.tableNo}</td>
+                <td className="p-4">{order.orderType === "takeaway" ? "Para Llevar" : `Mesa - ${order.table?.tableNo || "?"}`}</td>
                 <td className="p-4">Bs {order.bills.totalWithTax}</td>
                 <td className="p-4">
                   {order.paymentMethod}

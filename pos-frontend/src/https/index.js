@@ -32,11 +32,20 @@ export const deleteDish = (dishId) => axiosWrapper.delete(`/api/dish/${dishId}`)
 // Metric Endpoints
 export const getMetrics = () => axiosWrapper.get("/api/metric");
 
-// Payment Endpoints
-export const createBinancePayOrder = (data) =>
-  axiosWrapper.post("/api/payment/binance/create-order", data);
-export const queryBinancePayOrder = (data) =>
-  axiosWrapper.post("/api/payment/binance/query", data);
+// Payment Endpoints (orquestador api_generador_qr — MSC + ZAS con failover).
+// Los nombres "Yape" se mantienen por compat historica.
+export const getMscHealth = () =>
+  axiosWrapper.get("/api/payment/qr/health");
+export const getQrHealth = () =>
+  axiosWrapper.get("/api/payment/qr/health");
+export const createYapePayment = (data) =>
+  axiosWrapper.post("/api/payment/qr/create", data);
+export const queryYapePayment = (paymentId) =>
+  axiosWrapper.get(`/api/payment/qr/${paymentId}`);
+export const cancelYapePayment = (paymentId) =>
+  axiosWrapper.post(`/api/payment/qr/${paymentId}/cancel`);
+export const sendYapeQrToWhatsApp = (paymentId, data) =>
+  axiosWrapper.post(`/api/payment/qr/${paymentId}/send-whatsapp`, data);
 
 // Insumo Endpoints
 export const addInsumo = (data) => axiosWrapper.post("/api/insumo/", data);
@@ -53,5 +62,25 @@ export const getOrders = () => axiosWrapper.get("/api/order");
 export const getMyOrders = () => axiosWrapper.get("/api/order/my");
 export const updateOrderStatus = ({ orderId, orderStatus }) =>
   axiosWrapper.put(`/api/order/${orderId}`, { orderStatus });
-export const confirmOrderPayment = ({ orderId, merchantTradeNo }) =>
-  axiosWrapper.post(`/api/order/${orderId}/confirm-payment`, { merchantTradeNo });
+export const confirmOrderPayment = ({ orderId, yapePaymentId }) =>
+  axiosWrapper.post(`/api/order/${orderId}/confirm-payment`, { yapePaymentId });
+export const searchOrderCustomers = (q = "") =>
+  axiosWrapper.get(`/api/order/customers/search`, { params: { q } });
+
+// WhatsApp Endpoints
+export const getWhatsappStatus = () => axiosWrapper.get("/api/whatsapp/status");
+export const getWhatsappQr = () => axiosWrapper.get("/api/whatsapp/qr");
+export const sendWhatsappTest = (data) => axiosWrapper.post("/api/whatsapp/test", data);
+export const whatsappLogout = () => axiosWrapper.post("/api/whatsapp/logout");
+export const whatsappReset = () => axiosWrapper.post("/api/whatsapp/reset");
+export const whatsappSwitchProvider = (provider) => axiosWrapper.post("/api/whatsapp/switch-provider", { provider });
+export const getWhatsappDiag = (secret) => axiosWrapper.get(`/api/whatsapp/diag?secret=${encodeURIComponent(secret)}`);
+
+// Groq Endpoints
+export const getGroqStatus = () => axiosWrapper.get("/api/groq/status");
+export const getGroqPrompt = () => axiosWrapper.get("/api/groq/prompt");
+export const saveGroqPrompt = (data) =>
+  axiosWrapper.put("/api/groq/prompt", typeof data === "string" ? { prompt: data } : data);
+export const resetGroqPrompt = () => axiosWrapper.post("/api/groq/prompt/reset");
+export const chatGroq = (data) => axiosWrapper.post("/api/groq/chat", data);
+export const clearGroqHistory = (data) => axiosWrapper.post("/api/groq/history/clear", data || {});

@@ -1,0 +1,11 @@
+<tr class="border-t border-stone-800 hover:bg-stone-900/60">
+  <td class="px-4 py-2 font-mono text-amber-300">{{ p.code|default:"-" }}</td>
+  <td class="px-4 py-2">{{ p.provider|default:"-"|upper }}</td>
+  <td class="px-4 py-2 text-right">{{ p.requested_amount }} Bs</td>
+  <td class="px-4 py-2 text-right">{% if p.amount_to_pay %}{{ p.amount_to_pay }} Bs{% else %}-{% endif %}</td>
+  <td class="px-4 py-2"><span class="pill pill-{{ p.status }}">{{ p.get_status_display }}</span></td>
+  <td class="px-4 py-2 text-stone-400 text-xs">{{ p.created_at|date:"d/m H:i:s" }}</td>
+  <td class="px-4 py-2 text-right">
+    <a href="{% url 'qrgen:detail' p.id %}" class="text-amber-400 hover:underline text-xs">Ver</a>
+  </td>
+</tr>

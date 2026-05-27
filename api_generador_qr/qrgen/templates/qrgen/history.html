@@ -1,0 +1,66 @@
+{% extends "qrgen/base.html" %}
+{% block title %}Historial{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-semibold">Historial</h1>
+  <a href="{% url 'qrgen:generate' %}" class="px-4 py-2 rounded-md bg-amber-500 hover:bg-amber-400 text-stone-900 font-medium text-sm">+ Nuevo QR</a>
+</div>
+
+<form method="get" class="rounded-lg border border-stone-800 bg-stone-900 p-4 mb-4 grid grid-cols-1 md:grid-cols-5 gap-3 text-sm">
+  <div>
+    <label class="block text-xs text-stone-400 mb-1">Estado</label>
+    <select name="status" class="w-full bg-stone-950 border border-stone-700 rounded px-2 py-1.5">
+      <option value="">Todos</option>
+      {% for v, label in statuses %}
+        <option value="{{ v }}" {% if params.status == v %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <label class="block text-xs text-stone-400 mb-1">Banco</label>
+    <select name="provider" class="w-full bg-stone-950 border border-stone-700 rounded px-2 py-1.5">
+      <option value="">Todos</option>
+      {% for k, v in providers.items %}
+        <option value="{{ k }}" {% if params.provider == k %}selected{% endif %}>{{ v.label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="md:col-span-2">
+    <label class="block text-xs text-stone-400 mb-1">Buscar (codigo o id de banco)</label>
+    <input name="q" value="{{ params.q|default_if_none:'' }}" class="w-full bg-stone-950 border border-stone-700 rounded px-2 py-1.5" />
+  </div>
+  <div class="flex items-end gap-2">
+    <label class="inline-flex items-center gap-2 text-xs text-stone-400">
+      <input type="checkbox" name="show_expired" value="1" {% if params.show_expired %}checked{% endif %} />
+      Mostrar viejos
+    </label>
+    <button type="submit" class="ml-auto px-3 py-1.5 rounded bg-amber-500 text-stone-900 font-medium">Filtrar</button>
+  </div>
+  {% if params.batch %}<input type="hidden" name="batch" value="{{ params.batch }}" />{% endif %}
+</form>
+
+{% if params.batch %}
+<div class="mb-3 text-sm text-stone-400">Filtrando por lote <span class="font-mono text-amber-300">{{ params.batch }}</span>
+  - <a href="{% url 'qrgen:history' %}" class="underline">limpiar</a></div>
+{% endif %}
+
+<div class="rounded-lg border border-stone-800 overflow-hidden">
+  <table class="w-full text-sm">
+    <thead class="bg-stone-900 text-stone-400">
+      <tr>
+        <th class="text-left px-4 py-2">Codigo</th>
+        <th class="text-left px-4 py-2">Banco</th>
+        <th class="text-right px-4 py-2">Pedido</th>
+        <th class="text-right px-4 py-2">A pagar</th>
+        <th class="text-left px-4 py-2">Estado</th>
+        <th class="text-left px-4 py-2">Creado</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody hx-get="{% url 'qrgen:partial_history_rows' %}?{{ request.GET.urlencode }}"
+           hx-trigger="every 4s" hx-swap="innerHTML">
+      {% include "qrgen/partials/history_rows.html" %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

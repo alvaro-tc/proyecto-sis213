@@ -27,11 +27,15 @@ const BottomNav = () => {
   const isActive = (path) => location.pathname === path;
   const blockCreate = isActive("/tables") || isActive("/menu");
 
-  const handleCreateOrder = () => {
+  const handleCreateOrder = (type) => {
     if (!name?.trim()) return;
-    dispatch(setCustomer({ name, phone, guests: guestCount }));
+    dispatch(setCustomer({ name, phone, guests: type === "takeaway" ? 0 : guestCount, orderType: type }));
     setIsModalOpen(false);
-    navigate("/tables");
+    if (type === "takeaway") {
+      navigate("/menu");
+    } else {
+      navigate("/tables");
+    }
   };
 
   return (
@@ -103,15 +107,25 @@ const BottomNav = () => {
               </button>
             </div>
           </div>
-          <Button
-            onClick={handleCreateOrder}
-            disabled={!name?.trim()}
-            fullWidth
-            size="lg"
-            className="mt-2"
-          >
-            Crear Pedido
-          </Button>
+          <div className="flex gap-2 mt-4">
+            <Button
+              onClick={() => handleCreateOrder("takeaway")}
+              disabled={!name?.trim()}
+              fullWidth
+              size="lg"
+              className="bg-theme-surface text-theme-text border border-theme-border hover:bg-theme-elevated"
+            >
+              Para Llevar
+            </Button>
+            <Button
+              onClick={() => handleCreateOrder("dine-in")}
+              disabled={!name?.trim()}
+              fullWidth
+              size="lg"
+            >
+              En Mesa
+            </Button>
+          </div>
         </div>
       </Modal>
     </div>

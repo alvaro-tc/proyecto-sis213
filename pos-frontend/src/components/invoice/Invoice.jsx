@@ -1,161 +1,206 @@
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { FaCheck } from "react-icons/fa6";
+import { MdPrint, MdClose, MdReceiptLong } from "react-icons/md";
 
 const Invoice = ({ orderInfo, setShowInvoice }) => {
   const invoiceRef = useRef(null);
+
   const handlePrint = () => {
     const printContent = invoiceRef.current.innerHTML;
     const WinPrint = window.open("", "", "width=900,height=650");
-
     WinPrint.document.write(`
-            <html>
-              <head>
-                <title>Recibo de Pedido</title>
-                <style>
-                  body { font-family: Arial, sans-serif; padding: 20px; }
-                  .receipt-container { width: 300px; border: 1px solid #ddd; padding: 10px; }
-                  h2 { text-align: center; }
-                </style>
-              </head>
-              <body>
-                ${printContent}
-              </body>
-            </html>
-          `);
-
+      <html>
+        <head>
+          <title>Recibo de Pedido</title>
+          <style>
+            * { box-sizing: border-box; }
+            body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; color:#222; background:#fff; }
+            .receipt { width: 320px; margin: 0 auto; }
+            h2 { text-align:center; margin: 4px 0; }
+            .muted { color:#666; font-size:12px; }
+            .row { display:flex; justify-content:space-between; font-size:13px; padding:2px 0; }
+            hr { border:none; border-top:1px dashed #aaa; margin:10px 0; }
+            .total { font-weight:700; font-size:15px; }
+            .icon-ok { display:none; }
+          </style>
+        </head>
+        <body><div class="receipt">${printContent}</div></body>
+      </html>
+    `);
     WinPrint.document.close();
     WinPrint.focus();
     setTimeout(() => {
       WinPrint.print();
       WinPrint.close();
-    }, 1000);
+    }, 500);
   };
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-4 rounded-lg shadow-lg w-[400px]">
-        {/* Receipt Content for Printing */}
+  if (!orderInfo) return null;
 
-        <div ref={invoiceRef} className="p-4">
-          {/* Receipt Header */}
-          <div className="flex justify-center mb-4">
+  const paymentLabel =
+    orderInfo.paymentMethod === "Cash"
+      ? "Efectivo"
+      : orderInfo.paymentMethod === "Yape"
+      ? "QR (Mercantil)"
+      : orderInfo.paymentMethod || "—";
+
+  return (
+    <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/70 backdrop-blur-sm p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.25 }}
+        className="w-full max-w-md rounded-2xl bg-theme-card border border-theme-border shadow-2xl overflow-hidden"
+      >
+        {/* Header strip */}
+        <div className="bg-gradient-to-r from-theme-brand to-theme-accent px-5 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-theme-brand-fg">
+            <MdReceiptLong size={22} />
+            <span className="font-bold tracking-tight">Recibo del Pedido</span>
+          </div>
+          <button
+            onClick={() => setShowInvoice(false)}
+            className="text-theme-brand-fg/80 hover:text-theme-brand-fg transition-colors"
+          >
+            <MdClose size={22} />
+          </button>
+        </div>
+
+        <div ref={invoiceRef} className="p-5 text-theme-text">
+          {/* Check icon */}
+          <div className="flex justify-center mb-3 icon-ok">
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1.2, opacity: 1 }}
-              transition={{ duration: 0.5, type: "spring", stiffness: 150 }}
-              className="w-12 h-12 border-8 border-green-500 rounded-full flex items-center justify-center shadow-lg bg-green-500"
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.4, type: "spring", stiffness: 180 }}
+              className="w-14 h-14 rounded-full bg-emerald-500/15 border-4 border-emerald-500/40 flex items-center justify-center"
             >
-              <motion.span
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.3, duration: 0.3 }}
-                className="text-2xl"
-              >
-                <FaCheck className="text-white" />
-              </motion.span>
+              <FaCheck className="text-emerald-500" size={22} />
             </motion.div>
           </div>
 
-          <h2 className="text-xl font-bold text-center mb-2">Recibo de Pedido</h2>
-          <p className="text-gray-600 text-center">¡Gracias por su pedido!</p>
+          <h2 className="text-lg font-bold text-center text-theme-text">
+            ¡Pedido registrado!
+          </h2>
+          <p className="text-theme-muted text-center text-xs mt-0.5">
+            Gracias por su compra
+          </p>
 
-          {/* Order Details */}
-
-          <div className="mt-4 border-t pt-4 text-sm text-gray-700">
-            <p>
-              <strong>ID de Pedido:</strong>{" "}
-              {Math.floor(new Date(orderInfo.orderDate).getTime())}
-            </p>
-            <p>
-              <strong>Nombre:</strong> {orderInfo.customerDetails.name}
-            </p>
-            <p>
-              <strong>Teléfono:</strong> {orderInfo.customerDetails.phone}
-            </p>
-            <p>
-              <strong>Invitados:</strong> {orderInfo.customerDetails.guests}
-            </p>
+          {/* Order details */}
+          <div className="mt-4 rounded-xl bg-theme-base border border-theme-border p-3 text-sm space-y-1.5">
+            <div className="flex justify-between row">
+              <span className="text-theme-muted">ID</span>
+              <span className="font-mono text-theme-text text-xs">
+                {Math.floor(new Date(orderInfo.orderDate).getTime())}
+              </span>
+            </div>
+            <div className="flex justify-between row">
+              <span className="text-theme-muted">Cliente</span>
+              <span className="text-theme-text font-medium">
+                {orderInfo.customerDetails?.name || "Cliente"}
+              </span>
+            </div>
+            {orderInfo.customerDetails?.phone && (
+              <div className="flex justify-between row">
+                <span className="text-theme-muted">Teléfono</span>
+                <span className="text-theme-text">{orderInfo.customerDetails.phone}</span>
+              </div>
+            )}
+            <div className="flex justify-between row">
+              <span className="text-theme-muted">Tipo</span>
+              <span className="text-theme-text capitalize">
+                {orderInfo.orderType === "takeaway" ? "Para llevar" : "En mesa"}
+              </span>
+            </div>
           </div>
 
-          {/* Items Summary */}
-
-          <div className="mt-4 border-t pt-4">
-            <h3 className="text-sm font-semibold">Artículos Pedidos</h3>
-            <ul className="text-sm text-gray-700">
+          {/* Items */}
+          <div className="mt-3">
+            <p className="text-[10px] text-theme-muted uppercase tracking-wider font-semibold mb-1.5">
+              Artículos
+            </p>
+            <ul className="rounded-xl border border-theme-border divide-y divide-theme-border overflow-hidden">
               {orderInfo.items.map((item, index) => (
                 <li
                   key={index}
-                  className="flex justify-between items-center text-xs"
+                  className="flex justify-between items-center px-3 py-2 text-sm bg-theme-base"
                 >
-                  <span>
-                    {item.name} x{item.quantity}
+                  <span className="text-theme-text truncate pr-2">
+                    {item.name}{" "}
+                    <span className="text-theme-muted">×{item.quantity}</span>
                   </span>
-                  <span>Bs {item.price.toFixed(2)}</span>
+                  <span className="text-theme-text font-semibold">
+                    Bs {Number(item.price).toFixed(2)}
+                  </span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Bills Summary */}
-
-          <div className="mt-4 border-t pt-4 text-sm">
-            <p>
-              <strong>Subtotal:</strong> Bs {orderInfo.bills.total.toFixed(2)}
-            </p>
-            <p>
-              <strong>Impuesto:</strong> Bs {orderInfo.bills.tax.toFixed(2)}
-            </p>
-            <p className="text-md font-semibold">
-              <strong>Total Final:</strong> Bs 
-              {orderInfo.bills.totalWithTax.toFixed(2)}
-            </p>
+          {/* Totals */}
+          <div className="mt-3 rounded-xl bg-theme-base border border-theme-border p-3 space-y-1 text-sm">
+            <div className="flex justify-between row">
+              <span className="text-theme-muted">Subtotal</span>
+              <span className="text-theme-text">
+                Bs {Number(orderInfo.bills.total).toFixed(2)}
+              </span>
+            </div>
+            <div className="flex justify-between row">
+              <span className="text-theme-muted">Impuestos</span>
+              <span className="text-theme-text">
+                Bs {Number(orderInfo.bills.tax).toFixed(2)}
+              </span>
+            </div>
+            <div className="border-t border-theme-border my-1" />
+            <div className="flex justify-between row total">
+              <span className="text-theme-text font-bold">Total</span>
+              <span className="text-theme-brand font-bold text-base">
+                Bs {Number(orderInfo.bills.totalWithTax).toFixed(2)}
+              </span>
+            </div>
           </div>
 
-          {/* Payment Details */}
-
-          <div className="mb-2 mt-2 text-xs">
+          {/* Payment */}
+          <div className="mt-3 text-xs text-theme-muted">
             <p>
-              <strong>Método de Pago:</strong>{" "}
-              {orderInfo.paymentMethod === "Cash"
-                ? "Efectivo"
-                : orderInfo.paymentMethod === "Binance"
-                ? "Binance Pay"
-                : orderInfo.paymentMethod}
+              <span className="font-semibold text-theme-text">Pago: </span>
+              {paymentLabel}
             </p>
-            {orderInfo.paymentMethod === "Binance" &&
-              orderInfo.paymentData?.binance_merchant_trade_no && (
-                <>
+            {orderInfo.paymentMethod === "Yape" &&
+              orderInfo.paymentData?.yape_payment_id && (
+                <div className="mt-1 space-y-0.5">
                   <p>
-                    <strong>ID Binance Pay:</strong>{" "}
-                    {orderInfo.paymentData.binance_merchant_trade_no}
+                    <span className="font-semibold text-theme-text">ID QR: </span>
+                    <span className="font-mono">{orderInfo.paymentData.yape_payment_id}</span>
                   </p>
-                  <p>
-                    <strong>Monto:</strong>{" "}
-                    {orderInfo.paymentData.binance_amount}{" "}
-                    {orderInfo.paymentData.binance_currency}
-                  </p>
-                </>
+                  {orderInfo.paymentData.yape_code && (
+                    <p>
+                      <span className="font-semibold text-theme-text">Código: </span>
+                      <span className="font-mono">{orderInfo.paymentData.yape_code}</span>
+                    </p>
+                  )}
+                </div>
               )}
           </div>
         </div>
 
-        {/* Buttons */}
-        <div className="flex justify-between mt-4">
+        {/* Actions */}
+        <div className="flex gap-2 px-5 pb-5 pt-1">
           <button
             onClick={handlePrint}
-            className="text-blue-500 hover:underline text-xs px-4 py-2 rounded-lg"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-theme-brand text-theme-brand-fg font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
           >
-            Imprimir Recibo
+            <MdPrint size={16} /> Imprimir
           </button>
           <button
             onClick={() => setShowInvoice(false)}
-            className="text-red-500 hover:underline text-xs px-4 py-2 rounded-lg"
+            className="flex-1 py-2.5 rounded-lg bg-theme-elevated border border-theme-border text-theme-text font-semibold text-sm hover:bg-theme-surface transition-colors"
           >
             Cerrar
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

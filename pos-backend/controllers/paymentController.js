@@ -1,179 +1,283 @@
 const createHttpError = require("http-errors");
 const config = require("../config/config");
-const crypto = require("crypto");
-const Payment = require("../models/paymentModel");
+const Order = require("../models/orderModel");
+const orchestrator = require("../services/qrOrchestratorService");
+const wa = require("../services/whatsapp");
 
-// ───────── Binance Pay ─────────
-// Doc: https://developers.binance.com/docs/binance-pay/api-order-create-v3
+// ───────── Orquestador QR (api_generador_qr — Django :8500) ─────────
+// Reemplaza al microservicio MSC standalone. Acepta varios bancos (MSC, ZAS)
+// con failover automatico. Para mantener compatibilidad con el frontend
+// existente, los endpoints siguen exponiendose como /api/payment/yape/*
+// pero ahora apuntan al orquestador y devuelven Payment unificado.
 
-const buildBinanceHeaders = (bodyString) => {
-  const timestamp = Date.now().toString();
-  const nonce = crypto.randomBytes(16).toString("hex").slice(0, 32);
-  const payload = `${timestamp}\n${nonce}\n${bodyString}\n`;
-  const signature = crypto
-    .createHmac("sha512", config.binancePaySecretKey || "")
-    .update(payload)
-    .digest("hex")
-    .toUpperCase();
-
-  return {
-    "Content-Type": "application/json",
-    "BinancePay-Timestamp": timestamp,
-    "BinancePay-Nonce": nonce,
-    "BinancePay-Certificate-SN": config.binancePayApiKey || "",
-    "BinancePay-Signature": signature,
-  };
+const buildCallbackUrl = () => {
+    if (!config.qrPublicWebhookUrl) return undefined;
+    // qrWebhookSecret se pasa como query (el orquestador no firma payloads).
+    const sep = config.qrPublicWebhookUrl.includes("?") ? "&" : "?";
+    return config.qrWebhookSecret
+        ? `${config.qrPublicWebhookUrl}${sep}secret=${encodeURIComponent(config.qrWebhookSecret)}`
+        : config.qrPublicWebhookUrl;
 };
 
-const createBinanceOrder = async (req, res, next) => {
-  try {
-    const { amount, description } = req.body;
-    if (!amount || Number(amount) <= 0) {
-      return next(createHttpError(400, "Monto inválido"));
+const createYapePayment = async (req, res, next) => {
+    try {
+        const { amount, description, expires_in } = req.body || {};
+        if (!amount || Number(amount) <= 0) {
+            return next(createHttpError(400, "Monto invalido"));
+        }
+        const { ok, status, payment, raw } = await orchestrator.generate({
+            amount: Number(amount),
+            description: description || "Cafeteria Aromatica",
+            expiresIn: Number(expires_in) || 600,
+            callbackUrl: buildCallbackUrl(),
+        });
+        if (!ok || !payment) {
+            return next(
+                createHttpError(status || 502, raw?.detail || raw?.error || "Error al generar QR")
+            );
+        }
+        return res.status(200).json({ success: true, payment });
+    } catch (err) {
+        console.error("createYapePayment:", err.message);
+        next(createHttpError(502, "No se pudo contactar el orquestador de QR"));
     }
-
-    // Convertir Bs → USDT (configurable). Binance Pay no acepta BOB.
-    const usdtAmount = Number(
-      (Number(amount) / config.binancePayFxRate).toFixed(2)
-    );
-
-    const merchantTradeNo = `C5${Date.now()}${crypto
-      .randomBytes(4)
-      .toString("hex")}`.slice(0, 32);
-
-    const body = {
-      env: { terminalType: "WEB" },
-      merchantTradeNo,
-      orderAmount: usdtAmount,
-      currency: config.binancePayCurrency,
-      goods: {
-        goodsType: "02",
-        goodsCategory: "Z000",
-        referenceGoodsId: merchantTradeNo,
-        goodsName: description || "Pedido Cafeteria 5",
-      },
-    };
-
-    // Modo desarrollo: si no hay credenciales, devolvemos un QR simulado
-    // (apunta a la billetera Binance del comercio mediante un identificador
-    // genérico) para poder probar el flujo end-to-end sin claves reales.
-    if (!config.binancePayApiKey || !config.binancePaySecretKey) {
-      const fakeQrPayload = `binancepay://demo?merchantTradeNo=${merchantTradeNo}&amount=${usdtAmount}&currency=USDT`;
-      const qrcodeLink = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(
-        fakeQrPayload
-      )}`;
-      return res.status(200).json({
-        success: true,
-        mock: true,
-        order: {
-          merchantTradeNo,
-          orderAmount: usdtAmount,
-          currency: "USDT",
-          qrContent: fakeQrPayload,
-          qrcodeLink,
-          checkoutUrl: qrcodeLink,
-          prepayId: `MOCK_${merchantTradeNo}`,
-          expireTime: Date.now() + 10 * 60 * 1000,
-        },
-      });
-    }
-
-    const bodyString = JSON.stringify(body);
-    const url = `${config.binancePayBaseUrl}/binancepay/openapi/v3/order`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: buildBinanceHeaders(bodyString),
-      body: bodyString,
-    });
-    const data = await response.json();
-
-    if (data.status !== "SUCCESS") {
-      console.error("Binance Pay error:", data);
-      return next(
-        createHttpError(502, data.errorMessage || "Binance Pay rechazó la orden")
-      );
-    }
-
-    return res.status(200).json({
-      success: true,
-      order: {
-        merchantTradeNo,
-        orderAmount: usdtAmount,
-        currency: "USDT",
-        qrContent: data.data.qrContent,
-        qrcodeLink: data.data.qrcodeLink,
-        checkoutUrl: data.data.checkoutUrl,
-        prepayId: data.data.prepayId,
-        expireTime: data.data.expireTime,
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
 };
 
-const queryBinanceOrder = async (req, res, next) => {
-  try {
-    const { merchantTradeNo } = req.body;
-    if (!merchantTradeNo) {
-      return next(createHttpError(400, "merchantTradeNo requerido"));
+const queryYapePayment = async (req, res, next) => {
+    try {
+        const { paymentId } = req.params;
+        if (!paymentId) return next(createHttpError(400, "paymentId requerido"));
+        const { ok, status, payment, raw } = await orchestrator.get(paymentId);
+        if (!ok || !payment) {
+            return next(
+                createHttpError(status || 502, raw?.detail || "Cobro no encontrado")
+            );
+        }
+        return res.json({ success: true, payment });
+    } catch (err) {
+        next(createHttpError(502, "No se pudo contactar el orquestador de QR"));
     }
-
-    if (!config.binancePayApiKey || !config.binancePaySecretKey) {
-      // Mock: marca como pagada después de 5 segundos del tradeNo timestamp
-      const ts = Number(merchantTradeNo.slice(2, 15));
-      const paid = !Number.isNaN(ts) && Date.now() - ts > 5000;
-      return res.json({
-        success: true,
-        mock: true,
-        status: paid ? "PAID" : "INITIAL",
-      });
-    }
-
-    const body = JSON.stringify({ merchantTradeNo });
-    const url = `${config.binancePayBaseUrl}/binancepay/openapi/v2/order/query`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: buildBinanceHeaders(body),
-      body,
-    });
-    const data = await response.json();
-    return res.json({
-      success: data.status === "SUCCESS",
-      status: data.data?.status || "UNKNOWN",
-      raw: data,
-    });
-  } catch (error) {
-    next(error);
-  }
 };
 
-const binanceWebhook = async (req, res, next) => {
-  try {
-    // En producción: verificar firma con la clave pública de Binance Pay.
-    const event = req.body;
-    if (event && event.bizType === "PAY" && event.bizStatus === "PAY_SUCCESS") {
-      const data =
-        typeof event.data === "string" ? JSON.parse(event.data) : event.data;
-      await new Payment({
-        paymentId: data.transactionId || data.merchantTradeNo,
-        orderId: data.merchantTradeNo,
-        amount: data.totalFee || data.orderAmount,
-        currency: data.currency,
-        status: "captured",
-        method: "binance_pay",
-        createdAt: new Date(),
-      }).save();
+const cancelYapePayment = async (req, res, next) => {
+    try {
+        const { paymentId } = req.params;
+        const { ok, status, payment, raw } = await orchestrator.cancel(paymentId);
+        if (!ok || !payment) {
+            return next(
+                createHttpError(status || 502, raw?.detail || "No se pudo cancelar")
+            );
+        }
+        return res.json({ success: true, payment });
+    } catch (err) {
+        next(createHttpError(502, "No se pudo contactar el orquestador de QR"));
     }
-    res.json({ returnCode: "SUCCESS", returnMessage: null });
-  } catch (error) {
-    next(error);
-  }
+};
+
+// Envia el QR de un cobro al WhatsApp del cliente. Si todavia esta en
+// `creating` espera (con polling) hasta que el orquestador lo materialice.
+// Body: { phone, customerName? }
+const sendYapeQrToWhatsApp = async (req, res, next) => {
+    try {
+        const { paymentId } = req.params;
+        const { phone, customerName } = req.body || {};
+        if (!paymentId) return next(createHttpError(400, "paymentId requerido"));
+        if (!phone) return next(createHttpError(400, "phone requerido"));
+
+        let { ok, status, payment, raw } = await orchestrator.get(paymentId);
+        if (!ok) return next(createHttpError(status || 502, raw?.detail || "Cobro no encontrado"));
+
+        if (payment.status === "creating") {
+            // Avisar primero al cliente con la ETA
+            wa.sendQrEtaNotice({
+                phone,
+                etaSeconds: payment.estimated_seconds,
+                providerLabel: payment.provider_label,
+                amount: payment.amount,
+                customerName,
+            }).catch(() => {});
+            const waited = await orchestrator.waitForQrReady(paymentId, { maxMs: 180_000 });
+            if (waited) payment = waited;
+        }
+
+        if (!payment.qr_payload) {
+            return next(createHttpError(400, "El cobro no tiene QR disponible"));
+        }
+        if (payment.status && !["pending", "paid"].includes(payment.status)) {
+            return next(
+                createHttpError(400, `El cobro esta en estado '${payment.status}', no se puede compartir QR`)
+            );
+        }
+
+        const result = await wa.sendYapePaymentQr({
+            phone,
+            qrPayload: payment.qr_payload,
+            amount: payment.amount,
+            paymentId: payment.payment_id,
+            code: payment.code,
+            customerName,
+            provider: payment.provider,
+            providerLabel: payment.provider_label,
+            validationMethod: payment.validation_method,
+        });
+
+        if (!result.ok) {
+            return res.status(502).json({ success: false, error: result.error || "Envio fallido" });
+        }
+        return res.json({ success: true, id: result.id, payment });
+    } catch (err) {
+        console.error("sendYapeQrToWhatsApp:", err.message);
+        next(createHttpError(502, "No se pudo enviar el QR por WhatsApp"));
+    }
+};
+
+// GET /api/payment/qr/health — estado del orquestador (todos los bancos)
+const qrHealth = async (req, res) => {
+    try {
+        const { ok, status, data } = await orchestrator.health();
+        return res.json({ reachable: ok, status, ...data });
+    } catch (err) {
+        return res.status(500).json({ reachable: false, error: err.message });
+    }
+};
+
+// Alias legacy para no romper frontend antiguo que llamaba a getMscHealth.
+const mscHealth = qrHealth;
+
+// ─── Webhook receiver ────────────────────────────────────────────────
+// El orquestador llama aqui con events: created, qr_ready, paid, failover,
+// failed, expired. Buscamos el Order asociado por paymentData.qr_payment_id
+// y actualizamos su estado. Idempotente.
+const qrWebhook = async (req, res, next) => {
+    try {
+        // Verificacion de secreto via query (el orquestador no firma).
+        if (config.qrWebhookSecret) {
+            const provided = req.query?.secret || req.header("x-webhook-secret");
+            if (provided !== config.qrWebhookSecret) {
+                return res.status(401).json({ ok: false, error: "secret invalido" });
+            }
+        }
+        const event = req.body || {};
+        const paymentId = event.payment_id;
+        if (!paymentId) {
+            return res.status(400).json({ ok: false, error: "payment_id requerido" });
+        }
+
+        const order = await Order.findOne({ "paymentData.qr_payment_id": paymentId });
+
+        // Si no encontramos un Order asociado, devolvemos 200 igual para que el
+        // orquestador no reintente (el cobro puede pertenecer a otro consumidor).
+        if (!order) {
+            console.log(`[qr-webhook] payment_id=${paymentId} sin Order asociado (event=${event.event})`);
+            return res.json({ ok: true, matched: false });
+        }
+
+        const phone = order.customerDetails?.phone;
+        const name = order.customerDetails?.name;
+
+        switch (event.event) {
+            case "qr_ready": {
+                order.paymentData = {
+                    ...(order.paymentData || {}),
+                    qr_payment_id: paymentId,
+                    qr_code: event.code,
+                    qr_provider: event.provider,
+                    qr_amount_to_pay: event.amount_to_pay,
+                    qr_status: "pending",
+                };
+                await order.save();
+                // Reenviar QR al cliente si tenemos qr_payload (pidiendo detalle).
+                try {
+                    const { payment } = await orchestrator.get(paymentId);
+                    if (payment?.qr_payload && phone) {
+                        wa.sendYapePaymentQr({
+                            phone,
+                            qrPayload: payment.qr_payload,
+                            amount: payment.amount,
+                            paymentId,
+                            code: payment.code,
+                            customerName: name,
+                            provider: payment.provider,
+                            providerLabel: payment.provider_label,
+                            validationMethod: payment.validation_method,
+                        }).catch(() => {});
+                    }
+                } catch (_) {}
+                break;
+            }
+            case "paid": {
+                order.paymentStatus = "paid";
+                if (order.orderStatus === "Pending Payment") {
+                    order.orderStatus = "In Progress";
+                }
+                order.paymentData = {
+                    ...(order.paymentData || {}),
+                    qr_payment_id: paymentId,
+                    qr_code: event.code,
+                    qr_provider: event.provider,
+                    qr_amount_paid: event.amount_to_pay,
+                    qr_paid_at: event.paid_at ? new Date(event.paid_at) : new Date(),
+                    qr_status: "paid",
+                    // alias yape_* para compat con codigo antiguo
+                    yape_payment_id: paymentId,
+                    yape_code: event.code,
+                    yape_amount: event.amount_to_pay,
+                    yape_paid_at: event.paid_at ? new Date(event.paid_at) : new Date(),
+                };
+                await order.save();
+                wa.notifyOrderPaid(order);
+                break;
+            }
+            case "failover": {
+                if (phone) {
+                    wa.sendQrFailoverNotice({
+                        phone,
+                        failedProvider: event.failed_provider,
+                        nextProvider: event.next_provider,
+                        newEtaSeconds: event.new_estimated_seconds,
+                    }).catch(() => {});
+                }
+                order.paymentData = {
+                    ...(order.paymentData || {}),
+                    qr_provider: event.next_provider,
+                    qr_failover_count: (order.paymentData?.qr_failover_count || 0) + 1,
+                };
+                await order.save();
+                break;
+            }
+            case "failed":
+            case "expired": {
+                order.paymentStatus = "failed";
+                if (order.orderStatus === "Pending Payment") {
+                    order.orderStatus = "Cancelled";
+                }
+                order.paymentData = {
+                    ...(order.paymentData || {}),
+                    qr_status: event.event,
+                };
+                await order.save();
+                wa.notifyOrderStatus(order, "Cancelled");
+                break;
+            }
+            default:
+                // 'created' u otros: nada por hacer aqui, la creacion ya se
+                // habia registrado al lanzar generate().
+                break;
+        }
+
+        return res.json({ ok: true, matched: true });
+    } catch (err) {
+        console.error("qrWebhook:", err.message);
+        next(err);
+    }
 };
 
 module.exports = {
-  createBinanceOrder,
-  queryBinanceOrder,
-  binanceWebhook,
+    createYapePayment,
+    queryYapePayment,
+    cancelYapePayment,
+    sendYapeQrToWhatsApp,
+    qrHealth,
+    mscHealth,
+    qrWebhook,
 };

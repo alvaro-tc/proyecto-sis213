@@ -52,7 +52,7 @@ const getMetrics = async (req, res, next) => {
     const avgTicketToday = todayOrders.length > 0 ? todayRevenue / todayOrders.length : 0;
 
     // Orders by status
-    const statusBuckets = { "In Progress": 0, Ready: 0, Completed: 0, Cancelled: 0 };
+    const statusBuckets = { "Pending Payment": 0, "In Progress": 0, Preparing: 0, Ready: 0, Completed: 0, Cancelled: 0 };
     orders.forEach((o) => {
       if (statusBuckets[o.orderStatus] !== undefined) statusBuckets[o.orderStatus]++;
     });

@@ -8,7 +8,7 @@ import { LuLogOut, LuSun, LuMoon, LuMinus, LuPlus, LuMapPin, LuPackage, LuClock 
 import {
   addOrder,
   confirmOrderPayment,
-  createBinancePayOrder,
+  createYapePayment,
   getCategories,
   getDishes,
   getMyOrders,
@@ -17,7 +17,7 @@ import {
 } from "../https";
 import { removeUser } from "../redux/slices/userSlice";
 import { useTheme } from "../context/ThemeContext";
-import BinancePayModal from "../components/menu/BinancePayModal";
+import YapePayModal from "../components/menu/YapePayModal";
 
 const STATUS_STEPS = [
   { id: "In Progress", label: "Recibido", icon: LuClock },
@@ -110,8 +110,8 @@ const Customer = () => {
     navigate("/auth");
   };
 
-  // Pago Binance + creación de pedido
-  const [binanceOrder, setBinanceOrder] = useState(null);
+  // Pago Yape + creación de pedido
+  const [yapePayment, setYapePayment] = useState(null);
   const [creatingPayment, setCreatingPayment] = useState(false);
 
   const placeOrderMutation = useMutation({
@@ -137,15 +137,16 @@ const Customer = () => {
     try {
       const desc =
         orderType === "dine-in"
-          ? `Pedido en mesa - ${user.name}`
-          : `Pedido para llevar - ${user.name}`;
-      const { data } = await createBinancePayOrder({
-        amount: total.toFixed(2),
+          ? `Mesa ${user.name?.split(" ")[0] || ""}`
+          : `Llevar ${user.name?.split(" ")[0] || ""}`;
+      const { data } = await createYapePayment({
+        amount: Number(total.toFixed(2)),
         description: desc,
+        expires_in: 600,
       });
-      setBinanceOrder(data.order);
+      setYapePayment(data.payment);
     } catch (e) {
-      enqueueSnackbar("No se pudo iniciar el pago con Binance.", {
+      enqueueSnackbar("No se pudo iniciar el pago con Yape.", {
         variant: "error",
       });
     } finally {
@@ -153,8 +154,7 @@ const Customer = () => {
     }
   };
 
-  const onPaid = async (binOrder) => {
-    // 1) Crear el pedido (paymentStatus pending; el backend lo confirmará)
+  const onPaid = async (p) => {
     try {
       const orderPayload = {
         customerDetails: {
@@ -174,22 +174,21 @@ const Customer = () => {
         })),
         table: orderType === "dine-in" ? tableId : null,
         orderType,
-        paymentMethod: "Binance",
+        paymentMethod: "Yape",
         paymentStatus: "pending",
         paymentData: {
-          binance_merchant_trade_no: binOrder.merchantTradeNo,
-          binance_prepay_id: binOrder.prepayId,
-          binance_amount: binOrder.orderAmount,
-          binance_currency: binOrder.currency,
+          yape_payment_id: p.payment_id,
+          yape_code: p.code,
+          yape_amount: p.amount,
+          yape_paid_at: p.paid_at,
         },
       };
       const orderRes = await placeOrderMutation.mutateAsync(orderPayload);
       const created = orderRes.data?.data;
 
-      // 2) Confirmar el pago contra Binance (verificación real en backend)
       const confirm = await confirmPaymentMutation.mutateAsync({
         orderId: created._id,
-        merchantTradeNo: binOrder.merchantTradeNo,
+        yapePaymentId: p.payment_id,
       });
 
       if (confirm.data?.paid) {
@@ -205,7 +204,7 @@ const Customer = () => {
 
       setCart([]);
       setTableId("");
-      setBinanceOrder(null);
+      setYapePayment(null);
       queryClient.invalidateQueries({ queryKey: ["my-orders"] });
       queryClient.invalidateQueries({ queryKey: ["tables"] });
     } catch (err) {
@@ -490,23 +489,23 @@ const Customer = () => {
               disabled={creatingPayment || cart.length === 0}
               className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-theme-brand px-4 py-3 text-base font-semibold text-theme-brand-fg shadow-md transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <span className="grid h-6 w-6 place-items-center rounded bg-yellow-400 text-xs font-bold text-black">
-                B
+              <span className="grid h-6 w-6 place-items-center rounded bg-violet-600 text-xs font-bold text-white">
+                Y
               </span>
-              {creatingPayment ? "Generando QR…" : "Pagar con Binance"}
+              {creatingPayment ? "Generando QR…" : "Pagar con Yape"}
             </button>
             <p className="mt-2 text-center text-[11px] text-theme-muted">
-              Pago 100% online · Solo Binance Pay
+              Pago 100% online · QR Yape Bolivia
             </p>
           </div>
         </aside>
       </main>
 
-      {binanceOrder && (
-        <BinancePayModal
-          binanceOrder={binanceOrder}
+      {yapePayment && (
+        <YapePayModal
+          yapePayment={yapePayment}
           totalBs={total}
-          onClose={() => setBinanceOrder(null)}
+          onClose={() => setYapePayment(null)}
           onPaid={onPaid}
         />
       )}

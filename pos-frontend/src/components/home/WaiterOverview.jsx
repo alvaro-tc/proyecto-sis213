@@ -264,7 +264,7 @@ const WaiterOverview = () => {
                           {order.customerDetails?.name || "Cliente"}
                         </p>
                         <p className="text-theme-muted text-[11px]">
-                          Mesa {order.table?.tableNo ?? "?"} · {formatDateAndTime(order.orderDate)}
+                          {order.orderType === "takeaway" ? "Para Llevar" : `Mesa ${order.table?.tableNo ?? "?"}`} · {formatDateAndTime(order.orderDate)}
                         </p>
                       </div>
                     </div>

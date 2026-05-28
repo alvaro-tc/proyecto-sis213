@@ -13,7 +13,9 @@ connectDB();
 // Middlewares
 app.use(cors({
     credentials: true,
-    origin: ['http://localhost:5173']
+    origin: ['http://localhost:5173',
+        'http://192.168.0.101:5173' //este es para que conecte desde mi wifi "COMEDOR" con cualquier dispositivo en esa conexion, lo puedo quitar luego
+    ]
 }))
 app.use(express.json()); // parse incoming request in json format
 app.use(cookieParser())

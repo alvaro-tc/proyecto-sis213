@@ -32,23 +32,24 @@ const getMetrics = async (req, res, next) => {
       Dish.countDocuments(),
       Table.countDocuments(),
       Table.countDocuments({ status: "Booked" }),
-      User.countDocuments({ role: "Customer" }),
-      User.countDocuments({ role: { $ne: "Customer" } }),
+      User.countDocuments({ role: { $regex: "^customer$", $options: "i" } }),
+      User.countDocuments({ role: { $not: { $regex: "^customer$", $options: "i" } } }),
       Order.find().lean(),
     ]);
 
-    const totalRevenue = orders.reduce((s, o) => s + (o.bills?.totalWithTax || 0), 0);
+    const completedOrders = orders.filter((o) => o.orderStatus === "Completed");
+    const totalRevenue = completedOrders.reduce((s, o) => s + (o.bills?.totalWithTax || 0), 0);
 
-    const todayOrders = orders.filter((o) => new Date(o.orderDate) >= todayStart);
-    const weekOrders = orders.filter((o) => new Date(o.orderDate) >= weekStart);
-    const monthOrders = orders.filter((o) => new Date(o.orderDate) >= monthStart);
+    const todayOrders = completedOrders.filter((o) => new Date(o.orderDate) >= todayStart);
+    const weekOrders = completedOrders.filter((o) => new Date(o.orderDate) >= weekStart);
+    const monthOrders = completedOrders.filter((o) => new Date(o.orderDate) >= monthStart);
 
     const sumRevenue = (list) => list.reduce((s, o) => s + (o.bills?.totalWithTax || 0), 0);
     const todayRevenue = sumRevenue(todayOrders);
     const weekRevenue = sumRevenue(weekOrders);
     const monthRevenue = sumRevenue(monthOrders);
 
-    const avgTicket = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+    const avgTicket = completedOrders.length > 0 ? totalRevenue / completedOrders.length : 0;
     const avgTicketToday = todayOrders.length > 0 ? todayRevenue / todayOrders.length : 0;
 
     // Orders by status
@@ -59,12 +60,12 @@ const getMetrics = async (req, res, next) => {
     const completedRate = totalOrders > 0 ? (statusBuckets.Completed / totalOrders) * 100 : 0;
     const cancelledRate = totalOrders > 0 ? (statusBuckets.Cancelled / totalOrders) * 100 : 0;
 
-    // Revenue / orders last 7 days
+    // Revenue / orders last 7 days (solo órdenes completadas)
     const dailySeries = [];
     for (let i = 6; i >= 0; i--) {
       const dayStart = startOfDay(new Date(now.getTime() - i * 24 * 60 * 60 * 1000));
       const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
-      const list = orders.filter(
+      const list = completedOrders.filter(
         (o) => new Date(o.orderDate) >= dayStart && new Date(o.orderDate) < dayEnd
       );
       dailySeries.push({
@@ -84,9 +85,9 @@ const getMetrics = async (req, res, next) => {
     });
     const peakHour = hourly.reduce((best, h) => (h.orders > best.orders ? h : best), hourly[0]);
 
-    // Top dishes
+    // Top dishes (solo órdenes completadas)
     const dishCounter = {};
-    orders.forEach((o) => {
+    completedOrders.forEach((o) => {
       (o.items || []).forEach((it) => {
         const name = it?.name || it?.dishName || it?.title || "Sin nombre";
         const qty = Number(it?.quantity || it?.qty || 1);
@@ -101,9 +102,9 @@ const getMetrics = async (req, res, next) => {
       .slice(0, 5)
       .map((d) => ({ ...d, revenue: +d.revenue.toFixed(2) }));
 
-    // Payment methods
+    // Payment methods (solo órdenes completadas)
     const paymentBuckets = {};
-    orders.forEach((o) => {
+    completedOrders.forEach((o) => {
       const k = o.paymentMethod || "Sin registrar";
       if (!paymentBuckets[k]) paymentBuckets[k] = { method: k, count: 0, revenue: 0 };
       paymentBuckets[k].count++;

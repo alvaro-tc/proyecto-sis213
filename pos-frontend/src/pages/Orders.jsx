@@ -12,6 +12,7 @@ const STATUS_FILTERS = [
   { id: "progress", label: "En Progreso" },
   { id: "ready", label: "Listo" },
   { id: "completed", label: "Completado" },
+  { id: "cancelled", label: "Cancelado" },
 ];
 
 const Orders = () => {
@@ -33,6 +34,7 @@ const Orders = () => {
     if (status === "progress" && order.orderStatus === "In Progress") return true;
     if (status === "ready" && order.orderStatus === "Ready") return true;
     if (status === "completed" && order.orderStatus === "Completed") return true;
+    if (status === "cancelled" && order.orderStatus === "Cancelled") return true;
     return false;
   });
 

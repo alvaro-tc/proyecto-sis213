@@ -49,6 +49,8 @@ const OrderCard = ({ order }) => {
              <p className="text-green-500 bg-[#143627] px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center"><FaCheckDouble className="mr-1" /> LISTO</p>
           ) : order.orderStatus === "Completed" ? (
              <p className="text-blue-500 bg-[#142636] px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center"><FaCheckDouble className="mr-1" /> ENTREGADO</p>
+          ) : order.orderStatus === "Cancelled" ? (
+             <p className="text-red-500 bg-[#361414] px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center"><FaCircle className="mr-1 text-[8px]" /> CANCELADO</p>
           ) : (
              <p className="text-yellow-500 bg-[#3d3215] px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center"><FaCircle className="mr-1 text-[8px]" /> EN PREP.</p>
           )}
@@ -61,6 +63,11 @@ const OrderCard = ({ order }) => {
           <p className="text-theme-muted text-xs flex items-center"><FaLongArrowAltRight className="text-yellow-500 mr-2" /> Mesa</p>
           {/* 3. SOLUCIÓN AL CRASH: Optional chaining (?.) por si order.table viene null o undefined */}
           <p className="font-bold text-theme-text text-sm">{order.table?.tableNo || "N/A"}</p>
+        </div>
+        <hr className="border-theme-border" />
+        <div className="flex justify-between items-center">
+          <p className="text-theme-muted text-xs">Método de pago</p>
+          <p className="font-bold text-theme-text text-sm capitalize">{order.paymentMethod || "Sin registrar"}</p>
         </div>
         <hr className="border-theme-border" />
         <div className="flex justify-between items-center">

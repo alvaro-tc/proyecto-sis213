@@ -35,7 +35,7 @@ const ADMIN_TABS = [
   { id: "mesas",      label: "Mesas",      icon: MdTableBar },
   { id: "categorias", label: "Categorías", icon: MdCategory },
   { id: "productos",  label: "Productos",  icon: MdRestaurantMenu },
-  { id: "empleados",  label: "Empleados",  icon: MdGroups },
+  { id: "usuarios",   label: "Usuarios",   icon: MdGroups },
   { id: "whatsapp",   label: "WhatsApp",   icon: FaWhatsapp },
   { id: "groq",       label: "Groq",       icon: FaBolt },
 ];
@@ -125,7 +125,7 @@ const Home = () => {
             onAdd={() => setDishModal({})}
           />
         )}
-        {activeTab === "empleados" && isAdmin && (
+        {activeTab === "usuarios" && isAdmin && (
           <EmployeeList onAdd={() => setEmployeeModal(true)} />
         )}
         {activeTab === "whatsapp" && isAdmin && <WhatsappPanel />}

@@ -8,29 +8,50 @@ import { ConfirmDialog } from "../ui";
 const EmployeeList = ({ onAdd }) => {
   const queryClient = useQueryClient();
   const [target, setTarget] = useState(null);
+  const [roleFilter, setRoleFilter] = useState("all");
   const { data: res, isLoading } = useQuery({ queryKey: ["users"], queryFn: getUsers });
-  const users = res?.data?.data || [];
+  const allUsers = res?.data?.data || [];
+
+  const filteredUsers = roleFilter === "all"
+    ? allUsers
+    : allUsers.filter(u => u.role?.toLowerCase() === roleFilter.toLowerCase());
 
   const delMutation = useMutation({
     mutationFn: (id) => deleteUser(id),
     onSuccess: () => {
-      enqueueSnackbar("Empleado eliminado", { variant: "success" });
+      enqueueSnackbar("Usuario eliminado", { variant: "success" });
       queryClient.invalidateQueries(["users"]);
       setTarget(null);
     },
     onError: () => enqueueSnackbar("Error al eliminar", { variant: "error" })
   });
 
-  if (isLoading) return <div className="text-theme-text p-6 justify-center flex">Cargando empleados...</div>;
+  if (isLoading) return <div className="text-theme-text p-6 justify-center flex">Cargando usuarios...</div>;
 
   return (
     <div className="container mx-auto py-2 px-6 md:px-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-theme-text text-xl font-semibold">Listado de Empleados</h2>
+        <h2 className="text-theme-text text-xl font-semibold">Lista de usuarios registrados</h2>
         <button onClick={onAdd} className="bg-theme-surface hover:bg-theme-card px-4 py-2 rounded-lg text-theme-text font-semibold text-sm flex items-center gap-2">
-          Añadir Empleado +
+          Añadir Usuario +
         </button>
       </div>
+
+      <div className="mb-4 flex gap-2">
+        <label className="text-theme-text text-sm font-medium">Filtrar por rol:</label>
+        <select
+          value={roleFilter}
+          onChange={(e) => setRoleFilter(e.target.value)}
+          className="px-3 py-2 rounded-lg bg-theme-surface border border-theme-border text-theme-text text-sm focus:outline-none focus:ring-2 focus:ring-theme-accent"
+        >
+          <option value="all">Todos</option>
+          <option value="admin">Admin</option>
+          <option value="waiter">Meseros</option>
+          <option value="barista">Baristas</option>
+          <option value="customer">Clientes</option>
+        </select>
+      </div>
+
       <div className="bg-theme-surface rounded-lg overflow-hidden">
         <table className="w-full text-left text-theme-muted">
           <thead className="bg-theme-base text-theme-text">
@@ -43,13 +64,13 @@ const EmployeeList = ({ onAdd }) => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <tr key={user._id} className="border-b border-theme-border hover:bg-theme-card">
                 <td className="py-3 px-4 text-theme-text font-medium">{user.name}</td>
                 <td className="py-3 px-4">{user.email}</td>
                 <td className="py-3 px-4">{user.phone}</td>
                 <td className="py-3 px-4 capitalize">
-                   <span className={`px-2 py-1 rounded-lg text-xs font-bold ${user.role === 'admin' ? 'bg-red-500/20 text-red-500' : user.role === 'barista' ? 'bg-orange-500/20 text-orange-400' : 'bg-blue-500/20 text-blue-400'}`}>
+                   <span className={`px-2 py-1 rounded-lg text-xs font-bold ${user.role === 'admin' ? 'bg-red-500/20 text-red-500' : user.role === 'barista' ? 'bg-orange-500/20 text-orange-400' : user.role === 'customer' ? 'bg-green-500/20 text-green-400' : user.role === 'waiter' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'}`}>
                      {user.role}
                    </span>
                 </td>
@@ -69,9 +90,9 @@ const EmployeeList = ({ onAdd }) => {
         onClose={() => setTarget(null)}
         onConfirm={() => target && delMutation.mutate(target._id)}
         isLoading={delMutation.isPending}
-        title={`¿Eliminar a ${target?.name || "este empleado"}?`}
-        description="Se eliminará la cuenta del empleado de forma permanente."
-        confirmLabel="Eliminar empleado"
+        title={`¿Eliminar a ${target?.name || "este usuario"}?`}
+        description="Se eliminará la cuenta del usuario de forma permanente."
+        confirmLabel="Eliminar usuario"
         variant="danger"
       />
     </div>

@@ -90,7 +90,7 @@ const BaristaOrderCard = ({ order, refetch }) => {
   }
 
   return (
-    <div className={`w-full bg-theme-card rounded-2xl overflow-hidden shadow-lg border-2 flex flex-col h-full transform transition-all ${pulseEffect ? "border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]" : "border-theme-border"}`}>
+    <div className={`w-full bg-theme-card rounded-2xl overflow-hidden shadow-lg border-2 flex flex-col h-fit transform transition-all ${pulseEffect ? "border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]" : "border-theme-border"}`}>
       
       {/* Dynamic Header */}
       <div className={`${headerColor} p-4 flex justify-between items-center border-b border-theme-border transition-colors`}>
@@ -115,7 +115,7 @@ const BaristaOrderCard = ({ order, refetch }) => {
       </div>
 
       {/* Interactive Item List */}
-      <div className="p-4 flex-1 overflow-y-auto min-h-[150px]">
+      <div className="p-4 flex-1 overflow-y-auto">
         <h2 className="text-theme-muted text-[11px] font-bold mb-3 border-b border-theme-border pb-2 uppercase tracking-widest text-left">
           Cantidades
         </h2>

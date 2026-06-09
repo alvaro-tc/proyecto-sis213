@@ -1,0 +1,89 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      # ─────────────────────────────────────────────────────────────
+      # FRONTEND – compilar con Vite en GitHub
+      # VITE_BACKEND_URL se toma de .env.production (valor: "/")
+      # El frontend usa rutas relativas → nginx las proxea al backend
+      # ─────────────────────────────────────────────────────────────
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: pos-frontend/package-lock.json
+
+      - name: Instalar dependencias frontend
+        working-directory: pos-frontend
+        run: npm ci
+
+      - name: Compilar frontend (Vite)
+        working-directory: pos-frontend
+        run: npm run build
+
+      # ─────────────────────────────────────────────────────────────
+      # BACKEND – instalar deps de producción en GitHub (Linux x64)
+      # Los binarios nativos (sharp, bcrypt) se compilan aquí para
+      # que sean compatibles con el Ubuntu del servidor.
+      # ─────────────────────────────────────────────────────────────
+      - name: Instalar dependencias backend (solo producción)
+        working-directory: pos-backend
+        run: npm ci --omit=dev
+
+      # ─────────────────────────────────────────────────────────────
+      # SSH – preparar llave
+      # ─────────────────────────────────────────────────────────────
+      - name: Configurar SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.SERVER_HOST }}" >> ~/.ssh/known_hosts
+
+      # ─────────────────────────────────────────────────────────────
+      # DEPLOY – rsync de artefactos al servidor
+      # ─────────────────────────────────────────────────────────────
+      - name: Desplegar frontend (archivos estáticos)
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            pos-frontend/dist/ \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/var/www/pos-frontend/
+
+      - name: Desplegar backend
+        run: |
+          rsync -avz --delete \
+            --exclude='.env' \
+            --exclude='auth_info_baileys/' \
+            --exclude='.gitignore' \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            pos-backend/ \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/opt/pos-backend/
+
+      # ─────────────────────────────────────────────────────────────
+      # INYECTAR QR_API_URL en el .env del servidor
+      # Se actualiza solo esa línea; el resto del .env no se toca.
+      # ─────────────────────────────────────────────────────────────
+      - name: Actualizar QR_API_URL en el servidor
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
+            "sed -i 's|^QR_API_URL=.*|QR_API_URL=${{ secrets.QR_API_URL }}|' /opt/pos-backend/.env"
+
+      - name: Reiniciar backend con PM2
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
+            "pm2 restart pos-backend 2>/dev/null || pm2 start /opt/pos-backend/app.js --name pos-backend && pm2 save"

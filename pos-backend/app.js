@@ -13,9 +13,12 @@ const PORT = config.port;
 connectDB();
 
 // Middlewares
+const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173')
+    .split(',')
+    .map((o) => o.trim());
 app.use(cors({
     credentials: true,
-    origin: ['http://localhost:5173']
+    origin: allowedOrigins,
 }));
 app.use(express.json());
 app.use(cookieParser());

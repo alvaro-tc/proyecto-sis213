@@ -8,12 +8,28 @@ import { useDispatch } from "react-redux";
 import { setCustomer } from "../../redux/slices/customerSlice";
 import { Button, Input } from "../ui";
 
-const NAV_ITEMS = [
-  { to: "/home", label: "Inicio", icon: FaHome },
-  { to: "/orders", label: "Pedidos", icon: MdOutlineReorder },
-  { to: "/tables", label: "Mesas", icon: MdTableBar },
-  { to: "/insumos", label: "Insumos", icon: MdInventory },
+const LEFT_ITEMS = [
+  { to: "/home",   label: "Inicio",   icon: FaHome },
+  { to: "/orders", label: "Pedidos",  icon: MdOutlineReorder },
 ];
+const RIGHT_ITEMS = [
+  { to: "/tables",  label: "Mesas",    icon: MdTableBar },
+  { to: "/insumos", label: "Insumos",  icon: MdInventory },
+];
+
+const NavBtn = ({ to, label, Icon, active, onClick }) => (
+  <button
+    onClick={onClick}
+    className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-1 transition-colors min-w-0 ${
+      active ? "text-theme-text" : "text-theme-muted hover:text-theme-text"
+    }`}
+  >
+    <div className={`p-1.5 rounded-xl transition-colors ${active ? "bg-theme-elevated" : ""}`}>
+      <Icon size={20} />
+    </div>
+    <span className="text-[10px] leading-none font-medium truncate">{label}</span>
+  </button>
+);
 
 const BottomNav = () => {
   const navigate = useNavigate();
@@ -31,36 +47,47 @@ const BottomNav = () => {
     if (!name?.trim()) return;
     dispatch(setCustomer({ name, phone, guests: type === "takeaway" ? 0 : guestCount, orderType: type }));
     setIsModalOpen(false);
-    if (type === "takeaway") {
-      navigate("/menu");
-    } else {
-      navigate("/tables");
-    }
+    navigate(type === "takeaway" ? "/menu" : "/tables");
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-theme-card p-2 h-16 flex justify-around z-50 border-t border-theme-border">
-      {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
-        <button
+    <div className="fixed bottom-0 left-0 right-0 bg-theme-card h-16 flex items-center z-50 border-t border-theme-border">
+      {/* Left items */}
+      {LEFT_ITEMS.map(({ to, label, icon: Icon }) => (
+        <NavBtn
           key={to}
+          to={to}
+          label={label}
+          Icon={Icon}
+          active={isActive(to)}
           onClick={() => navigate(to)}
-          className={`flex items-center justify-center font-bold ${
-            isActive(to) ? "text-theme-text bg-theme-elevated" : "text-theme-muted"
-          } w-[300px] rounded-[20px]`}
-        >
-          <Icon className="inline mr-2" size={20} />
-          <span>{label}</span>
-        </button>
+        />
       ))}
 
+      {/* Center spacer for the FAB */}
+      <div className="w-14 flex-shrink-0" aria-hidden="true" />
+
+      {/* Right items */}
+      {RIGHT_ITEMS.map(({ to, label, icon: Icon }) => (
+        <NavBtn
+          key={to}
+          to={to}
+          label={label}
+          Icon={Icon}
+          active={isActive(to)}
+          onClick={() => navigate(to)}
+        />
+      ))}
+
+      {/* FAB — centered above the bar */}
       <button
         disabled={blockCreate}
         onClick={() => setIsModalOpen(true)}
         title="Crear pedido"
         aria-label="Crear pedido"
-        className="absolute bottom-6 bg-theme-accent text-theme-text rounded-full p-4 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="absolute left-1/2 -translate-x-1/2 -translate-y-3 bottom-full mb-0 bg-theme-accent text-theme-text rounded-full p-3 shadow-lg shadow-black/20 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 transition-transform"
       >
-        <BiSolidDish size={40} />
+        <BiSolidDish size={28} />
       </button>
 
       <Modal

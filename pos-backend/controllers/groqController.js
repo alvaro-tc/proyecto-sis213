@@ -1,7 +1,8 @@
 const createHttpError = require("http-errors");
 const config = require("../config/config");
 const BotConfig = require("../models/botConfigModel");
-const { checkGroqConnection, generateReply } = require("../services/groqService");
+const GroqKey = require("../models/groqKeyModel");
+const { checkGroqConnection, generateReply, keyManager } = require("../services/groqService");
 const { sendWhatsApp, normalizePhone } = require("../services/whatsappService");
 const { buildContextForPhone } = require("../services/posContextService");
 const { BOT_TOOLS, executeBotTool } = require("../services/botTools");
@@ -35,13 +36,29 @@ const whLog = require("../services/webhookLog");
 const getStatus = async (req, res, next) => {
   try {
     if (!requireAdmin(req)) return next(createHttpError(403, "Forbidden"));
-    const status = await checkGroqConnection();
-    const cfg = await BotConfig.getBotConfig();
+    const [cfg, allKeys] = await Promise.all([BotConfig.getBotConfig(), GroqKey.find().lean()]);
+    const activeKeys = allKeys.filter(k => k.active);
+    // Use the best available DB key for the connection check
+    const bestKey = activeKeys
+      .filter(k => k.lastStatus !== 'invalid')
+      .sort((a, b) => {
+        const ab = a.lastStatus === 'rate_limited' ? 1 : 0;
+        const bb = b.lastStatus === 'rate_limited' ? 1 : 0;
+        if (ab !== bb) return ab - bb;
+        const aR = a.tokenLimit > 0 ? a.tokenUsed / a.tokenLimit : 0;
+        const bR = b.tokenLimit > 0 ? b.tokenUsed / b.tokenLimit : 0;
+        return aR - bR;
+      })[0];
+    const keyToCheck = bestKey?.key || config.groqApiKey;
+    const status = await checkGroqConnection(keyToCheck);
     return res.json({
       success: true,
-      hasApiKey: !!config.groqApiKey,
+      hasApiKey: !!(keyToCheck),
       configuredModel: config.groqModel,
       enabled: cfg.enabled,
+      keyCount: allKeys.length,
+      activeKeyCount: activeKeys.length,
+      totalTokensUsed: allKeys.reduce((s, k) => s + (k.tokenUsed || 0), 0),
       ...status,
     });
   } catch (err) {
@@ -274,6 +291,100 @@ const clearHistory = async (req, res, next) => {
   }
 };
 
+// ── API Key management ────────────────────────────────────────────────────────
+const listKeys = async (req, res, next) => {
+  try {
+    if (!requireAdmin(req)) return next(createHttpError(403, "Forbidden"));
+    const docs = await GroqKey.find().sort({ createdAt: -1 });
+    const safe = docs.map(doc => { const { key, ...rest } = doc.toJSON(); return rest; });
+    return res.json({ success: true, data: safe });
+  } catch (err) { next(err); }
+};
+
+const addKey = async (req, res, next) => {
+  try {
+    if (!requireAdmin(req)) return next(createHttpError(403, "Forbidden"));
+    const { label, key: rawKey, tokenLimit } = req.body || {};
+    const key = rawKey?.trim();
+    const labelTrimmed = label?.trim();
+    if (!key)          return next(createHttpError(400, "key requerida"));
+    if (!labelTrimmed) return next(createHttpError(400, "label requerido"));
+
+    // Verify key against Groq before saving
+    const check = await checkGroqConnection(key);
+
+    const doc = await GroqKey.create({
+      label: labelTrimmed,
+      key,
+      tokenLimit: typeof tokenLimit === "number" && tokenLimit > 0 ? tokenLimit : 500000,
+      lastStatus: check.ok ? "ok" : check.status === "invalid_key" ? "invalid" : "unknown",
+    });
+    keyManager.invalidate();
+    const { key: _k, ...safe } = doc.toJSON();
+    return res.status(201).json({ success: true, data: safe, check });
+  } catch (err) {
+    if (err.code === 11000) return next(createHttpError(409, "Esta API key ya está registrada"));
+    next(err);
+  }
+};
+
+const updateKey = async (req, res, next) => {
+  try {
+    if (!requireAdmin(req)) return next(createHttpError(403, "Forbidden"));
+    const { id } = req.params;
+    const { label, active, tokenLimit } = req.body || {};
+    const set = {};
+    if (typeof label === "string")      set.label = label.trim();
+    if (typeof active === "boolean")    set.active = active;
+    if (typeof tokenLimit === "number") set.tokenLimit = tokenLimit;
+    const doc = await GroqKey.findByIdAndUpdate(id, { $set: set }, { new: true });
+    if (!doc) return next(createHttpError(404, "Key no encontrada"));
+    keyManager.invalidate();
+    const { key: _k, ...safe } = doc.toJSON();
+    return res.json({ success: true, data: safe });
+  } catch (err) { next(err); }
+};
+
+const deleteKey = async (req, res, next) => {
+  try {
+    if (!requireAdmin(req)) return next(createHttpError(403, "Forbidden"));
+    const { id } = req.params;
+    const doc = await GroqKey.findByIdAndDelete(id);
+    if (!doc) return next(createHttpError(404, "Key no encontrada"));
+    keyManager.invalidate();
+    return res.json({ success: true });
+  } catch (err) { next(err); }
+};
+
+const checkKey = async (req, res, next) => {
+  try {
+    if (!requireAdmin(req)) return next(createHttpError(403, "Forbidden"));
+    const doc = await GroqKey.findById(req.params.id);
+    if (!doc) return next(createHttpError(404, "Key no encontrada"));
+    const check = await checkGroqConnection(doc.key);
+    doc.lastStatus = check.ok ? "ok" : check.status === "invalid_key" ? "invalid" : "error";
+    doc.lastError = check.error || null;
+    await doc.save();
+    keyManager.invalidate();
+    return res.json({ success: true, check, status: doc.lastStatus });
+  } catch (err) { next(err); }
+};
+
+const resetKeyUsage = async (req, res, next) => {
+  try {
+    if (!requireAdmin(req)) return next(createHttpError(403, "Forbidden"));
+    const doc = await GroqKey.findByIdAndUpdate(
+      req.params.id,
+      { $set: { tokenUsed: 0, requestCount: 0, lastStatus: "unknown", lastError: null } },
+      { new: true }
+    );
+    if (!doc) return next(createHttpError(404, "Key no encontrada"));
+    keyManager.invalidate();
+    const { key: _k, ...safe } = doc.toJSON();
+    return res.json({ success: true, data: safe });
+  } catch (err) { next(err); }
+};
+
 module.exports = {
   getStatus,
   getPrompt,
@@ -283,4 +394,10 @@ module.exports = {
   whatsappWebhook,
   processIncomingMessage,
   clearHistory,
+  listKeys,
+  addKey,
+  updateKey,
+  deleteKey,
+  checkKey,
+  resetKeyUsage,
 };

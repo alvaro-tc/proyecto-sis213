@@ -84,3 +84,11 @@ export const saveGroqPrompt = (data) =>
 export const resetGroqPrompt = () => axiosWrapper.post("/api/groq/prompt/reset");
 export const chatGroq = (data) => axiosWrapper.post("/api/groq/chat", data);
 export const clearGroqHistory = (data) => axiosWrapper.post("/api/groq/history/clear", data || {});
+
+// Groq Key management
+export const getGroqKeys = () => axiosWrapper.get("/api/groq/keys");
+export const addGroqKey = (data) => axiosWrapper.post("/api/groq/keys", data);
+export const updateGroqKey = ({ id, ...data }) => axiosWrapper.patch(`/api/groq/keys/${id}`, data);
+export const deleteGroqKey = (id) => axiosWrapper.delete(`/api/groq/keys/${id}`);
+export const checkGroqKey = (id) => axiosWrapper.post(`/api/groq/keys/${id}/check`);
+export const resetGroqKeyUsage = (id) => axiosWrapper.post(`/api/groq/keys/${id}/reset-usage`);

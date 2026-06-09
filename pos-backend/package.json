@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "nodemon app.js",
     "start": "node app.js",
-    "seed": "node seedProducts.js"
+    "seed": "node seedProducts.js",
+    "test": "jest --testPathPatterns=tests/unit --passWithNoTests",
+    "test:all": "jest --forceExit",
+    "test:coverage": "jest --coverage --forceExit"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +33,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "jest": "^30.4.2",
     "nodemon": "^3.1.9"
   }
 }

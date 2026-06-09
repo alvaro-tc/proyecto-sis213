@@ -74,13 +74,17 @@ jobs:
 
       # ─────────────────────────────────────────────────────────────
       # INYECTAR QR_API_URL en el .env del servidor
-      # Se actualiza solo esa línea; el resto del .env no se toca.
+      # Se usa env: para evitar que el valor con newline rompa el sed.
       # ─────────────────────────────────────────────────────────────
       - name: Actualizar QR_API_URL en el servidor
+        env:
+          QR_API_URL: ${{ secrets.QR_API_URL }}
         run: |
+          QR_CLEAN=$(printf '%s' "$QR_API_URL" | tr -d '\r\n')
           ssh -i ~/.ssh/deploy_key \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
-            "sed -i 's|^QR_API_URL=.*|QR_API_URL=${{ secrets.QR_API_URL }}|' /opt/pos-backend/.env"
+            "sed -i 's|^QR_API_URL=.*|QR_API_URL=${QR_CLEAN}|' /opt/pos-backend/.env \
+             || echo 'QR_API_URL=${QR_CLEAN}' >> /opt/pos-backend/.env"
 
       - name: Reiniciar backend con PM2
         run: |

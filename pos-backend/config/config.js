@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ path: require("path").resolve(__dirname, "../.env") });
 
 const config = Object.freeze({
     port: process.env.PORT || 3000,

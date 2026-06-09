@@ -125,26 +125,36 @@ const WhatsappPanel = () => {
   }, [status?.status]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── WebSocket connection ──────────────────────────────────────────────────
-  // Auth uses the accessToken cookie — the browser sends it automatically
-  // on the upgrade request, so no explicit auth message is needed.
+  const reconnectDelay = useRef(2000);
+  const reconnectTimer = useRef(null);
+  const unmountedRef   = useRef(false);
+
   useEffect(() => {
-    const backendHost = window.location.hostname;
-    const wsUrl = `ws://${backendHost}:8000/ws/admin`;
+    unmountedRef.current = false;
+    // Usa wss:// cuando la página está en HTTPS, y pasa por nginx (sin puerto)
+    const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const wsUrl = `${wsProtocol}//${window.location.host}/ws/admin`;
 
     const connect = () => {
-      const ws = new WebSocket(wsUrl);
+      if (unmountedRef.current) return;
+      let ws;
+      try {
+        ws = new WebSocket(wsUrl);
+      } catch {
+        setWsState("error");
+        return;
+      }
       wsRef.current = ws;
       setWsState("connecting");
 
-      ws.onopen = () => { /* auth via cookie, nothing to send */ };
+      ws.onopen = () => {
+        reconnectDelay.current = 2000; // reset backoff al conectar
+      };
 
       ws.onmessage = (evt) => {
         try {
           const event = JSON.parse(evt.data);
-          if (event.type === "auth:ok") {
-            setWsState("open");
-            return;
-          }
+          if (event.type === "auth:ok") { setWsState("open"); return; }
           if (event.type === "wa:incoming" || event.type === "wa:reply") {
             setChatLog((prev) => [...prev.slice(-99), event]);
           }
@@ -153,8 +163,12 @@ const WhatsappPanel = () => {
 
       ws.onclose = () => {
         setWsState("closed");
-        // Reconnect after 5 s
-        setTimeout(connect, 5000);
+        if (unmountedRef.current) return;
+        // Backoff exponencial: 2s → 4s → 8s → … máx 30s
+        reconnectTimer.current = setTimeout(() => {
+          reconnectDelay.current = Math.min(reconnectDelay.current * 2, 30000);
+          connect();
+        }, reconnectDelay.current);
       };
 
       ws.onerror = () => {
@@ -165,6 +179,8 @@ const WhatsappPanel = () => {
 
     connect();
     return () => {
+      unmountedRef.current = true;
+      clearTimeout(reconnectTimer.current);
       wsRef.current?.close();
     };
   }, []);
@@ -255,8 +271,7 @@ const WhatsappPanel = () => {
   const currentProvider = status?.currentProvider || status?.provider || "baileys";
   const isMeta         = currentProvider === "meta";
 
-  const backendPort = 8000;
-  const webhookUrl = `${window.location.protocol}//${window.location.hostname}:${backendPort}/api/whatsapp/webhook/meta`;
+  const webhookUrl = `${window.location.protocol}//${window.location.host}/api/whatsapp/webhook/meta`;
   const verifyToken = status?.meta?.verifyToken || "—";
   const metaPhoneNumberId = status?.meta?.phoneNumberId || "";
   const metaHasToken = status?.meta?.hasAccessToken || false;

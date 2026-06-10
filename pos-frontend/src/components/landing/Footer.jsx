@@ -93,8 +93,6 @@ const Footer = () => {
               <ul className="mt-4 space-y-3 text-sm text-stone-400">
                 <li>UCB</li>
                 <li>La Paz, Bolivia</li>
-                <li>+591 4 444 5566</li>
-                <li>alvarotorrezc@gmail.com</li>
               </ul>
             </div>
 

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { LuMapPin, LuPhone, LuNavigation } from "react-icons/lu";
+import { LuMapPin, LuNavigation } from "react-icons/lu";
 import { FaWhatsapp } from "react-icons/fa";
 import { LandingButton } from "../ui";
 
@@ -30,17 +30,6 @@ const Contact = () => {
                 <p className="text-sm font-medium uppercase tracking-wider text-stone-500">Dirección</p>
                 <p className="mt-1 text-lg text-stone-900 font-semibold">Universidad Católica Boliviana San Pablo</p>
                 <p className="text-sm text-stone-600">La Paz Bolivia</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 rounded-3xl border border-stone-200 bg-stone-50 p-5">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-orange-950 text-stone-50">
-                <LuPhone size={18} />
-              </span>
-              <div>
-                <p className="text-sm font-medium uppercase tracking-wider text-stone-500">Reservas</p>
-                <p className="mt-1 text-lg text-stone-900 font-semibold">+591 4 444 5566</p>
-                <p className="text-sm text-stone-600">alvarotorrezc@gmail.com</p>
               </div>
             </div>
 

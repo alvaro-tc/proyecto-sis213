@@ -1,12 +1,7 @@
 import { motion } from "framer-motion";
-import { LuClock, LuMapPin, LuPhone, LuNavigation } from "react-icons/lu";
+import { LuMapPin, LuPhone, LuNavigation } from "react-icons/lu";
+import { FaWhatsapp } from "react-icons/fa";
 import { LandingButton } from "../ui";
-
-const SCHEDULE = [
-  { day: "Lunes – Viernes", hours: "07:00 — 20:00" },
-  { day: "Sábados", hours: "08:00 — 22:00" },
-  { day: "Domingos", hours: "09:00 — 18:00" },
-];
 
 const Contact = () => {
   return (
@@ -40,31 +35,30 @@ const Contact = () => {
 
             <div className="flex items-start gap-4 rounded-3xl border border-stone-200 bg-stone-50 p-5">
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-orange-950 text-stone-50">
-                <LuClock size={18} />
-              </span>
-              <div className="w-full">
-                <p className="text-sm font-medium uppercase tracking-wider text-stone-500">Horarios</p>
-                <ul className="mt-2 space-y-1.5">
-                  {SCHEDULE.map((item) => (
-                    <li key={item.day} className="flex items-center justify-between text-sm">
-                      <span className="text-stone-700">{item.day}</span>
-                      <span className="font-medium text-stone-900">{item.hours}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 rounded-3xl border border-stone-200 bg-stone-50 p-5">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-orange-950 text-stone-50">
                 <LuPhone size={18} />
               </span>
               <div>
                 <p className="text-sm font-medium uppercase tracking-wider text-stone-500">Reservas</p>
                 <p className="mt-1 text-lg text-stone-900 font-semibold">+591 4 444 5566</p>
-                <p className="text-sm text-stone-600">hola@cafeteria5.com</p>
+                <p className="text-sm text-stone-600">alvarotorrezc@gmail.com</p>
               </div>
             </div>
+
+            <a
+              href="https://wa.me/59161181212"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-start gap-4 rounded-3xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-green-300 hover:bg-green-50"
+            >
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#25D366] text-white">
+                <FaWhatsapp size={20} />
+              </span>
+              <div>
+                <p className="text-sm font-medium uppercase tracking-wider text-stone-500">WhatsApp</p>
+                <p className="mt-1 text-lg text-stone-900 font-semibold">+591 61181212</p>
+                <p className="text-sm text-stone-600">Escríbenos por WhatsApp</p>
+              </div>
+            </a>
           </div>
         </motion.div>
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { LuCoffee, LuInstagram, LuFacebook, LuTwitter, LuSend } from "react-icons/lu";
+import { FaWhatsapp } from "react-icons/fa";
 
 const QUICK_LINKS = [
   { href: "#menu", label: "Menú" },
@@ -13,6 +14,7 @@ const SOCIALS = [
   { href: "#", label: "Instagram", icon: LuInstagram },
   { href: "#", label: "Facebook", icon: LuFacebook },
   { href: "#", label: "Twitter", icon: LuTwitter },
+  { href: "https://wa.me/59161181212", label: "WhatsApp", icon: FaWhatsapp },
 ];
 
 const Footer = () => {
@@ -92,7 +94,7 @@ const Footer = () => {
                 <li>UCB</li>
                 <li>La Paz, Bolivia</li>
                 <li>+591 4 444 5566</li>
-                <li>hola@cafeteria5.com</li>
+                <li>alvarotorrezc@gmail.com</li>
               </ul>
             </div>
 

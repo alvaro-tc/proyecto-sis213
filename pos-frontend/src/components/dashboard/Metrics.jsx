@@ -14,11 +14,109 @@ import {
   FaCircleXmark,
   FaCreditCard,
   FaInfo,
+  FaDownload,
 } from "react-icons/fa6";
 
 const fmtBs = (n) =>
   `Bs ${Number(n || 0).toLocaleString("es-BO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const fmtInt = (n) => Number(n || 0).toLocaleString("es-BO");
+
+const exportMetricsToCSV = (metricsData) => {
+  const m = metricsData;
+  const now = new Date().toLocaleString("es-BO");
+  const rows = [];
+
+  rows.push(["REPORTE DE MÉTRICAS", now]);
+  rows.push([]);
+
+  rows.push(["RESUMEN EJECUTIVO"]);
+  rows.push(["Período", "Hoy", "Últimos 7 días", "Últimos 30 días", "Histórico"]);
+  rows.push(["Ingresos", `Bs ${m.todayRevenue}`, `Bs ${m.weekRevenue}`, `Bs ${m.monthRevenue}`, `Bs ${m.totalRevenue}`]);
+  rows.push(["Pedidos", m.todayOrders, "", "", m.totalOrders]);
+  rows.push(["Ticket promedio", `Bs ${m.avgTicketToday}`, "", "", `Bs ${m.avgTicket}`]);
+  rows.push(["Ocupación mesas", `${m.occupancyRate}%`, "", "", ""]);
+  rows.push([]);
+
+  rows.push(["TIMELINE DIARIA (ÚLTIMOS 7 DÍAS)"]);
+  rows.push(["Fecha", "Ingresos", "Variación día anterior"]);
+  const dailySeries = m.dailySeries || [];
+  dailySeries.forEach((day, idx) => {
+    let variation = "";
+    if (idx > 0) {
+      const prevRevenue = dailySeries[idx - 1].revenue;
+      if (prevRevenue > 0) {
+        const pct = (((day.revenue - prevRevenue) / prevRevenue) * 100).toFixed(1);
+        variation = pct > 0 ? `+${pct}%` : `${pct}%`;
+      }
+    }
+    rows.push([day.date, `Bs ${day.revenue}`, variation]);
+  });
+  rows.push([]);
+
+  rows.push(["DISTRIBUCIÓN HORARIA (HOY)"]);
+  rows.push(["Hora", "Pedidos", "Ingresos"]);
+  (m.hourly || []).forEach((h) => {
+    rows.push([`${String(h.hour).padStart(2, "0")}:00`, h.orders, `Bs ${h.revenue}`]);
+  });
+  rows.push([]);
+
+  rows.push(["ESTADO DE PEDIDOS (TOTALES)"]);
+  rows.push(["Estado", "Cantidad", "Porcentaje"]);
+  const totalOrders = m.totalOrders || 0;
+  rows.push([
+    "Completados",
+    m.ordersByStatus?.Completed || 0,
+    totalOrders > 0 ? ((m.ordersByStatus?.Completed || 0) / totalOrders * 100).toFixed(1) + "%" : "0%"
+  ]);
+  rows.push([
+    "En preparación",
+    m.ordersByStatus?.["In Progress"] || 0,
+    totalOrders > 0 ? ((m.ordersByStatus?.["In Progress"] || 0) / totalOrders * 100).toFixed(1) + "%" : "0%"
+  ]);
+  rows.push([
+    "Listos",
+    m.ordersByStatus?.Ready || 0,
+    totalOrders > 0 ? ((m.ordersByStatus?.Ready || 0) / totalOrders * 100).toFixed(1) + "%" : "0%"
+  ]);
+  rows.push([
+    "Cancelados",
+    m.ordersByStatus?.Cancelled || 0,
+    totalOrders > 0 ? ((m.ordersByStatus?.Cancelled || 0) / totalOrders * 100).toFixed(1) + "%" : "0%"
+  ]);
+  rows.push([]);
+
+  rows.push(["TOP 5 PRODUCTOS"]);
+  rows.push(["Posición", "Producto", "Cantidad", "Ingresos"]);
+  (m.topDishes || []).forEach((d, i) => {
+    rows.push([i + 1, d.name, d.quantity, `Bs ${d.revenue}`]);
+  });
+  rows.push([]);
+
+  rows.push(["MÉTODOS DE PAGO"]);
+  rows.push(["Método", "Cantidad", "Ingresos", "Porcentaje"]);
+  (m.paymentMethods || []).forEach((p) => {
+    const pct = m.totalRevenue > 0 ? ((p.revenue / m.totalRevenue) * 100).toFixed(1) : 0;
+    rows.push([p.method, p.count, `Bs ${p.revenue}`, `${pct}%`]);
+  });
+  rows.push([]);
+
+  rows.push(["INFORMACIÓN GENERAL"]);
+  rows.push(["Concepto", "Valor"]);
+  rows.push(["Clientes registrados", m.totalCustomers]);
+  rows.push(["Empleados", m.totalEmployees]);
+  rows.push(["Productos", m.totalDishes]);
+  rows.push(["Categorías", m.totalCategories]);
+  rows.push(["Mesas totales", m.totalTables]);
+  rows.push(["Mesas ocupadas (actualmente)", m.bookedTables]);
+
+  const csv = rows.map((r) => r.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  link.setAttribute("href", url);
+  link.setAttribute("download", `metricas_${new Date().toISOString().slice(0, 10)}.csv`);
+  link.click();
+};
 
 const KpiCard = ({ icon: Icon, title, value, sub, accent, trend, onClick }) => (
   <button
@@ -225,8 +323,18 @@ const Metrics = () => {
             Indicadores clave para tomar decisiones — ventas, productos, mesas y operación.
           </p>
         </div>
-        <div className="text-xs text-theme-muted">
-          Actualizado en vivo · cada 30s
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => exportMetricsToCSV(m)}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-accent/10 hover:bg-theme-accent/20 text-theme-accent transition text-sm font-medium"
+            title="Descargar métricas en CSV"
+          >
+            <FaDownload className="w-4 h-4" />
+            Exportar CSV
+          </button>
+          <div className="text-xs text-theme-muted">
+            Actualizado en vivo · cada 30s
+          </div>
         </div>
       </div>
 
